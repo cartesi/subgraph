@@ -9,7 +9,7 @@
     "remove-local": "graph remove --node http://localhost:8020/ cartesi-corp/cartesi-subgraph",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 cartesi-corp/cartesi-subgraph",
     "prepare:ropsten": "mustache config/ropsten.json subgraph.template.yaml > subgraph.yaml",
-    "prepare:localhost": "mustache config/localhost.json subgraph.template.yaml > subgraph.yaml"
+    "prepare:mainnet": "mustache config/mainnet.json subgraph.template.yaml > subgraph.yaml"
   },
   "dependencies": {
     "@graphprotocol/graph-cli": "0.18.0",
