@@ -1,6 +1,13 @@
-type ExampleEntity @entity {
+type LotteryEntity @entity {
   id: ID!
   count: BigInt!
   _winner: Bytes! # address
   _roundCount: BigInt! # uint256
+}
+
+type PrizeManagerEntity @entity {
+  id: ID!
+  count: BigInt!
+  _winner: Bytes! # address
+  _prize: BigInt! # uint256
 }

@@ -3,11 +3,11 @@ schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: Contract
+    name: Lottery
     network: ropsten
     source:
       address: "0x1801CA814d200E3b890Ad1A05FB2e805D99e20e5"
-      abi: Contract
+      abi: Lottery
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -15,9 +15,29 @@ dataSources:
       entities:
         - RoundClaimed
       abis:
-        - name: Contract
-          file: ./abis/Contract.json
+        - name: Lottery
+          file: ./abis/Lottery.json
       eventHandlers:
         - event: RoundClaimed(address,uint256,uint256,uint256)
           handler: handleRoundClaimed
-      file: ./src/mapping.ts
+      file: ./src/lotteryMapping.ts
+
+  - kind: ethereum/contract
+    name: PrizeManager
+    network: ropsten
+    source:
+      address: "0xFB8dF7b171CCB1956c43a629ca7280dfeD299780"
+      abi: PrizeManager
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - WinnerPaid
+      abis:
+        - name: PrizeManager
+          file: ./abis/PrizeManager.json
+      eventHandlers:
+        - event: WinnerPaid(address,uint256)
+          handler: handleWinnerPaid
+      file: ./src/prizeManagerMapping.ts

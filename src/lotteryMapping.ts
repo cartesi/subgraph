@@ -1,16 +1,16 @@
 import { BigInt } from "@graphprotocol/graph-ts"
-import { Contract, RoundClaimed } from "../generated/Contract/Contract"
-import { ExampleEntity } from "../generated/schema"
+import { Lottery, RoundClaimed } from "../generated/Lottery/Lottery"
+import { LotteryEntity } from "../generated/schema"
 
 export function handleRoundClaimed(event: RoundClaimed): void {
   // Entities can be loaded from the store using a string ID; this ID
   // needs to be unique across all entities of the same type
-  let entity = ExampleEntity.load(event.transaction.from.toHex())
+  let entity = LotteryEntity.load(event.transaction.from.toHex())
 
   // Entities only exist after they have been saved to the store;
   // `null` checks allow to create entities on demand
   if (entity == null) {
-    entity = new ExampleEntity(event.transaction.from.toHex())
+    entity = new LotteryEntity(event.transaction.from.toHex())
 
     // Entity fields can be set using simple assignments
     entity.count = BigInt.fromI32(0)
