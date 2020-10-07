@@ -1,43 +1,26 @@
 specVersion: 0.0.2
+description: Cartesi Explorer
+repository: https://github.com/cartesi/cartesi-subgraph
 schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: Lottery
-    network: {{network}}
-    source:
-      address: "{{lotteryAddress}}"
-      abi: Lottery
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      entities:
-        - RoundClaimed
-      abis:
-        - name: Lottery
-          file: ./abis/Lottery.json
-      eventHandlers:
-        - event: RoundClaimed(address,uint256,uint256,uint256)
-          handler: handleRoundClaimed
-      file: ./src/lotteryMapping.ts
-
-  - kind: ethereum/contract
     name: PrizeManager
-    network: {{network}}
+    network: {{name}}
     source:
-      address: "{{prizeManagerAddress}}"
+      address: "{{contracts.PrizeManager.address}}"
       abi: PrizeManager
+      startBlock: "{{PrizeManager.receipt.blockNumber}}"
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
       language: wasm/assemblyscript
       entities:
-        - WinnerPaid
+        - Prize
       abis:
         - name: PrizeManager
           file: ./abis/PrizeManager.json
       eventHandlers:
         - event: WinnerPaid(address,uint256)
           handler: handleWinnerPaid
-      file: ./src/prizeManagerMapping.ts
+      file: ./src/prize.ts

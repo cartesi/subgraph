@@ -1,19 +1,25 @@
 {
   "name": "cartesi-subgraph",
-  "license": "UNLICENSED",
+  "license": "Apache-2.0",
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ cartesi-corp/cartesi-subgraph",
-    "create-local": "graph create --node http://localhost:8020/ cartesi-corp/cartesi-subgraph",
-    "remove-local": "graph remove --node http://localhost:8020/ cartesi-corp/cartesi-subgraph",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 cartesi-corp/cartesi-subgraph",
-    "prepare:ropsten": "mustache config/ropsten.json subgraph.template.yaml > subgraph.yaml",
-    "prepare:mainnet": "mustache config/mainnet.json subgraph.template.yaml > subgraph.yaml"
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ cartesi/cartesi-subgraph",
+    "create-local": "graph create --node http://localhost:8020/ cartesi/cartesi-subgraph",
+    "remove-local": "graph remove --node http://localhost:8020/ cartesi/cartesi-subgraph",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 cartesi/cartesi-subgraph",
+    "prepare:ropsten": "mustache node_modules/@cartesi/pos/abi/ropsten.json subgraph.template.yaml > subgraph.yaml",
+    "prepare:mainnet": "mustache node_modules/@cartesi/pos/abi/mainnet.json subgraph.template.yaml > subgraph.yaml"
   },
   "dependencies": {
+    "@cartesi/pos": "^0.1.0-beta.5",
     "@graphprotocol/graph-cli": "0.18.0",
     "@graphprotocol/graph-ts": "0.18.0",
     "mustache": "^4.0.1"
+  },
+  "devDependencies": {
+    "prettier": "^2.1.2",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.3"
   }
 }
