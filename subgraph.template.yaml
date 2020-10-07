@@ -1,16 +1,16 @@
 specVersion: 0.0.2
 description: Cartesi Explorer
-repository: https://github.com/cartesi/cartesi-subgraph
+repository: 'https://github.com/cartesi/cartesi-subgraph'
 schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
     name: PrizeManager
-    network: {{name}}
+    network: 
     source:
-      address: "{{contracts.PrizeManager.address}}"
+      address: PrizeManager
       abi: PrizeManager
-      startBlock: "{{PrizeManager.receipt.blockNumber}}"
+      startBlock: 
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -19,8 +19,8 @@ dataSources:
         - Prize
       abis:
         - name: PrizeManager
-          file: ./abis/PrizeManager.json
+          file: 
       eventHandlers:
-        - event: WinnerPaid(address,uint256)
+        - event: 'WinnerPaid(address,uint256)'
           handler: handleWinnerPaid
       file: ./src/prize.ts

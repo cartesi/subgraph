@@ -8,8 +8,8 @@
     "create-local": "graph create --node http://localhost:8020/ cartesi/cartesi-subgraph",
     "remove-local": "graph remove --node http://localhost:8020/ cartesi/cartesi-subgraph",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 cartesi/cartesi-subgraph",
-    "prepare:ropsten": "mustache node_modules/@cartesi/pos/abi/ropsten.json subgraph.template.yaml > subgraph.yaml",
-    "prepare:mainnet": "mustache node_modules/@cartesi/pos/abi/mainnet.json subgraph.template.yaml > subgraph.yaml"
+    "prepare:ropsten": "buidler --network ropsten subgraph",
+    "prepare:mainnet": "buidler --network mainnet subgraph"
   },
   "dependencies": {
     "@cartesi/pos": "^0.1.0-beta.5",
@@ -20,7 +20,9 @@
   "devDependencies": {
     "@nomiclabs/buidler": "^1.4.7",
     "@nomiclabs/buidler-ethers": "^2.0.2",
-    "buidler-deploy": "^0.6.0-beta.21",
+    "@types/js-yaml": "^3.12.5",
+    "buidler-deploy": "^0.6.0-beta.28",
+    "js-yaml": "^3.14.0",
     "prettier": "^2.1.2",
     "ts-node": "^9.0.0",
     "typescript": "^4.0.3"

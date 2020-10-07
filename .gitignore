@@ -1,4 +1,6 @@
-node_modules
-generated
+.vscode
+abi
 build
+generated
+node_modules
 subgraph.yaml
