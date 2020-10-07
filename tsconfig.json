@@ -6,5 +6,11 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
-  }
+  },
+  "include": ["./src", "./scripts", "./deploy", "./test"],
+  "files": [
+      "buidler.config.ts",
+      "node_modules/@nomiclabs/buidler-ethers/src/type-extensions.d.ts",
+      "node_modules/buidler-deploy/src/type-extensions.d.ts"
+  ]
 }
