@@ -23,10 +23,10 @@
     chalk "^2.0.0"
     js-tokens "^4.0.0"
 
-"@cartesi/pos@^0.1.0-beta.5":
-  version "0.1.0-beta.7"
-  resolved "https://registry.yarnpkg.com/@cartesi/pos/-/pos-0.1.0-beta.7.tgz#ed5a004209d2852b9d2b87a64606289ff0742756"
-  integrity sha512-bwDKDoeeubWdGeW5Jjrrzr1ZkZabKwVuNyA+vD2wvxZy9JXybmPKAJHbGFHDWfGnWLkgTNjNhWlPNlrEOkuBtQ==
+"@cartesi/pos@^0.1.0-beta.8":
+  version "0.1.0-beta.8"
+  resolved "https://registry.yarnpkg.com/@cartesi/pos/-/pos-0.1.0-beta.8.tgz#9a4c68d37e14f101449687caa31484f07577e0e9"
+  integrity sha512-Eg2xsqodF8IZxaApOpQvZQ/3LaAuV74tbkXIedSTReN2hSlmctwNbgbKh3MGKtdO2GthTdg2jYAFiR9/FFmROQ==
   dependencies:
     "@cartesi/token" "^1.1.0"
     "@cartesi/util" "^0.4.2"

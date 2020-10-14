@@ -12,7 +12,7 @@
     "prepare:mainnet": "buidler --network mainnet subgraph"
   },
   "dependencies": {
-    "@cartesi/pos": "^0.1.0-beta.5",
+    "@cartesi/pos": "^0.1.0-beta.8",
     "@graphprotocol/graph-cli": "0.18.0",
     "@graphprotocol/graph-ts": "0.18.0",
     "mustache": "^4.0.1"
