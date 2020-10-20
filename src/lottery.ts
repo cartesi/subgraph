@@ -1,19 +1,26 @@
-import { BigInt, ethereum } from "@graphprotocol/graph-ts"
+import { BigInt } from "@graphprotocol/graph-ts"
 import { WinnerPaid } from "../generated/PrizeManager/PrizeManager"
 import { RoundClaimed } from "../generated/Lottery/Lottery"
 import { LotteryWinner, LotteryTicket } from "../generated/schema"
+import { GlobalState } from "./GlobalState"
 
-var index = 1
+const GLOBAL_STATE_INDEX = "global"
 
 export function handleWinnerPaid(event: WinnerPaid): void {
-    let entity = LotteryWinner.load(index.toString())
+    let globalState = GlobalState.load(GLOBAL_STATE_INDEX)
 
-    if (entity == null) {
-        entity = new LotteryWinner(index.toString())
-
-        // ! This is not working as expected, it's overwritting the old entities
-        index++
+    if (globalState == null) {
+        globalState = new GlobalState(GLOBAL_STATE_INDEX)
+        globalState.currentIndex = BigInt.fromI32(1)
     }
+
+    // For sorting the indexes should have the same length
+    // TODO: Need to make sure that the number of prizes won't exceed 10^30 limit
+    let index =
+        "000000000000000000000000000000" + globalState.currentIndex.toString()
+    index = index.slice(-30)
+
+    let entity = new LotteryWinner(index)
 
     entity.winner = event.params._winner
     entity.prize = event.params._prize
@@ -22,6 +29,9 @@ export function handleWinnerPaid(event: WinnerPaid): void {
     entity.txHash = event.transaction.hash.toHex()
 
     entity.save()
+
+    globalState.currentIndex = globalState.currentIndex + BigInt.fromI32(1)
+    globalState.save()
 }
 
 export function handleRoundClaimed(event: RoundClaimed): void {
