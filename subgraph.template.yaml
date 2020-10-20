@@ -16,14 +16,14 @@ dataSources:
           apiVersion: 0.0.4
           language: wasm/assemblyscript
           entities:
-              - Prize
+              - LotteryWinner
           abis:
               - name: PrizeManager
                 file:
           eventHandlers:
               - event: "WinnerPaid(address,uint256)"
                 handler: handleWinnerPaid
-          file: ./src/prize.ts
+          file: ./src/lottery.ts
 
     - kind: ethereum/contract
       name: Lottery
@@ -37,7 +37,7 @@ dataSources:
           apiVersion: 0.0.4
           language: wasm/assemblyscript
           entities:
-              - Lottery
+              - LotteryTicket
           abis:
               - name: Lottery
                 file:

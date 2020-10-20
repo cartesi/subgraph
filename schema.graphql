@@ -1,11 +1,12 @@
-type Prize @entity {
+type LotteryWinner @entity {
     id: ID!
     winner: Bytes!
     prize: BigInt!
     time: BigInt!
+    txHash: String!
 }
 
-type Lottery @entity {
+type LotteryTicket @entity {
     id: ID!
     count: BigInt!
     _winner: Bytes!
