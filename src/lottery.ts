@@ -30,6 +30,7 @@ export function handleWinnerPaid(event: WinnerPaid): void {
     entity.index = globalState.winnerIndex
 
     entity.txHash = event.transaction.hash.toHex()
+    entity.ticket = event.transaction.hash.toHex()
 
     entity.save()
 

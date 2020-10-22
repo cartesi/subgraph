@@ -5,6 +5,8 @@ type LotteryWinner @entity {
     prize: BigInt!
     time: BigInt!
     txHash: String!
+
+    ticket: LotteryTicket!
 }
 
 type LotteryTicket @entity {
@@ -15,6 +17,8 @@ type LotteryTicket @entity {
     _roundCount: BigInt!
     _difficulty: BigInt!
     txHash: String!
+
+    winners: [LotteryWinner!]! @derivedFrom(field: "ticket")
 }
 
 type GlobalState @entity {
