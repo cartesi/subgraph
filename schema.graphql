@@ -11,6 +11,7 @@ type LotteryTicket @entity {
     count: BigInt!
     _winner: Bytes!
     _roundCount: BigInt!
+    _difficulty: BigInt!
 }
 
 type GlobalState @entity {

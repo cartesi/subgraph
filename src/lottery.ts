@@ -47,6 +47,7 @@ export function handleRoundClaimed(event: RoundClaimed): void {
 
     entity._winner = event.params._winner
     entity._roundCount = event.params._roundCount
+    entity._difficulty = event.params._difficulty
 
     entity.save()
 }
