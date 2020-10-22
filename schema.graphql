@@ -1,5 +1,6 @@
 type LotteryWinner @entity {
     id: ID!
+    index: BigInt!
     winner: Bytes!
     prize: BigInt!
     time: BigInt!
@@ -8,13 +9,16 @@ type LotteryWinner @entity {
 
 type LotteryTicket @entity {
     id: ID!
+    index: BigInt!
     count: BigInt!
     _winner: Bytes!
     _roundCount: BigInt!
     _difficulty: BigInt!
+    txHash: String!
 }
 
 type GlobalState @entity {
     id: ID!
-    currentIndex: BigInt!
+    lotteryIndex: BigInt!
+    winnerIndex: BigInt!
 }

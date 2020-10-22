@@ -36,12 +36,21 @@ export class GlobalState extends Entity {
         this.set("id", Value.fromString(value))
     }
 
-    get currentIndex(): BigInt {
-        let value = this.get("currentIndex")
+    get winnerIndex(): BigInt {
+        let value = this.get("winnerIndex")
         return value.toBigInt()
     }
 
-    set currentIndex(value: BigInt) {
-        this.set("currentIndex", Value.fromBigInt(value))
+    set winnerIndex(value: BigInt) {
+        this.set("winnerIndex", Value.fromBigInt(value))
+    }
+
+    get lotteryIndex(): BigInt {
+        let value = this.get("lotteryIndex")
+        return value.toBigInt()
+    }
+
+    set lotteryIndex(value: BigInt) {
+        this.set("lotteryIndex", Value.fromBigInt(value))
     }
 }
