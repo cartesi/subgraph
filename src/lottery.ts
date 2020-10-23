@@ -2,39 +2,20 @@ import { BigInt } from "@graphprotocol/graph-ts"
 import { WinnerPaid } from "../generated/PrizeManager/PrizeManager"
 import { RoundClaimed } from "../generated/Lottery/Lottery"
 import { LotteryWinner, LotteryTicket } from "../generated/schema"
-import { GlobalState } from "./GlobalState"
-
-const GLOBAL_STATE_INDEX = "global"
-
-function getGlobalState(): GlobalState {
-    let globalState = GlobalState.load(GLOBAL_STATE_INDEX)
-
-    if (globalState == null) {
-        globalState = new GlobalState(GLOBAL_STATE_INDEX)
-
-        globalState.winnerIndex = BigInt.fromI32(1)
-    }
-
-    return globalState!
-}
 
 export function handleWinnerPaid(event: WinnerPaid): void {
-    let globalState = getGlobalState()
-
-    let entity = new LotteryWinner(globalState.winnerIndex.toHex())
+    let entity = new LotteryWinner(
+        event.transaction.hash.toHex() + "-" + event.logIndex.toString()
+    )
 
     entity.winner = event.params._winner
     entity.prize = event.params._prize
     entity.time = event.block.timestamp
-    entity.index = globalState.winnerIndex
 
     entity.txHash = event.transaction.hash.toHex()
     entity.ticket = event.transaction.hash.toHex()
 
     entity.save()
-
-    globalState.winnerIndex = globalState.winnerIndex + BigInt.fromI32(1)
-    globalState.save()
 }
 
 export function handleRoundClaimed(event: RoundClaimed): void {
