@@ -13,7 +13,6 @@ function getGlobalState(): GlobalState {
         globalState = new GlobalState(GLOBAL_STATE_INDEX)
 
         globalState.winnerIndex = BigInt.fromI32(1)
-        globalState.lotteryIndex = BigInt.fromI32(1)
     }
 
     return globalState!
@@ -39,19 +38,12 @@ export function handleWinnerPaid(event: WinnerPaid): void {
 }
 
 export function handleRoundClaimed(event: RoundClaimed): void {
-    let globalState = getGlobalState()
-
     let entity = LotteryTicket.load(event.transaction.hash.toHex())
 
     if (entity == null) {
         entity = new LotteryTicket(event.transaction.hash.toHex())
 
         entity.count = BigInt.fromI32(0)
-
-        entity.index = globalState.lotteryIndex
-
-        globalState.lotteryIndex = globalState.lotteryIndex + BigInt.fromI32(1)
-        globalState.save()
     }
 
     entity.count = entity.count + BigInt.fromI32(1)
@@ -59,8 +51,6 @@ export function handleRoundClaimed(event: RoundClaimed): void {
     entity._winner = event.params._winner
     entity._roundCount = event.params._roundCount
     entity._difficulty = event.params._difficulty
-
-    entity.txHash = event.transaction.hash.toHex()
 
     entity.save()
 }

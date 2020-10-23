@@ -44,13 +44,4 @@ export class GlobalState extends Entity {
     set winnerIndex(value: BigInt) {
         this.set("winnerIndex", Value.fromBigInt(value))
     }
-
-    get lotteryIndex(): BigInt {
-        let value = this.get("lotteryIndex")
-        return value.toBigInt()
-    }
-
-    set lotteryIndex(value: BigInt) {
-        this.set("lotteryIndex", Value.fromBigInt(value))
-    }
 }

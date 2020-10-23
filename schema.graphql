@@ -11,18 +11,15 @@ type LotteryWinner @entity {
 
 type LotteryTicket @entity {
     id: ID!
-    index: BigInt!
     count: BigInt!
     _winner: Bytes!
     _roundCount: BigInt!
     _difficulty: BigInt!
-    txHash: String!
 
     winners: [LotteryWinner!]! @derivedFrom(field: "ticket")
 }
 
 type GlobalState @entity {
     id: ID!
-    lotteryIndex: BigInt!
     winnerIndex: BigInt!
 }
