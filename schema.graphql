@@ -1,17 +1,13 @@
-type LotteryWinner @entity {
-    id: ID!
-    winner: Bytes!
-    prize: BigInt!
-    time: BigInt!
-
-    ticket: LotteryTicket!
-}
-
 type LotteryTicket @entity {
     id: ID!
+    round: BigInt!
     winner: Bytes!
-    roundCount: BigInt!
     difficulty: BigInt!
+    time: BitInt!
+    worker: Bytes!
 
-    winners: [LotteryWinner!]! @derivedFrom(field: "ticket")
+    user: Bytes!
+    userPrize: BigInt!
+    beneficiary: Bytes!
+    beneficiaryPrize: BitInt!
 }

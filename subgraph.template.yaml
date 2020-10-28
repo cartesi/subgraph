@@ -5,20 +5,20 @@ schema:
     file: ./schema.graphql
 dataSources:
     - kind: ethereum/contract
-      name: PrizeManager
+      name: PoS
       network:
       source:
-          address: PrizeManager
-          abi: PrizeManager
+          address: PoS
+          abi: PoS
           startBlock:
       mapping:
           kind: ethereum/events
           apiVersion: 0.0.4
           language: wasm/assemblyscript
           entities:
-              - LotteryWinner
+              - LotteryTicket
           abis:
-              - name: PrizeManager
+              - name: PoS
                 file:
           eventHandlers:
               - event: "WinnerPaid(address,uint256)"
