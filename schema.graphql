@@ -3,11 +3,11 @@ type LotteryTicket @entity {
     round: BigInt!
     winner: Bytes!
     difficulty: BigInt!
-    time: BitInt!
+    time: BigInt!
     worker: Bytes!
 
     user: Bytes!
     userPrize: BigInt!
     beneficiary: Bytes!
-    beneficiaryPrize: BitInt!
+    beneficiaryPrize: BigInt!
 }

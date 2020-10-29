@@ -1,26 +1,33 @@
-import { WinnerPaid } from "../generated/PrizeManager/PrizeManager"
+import { PrizePaid } from "../generated/PoS/PoS"
 import { RoundClaimed } from "../generated/Lottery/Lottery"
-import { LotteryWinner, LotteryTicket } from "../generated/schema"
+import { LotteryTicket } from "../generated/schema"
 
-export function handleWinnerPaid(event: WinnerPaid): void {
-    let entity = new LotteryWinner(
-        event.transaction.hash.toHex() + "-" + event.logIndex.toString()
-    )
+export function handlePrizePaid(event: PrizePaid): void {
+    let entity = LotteryTicket.load(event.transaction.hash.toHex())
 
-    entity.winner = event.params._winner
-    entity.prize = event.params._prize
-    entity.time = event.block.timestamp
+    if (entity === null) {
+        entity = new LotteryTicket(event.transaction.hash.toHex())
+        entity.time = event.block.timestamp
+    }
 
-    entity.ticket = event.transaction.hash.toHex()
+    entity.user = event.params.user
+    entity.userPrize = event.params.userPrize
+    entity.beneficiary = event.params.beneficiary
+    entity.beneficiaryPrize = event.params.beneficiaryPrize
 
     entity.save()
 }
 
 export function handleRoundClaimed(event: RoundClaimed): void {
-    let entity = new LotteryTicket(event.transaction.hash.toHex())
+    let entity = LotteryTicket.load(event.transaction.hash.toHex())
+
+    if (entity === null) {
+        entity = new LotteryTicket(event.transaction.hash.toHex())
+        entity.time = event.block.timestamp
+    }
 
     entity.winner = event.params._winner
-    entity.roundCount = event.params._roundCount
+    entity.round = event.params._roundCount
     entity.difficulty = event.params._difficulty
 
     entity.save()

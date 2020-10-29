@@ -21,8 +21,8 @@ dataSources:
               - name: PoS
                 file:
           eventHandlers:
-              - event: "WinnerPaid(address,uint256)"
-                handler: handleWinnerPaid
+              - event: "PrizePaid(indexed uint256,indexed address,indexed address,uint256,uint256)"
+                handler: handlePrizePaid
           file: ./src/lottery.ts
 
     - kind: ethereum/contract
