@@ -14,6 +14,7 @@ export function handlePrizePaid(event: PrizePaid): void {
     entity.userPrize = event.params.userPrize
     entity.beneficiary = event.params.beneficiary
     entity.beneficiaryPrize = event.params.beneficiaryPrize
+    entity.worker = event.params.worker
 
     entity.save()
 }

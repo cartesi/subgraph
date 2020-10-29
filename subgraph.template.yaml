@@ -21,7 +21,7 @@ dataSources:
               - name: PoS
                 file:
           eventHandlers:
-              - event: "PrizePaid(indexed uint256,indexed address,indexed address,uint256,uint256)"
+              - event: "PrizePaid(indexed uint256,indexed address,indexed address,address,uint256,uint256)"
                 handler: handlePrizePaid
           file: ./src/lottery.ts
 
