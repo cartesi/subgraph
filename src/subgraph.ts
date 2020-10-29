@@ -59,10 +59,10 @@ const extractAbi = async (
     abiDir: string,
     contractName: string
 ): Promise<string> => {
-    const artifact = await deployments.getArtifact(contractName);
+    const deployment = await deployments.get(contractName);
     const filename = path.join(abiDir, `${contractName}.json`);
     console.log(`Extracting ABI of ${contractName} and writing to ${filename}`);
-    const abiStr = JSON.stringify(artifact.abi, null, 1);
+    const abiStr = JSON.stringify(deployment.abi, null, 1);
     fs.writeFileSync(filename, abiStr);
     return filename;
 };
