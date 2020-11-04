@@ -8,23 +8,23 @@
     "create-local": "graph create --node http://localhost:8020/ cartesi/cartesi-subgraph",
     "remove-local": "graph remove --node http://localhost:8020/ cartesi/cartesi-subgraph",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 cartesi/cartesi-subgraph",
-    "prepare:goerli": "buidler --network goerli subgraph",
-    "prepare:mainnet": "buidler --network mainnet subgraph"
+    "prepare:goerli": "hardhat --network goerli subgraph",
+    "prepare:mainnet": "hardhat --network mainnet subgraph"
   },
   "dependencies": {
     "@cartesi/pos": "^0.1.0-beta.10",
-    "@graphprotocol/graph-cli": "0.18.0",
-    "@graphprotocol/graph-ts": "0.18.0"
+    "@graphprotocol/graph-cli": "0.19.0",
+    "@graphprotocol/graph-ts": "0.19.0"
   },
   "devDependencies": {
-    "@nomiclabs/buidler": "^1.4.7",
-    "@nomiclabs/buidler-ethers": "^2.0.2",
+    "@nomiclabs/hardhat-ethers": "^2.0.0",
     "@types/js-yaml": "^3.12.5",
-    "buidler-deploy": "^0.6.0-beta.28",
+    "hardhat": "^2.0.2",
+    "hardhat-deploy": "^0.7.0-beta.28",
     "ethers": "^5.0.0",
     "js-yaml": "^3.14.0",
     "prettier": "^2.1.2",
     "ts-node": "^9.0.0",
-    "typescript": "^4.0.3"
+    "typescript": "^4.0.5"
   }
 }

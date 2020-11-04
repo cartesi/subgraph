@@ -1,41 +1,18 @@
-import fs from "fs";
-import { Wallet } from "@ethersproject/wallet";
-import { BuidlerConfig, usePlugin } from "@nomiclabs/buidler/config";
-import { HttpNetworkConfig } from "@nomiclabs/buidler/types";
+import { HardhatUserConfig } from "hardhat/config";
+import { HttpNetworkUserConfig } from "hardhat/types";
 
-usePlugin("@nomiclabs/buidler-ethers");
-usePlugin("buidler-deploy");
-require("./src/subgraph");
+import "@nomiclabs/hardhat-ethers";
+import "hardhat-deploy";
+import "./src/subgraph";
 
-// read MNEMONIC from file or from env variable
+// read MNEMONIC from env variable
 let mnemonic = process.env.MNEMONIC;
-try {
-    mnemonic = fs
-        .readFileSync(process.env.MNEMONIC_PATH || ".mnemonic")
-        .toString();
-} catch (e) {}
-
-// create a Buidler EVM account array from mnemonic
-const mnemonicAccounts = (n = 10) => {
-    return mnemonic
-        ? Array.from(Array(n).keys()).map((i) => {
-              const wallet = Wallet.fromMnemonic(
-                  mnemonic as string,
-                  `m/44'/60'/0'/0/${i}`
-              );
-              return {
-                  privateKey: wallet.privateKey,
-                  balance: "1000000000000000000000",
-              };
-          })
-        : undefined;
-};
 
 const infuraNetwork = (
     network: string,
     chainId?: number,
     gas?: number
-): HttpNetworkConfig => {
+): HttpNetworkUserConfig => {
     return {
         url: `https://${network}.infura.io/v3/${process.env.PROJECT_ID}`,
         chainId,
@@ -44,14 +21,13 @@ const infuraNetwork = (
     };
 };
 
-const config: BuidlerConfig = {
+const config: HardhatUserConfig = {
     networks: {
-        buidlerevm: mnemonic ? { accounts: mnemonicAccounts() } : {},
+        hardhat: mnemonic ? { accounts: { mnemonic } } : {},
         localhost: {
             url: "http://localhost:8545",
             accounts: mnemonic ? { mnemonic } : undefined,
         },
-        ropsten: infuraNetwork("ropsten", 3, 3283185),
         rinkeby: infuraNetwork("rinkeby", 4, 6283185),
         kovan: infuraNetwork("kovan", 42, 6283185),
         goerli: infuraNetwork("goerli", 5, 6283185),
@@ -66,11 +42,13 @@ const config: BuidlerConfig = {
             accounts: mnemonic ? { mnemonic } : undefined,
         },
     },
-    solc: {
-        version: "0.7.1",
-        optimizer: {
-            enabled: true,
-        },
+    solidity: {
+        version: "0.7.4",
+        settings: {
+            optimizer: {
+                enabled: true
+            }
+        }
     },
     paths: {
         artifacts: "artifacts",
@@ -78,10 +56,19 @@ const config: BuidlerConfig = {
         deployments: "deployments",
     },
     external: {
-        artifacts: [
-            "node_modules/@cartesi/util/artifacts",
-            "node_modules/@cartesi/token/artifacts",
-            "node_modules/@cartesi/pos/artifacts",
+        contracts: [
+            {
+                artifacts: "node_modules/@cartesi/util/artifacts",
+                deploy: "node_modules/@cartesi/util/dist/deploy"
+            },
+            {
+                artifacts: "node_modules/@cartesi/token/artifacts",
+                deploy: "node_modules/@cartesi/token/dist/deploy"
+            },
+            {
+                artifacts: "node_modules/@cartesi/pos/artifacts",
+                deploy: "node_modules/@cartesi/pos/dist/deploy"
+            },
         ],
         deployments: {
             localhost: [
