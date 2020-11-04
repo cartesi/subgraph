@@ -9,10 +9,11 @@
     "remove-local": "graph remove --node http://localhost:8020/ cartesi/cartesi-subgraph",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 cartesi/cartesi-subgraph",
     "prepare:ropsten": "buidler --network ropsten subgraph",
+    "prepare:goerli": "buidler --network goerli subgraph",
     "prepare:mainnet": "buidler --network mainnet subgraph"
   },
   "dependencies": {
-    "@cartesi/pos": "^0.1.0-beta.8",
+    "@cartesi/pos": "^0.1.0-beta.10",
     "@graphprotocol/graph-cli": "0.18.0",
     "@graphprotocol/graph-ts": "0.18.0"
   },
@@ -21,6 +22,7 @@
     "@nomiclabs/buidler-ethers": "^2.0.2",
     "@types/js-yaml": "^3.12.5",
     "buidler-deploy": "^0.6.0-beta.28",
+    "ethers": "^5.0.0",
     "js-yaml": "^3.14.0",
     "prettier": "^2.1.2",
     "ts-node": "^9.0.0",
