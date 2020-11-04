@@ -1,4 +1,5 @@
 # cartesi-subgraph
+
 Cartesi Subgraph
 
 #### Running Instructions
@@ -12,7 +13,7 @@ Some of the steps require a [Infura](https://infura.io) application id to be spe
 
 ```
 yarn
-yarn prepare:ropsten
+yarn prepare:goerli
 yarn codegen
 yarn create-local
 yarn deploy-local

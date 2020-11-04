@@ -8,7 +8,6 @@
     "create-local": "graph create --node http://localhost:8020/ cartesi/cartesi-subgraph",
     "remove-local": "graph remove --node http://localhost:8020/ cartesi/cartesi-subgraph",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 cartesi/cartesi-subgraph",
-    "prepare:ropsten": "buidler --network ropsten subgraph",
     "prepare:goerli": "buidler --network goerli subgraph",
     "prepare:mainnet": "buidler --network mainnet subgraph"
   },
