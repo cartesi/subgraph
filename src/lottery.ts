@@ -10,11 +10,11 @@ export function handlePrizePaid(event: PrizePaid): void {
         entity.time = event.block.timestamp
     }
 
-    entity.user = event.params.user
+    entity.user = event.params.user.toHex()
     entity.userPrize = event.params.userPrize
     entity.beneficiary = event.params.beneficiary
     entity.beneficiaryPrize = event.params.beneficiaryPrize
-    entity.worker = event.params.worker
+    entity.worker = event.params.worker.toHex()
 
     entity.save()
 }

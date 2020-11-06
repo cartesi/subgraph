@@ -1,12 +1,26 @@
+type Staker @entity {
+    id: ID!
+    stakedBalance: BigInt!
+    maturingBalance: BigInt!
+    maturation: BigInt!
+}
+
+type Worker @entity {
+    id: ID!
+    owner: Staker
+    time: BigInt!
+    status: String
+}
+
 type LotteryTicket @entity {
     id: ID!
     round: BigInt!
     winner: Bytes!
     difficulty: BigInt!
     time: BigInt!
-    worker: Bytes!
+    worker: Worker!
 
-    user: Bytes!
+    user: Staker!
     userPrize: BigInt!
     beneficiary: Bytes!
     beneficiaryPrize: BigInt!

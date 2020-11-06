@@ -45,3 +45,26 @@ dataSources:
               - event: "RoundClaimed(address,uint256,uint256,uint256)"
                 handler: handleRoundClaimed
           file: ./src/lottery.ts
+
+    - kind: ethereum/contract
+      name: StakingImpl
+      network:
+      source:
+          address: StakingImpl
+          abi: StakingImpl
+          startBlock:
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.4
+          language: wasm/assemblyscript
+          entities:
+              - Staker
+          abis:
+              - name: StakingImpl
+                file:
+          eventHandlers:
+              - event: "Stake(indexed uint256,indexed address,indexed uint256)"
+                handler: handleStake
+              - event: "Unstake(indexed uint256,indexed address,indexed uint256)"
+                handler: handleUnstake
+          file: ./src/staking.ts
