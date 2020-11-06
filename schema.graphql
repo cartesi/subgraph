@@ -8,6 +8,7 @@ type Staker @entity {
 type Worker @entity {
     id: ID!
     owner: Staker
+    dapp: Bytes
     time: BigInt!
     status: String
 }

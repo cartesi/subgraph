@@ -3,10 +3,10 @@ import { Staker } from "../generated/schema"
 import { Stake, Unstake } from "../generated/StakingImpl/StakingImpl"
 
 export function handleStake(event: Stake): void {
-    let entity = Staker.load(event.address.toHex())
+    let entity = Staker.load(event.params._address.toHex())
 
     if (entity === null) {
-        entity = new Staker(event.address.toHex())
+        entity = new Staker(event.params._address.toHex())
     }
 
     if (entity.maturation.toI32() < Date.now()) {
@@ -22,10 +22,10 @@ export function handleStake(event: Stake): void {
 }
 
 export function handleUnstake(event: Unstake): void {
-    let entity = Staker.load(event.address.toHex())
+    let entity = Staker.load(event.params._address.toHex())
 
     if (entity === null) {
-        entity = new Staker(event.address.toHex())
+        entity = new Staker(event.params._address.toHex())
     }
 
     entity.stakedBalance = entity.stakedBalance - event.params._amount

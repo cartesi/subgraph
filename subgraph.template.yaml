@@ -68,3 +68,51 @@ dataSources:
               - event: "Unstake(indexed uint256,indexed address,indexed uint256)"
                 handler: handleUnstake
           file: ./src/staking.ts
+
+    - kind: ethereum/contract
+      name: WorkerManager
+      network:
+      source:
+          address: WorkerManagerImpl
+          abi: WorkerManagerImpl
+          startBlock:
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.4
+          language: wasm/assemblyscript
+          entities:
+              - Worker
+          abis:
+              - name: WorkerManagerImpl
+                file:
+          eventHandlers:
+              - event: "JobAccepted(indexed address,indexed address)"
+                handler: handleJobAccepted
+              - event: "JobRejected(indexed address,indexed address)"
+                handler: handleJobRejected
+              - event: "Retired(indexed address,indexed address)"
+                handler: handleRetired
+          file: ./src/workerManager.ts
+
+    - kind: ethereum/contract
+      name: WorkerAuthManager
+      network:
+      source:
+          address: WorkerAuthManagerImpl
+          abi: WorkerAuthManagerImpl
+          startBlock:
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.4
+          language: wasm/assemblyscript
+          entities:
+              - Worker
+          abis:
+              - name: WorkerAuthManagerImpl
+                file:
+          eventHandlers:
+              - event: "Authorization(indexed address,indexed address,indexed address)"
+                handler: handleAuthorization
+              - event: "Deauthorization(indexed address,indexed address,indexed address)"
+                handler: handleDeauthorization
+          file: ./src/workerAuthManager.ts
