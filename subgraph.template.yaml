@@ -86,6 +86,8 @@ dataSources:
               - name: WorkerManagerImpl
                 file:
           eventHandlers:
+              - event: "JobOffer(indexed address,indexed address)"
+                handler: handleJobOffer
               - event: "JobAccepted(indexed address,indexed address)"
                 handler: handleJobAccepted
               - event: "JobRejected(indexed address,indexed address)"

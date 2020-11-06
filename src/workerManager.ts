@@ -1,44 +1,51 @@
-import { Worker } from "../generated/schema"
+import { Address } from "@graphprotocol/graph-ts"
+import { Staker, Worker } from "../generated/schema"
 import {
     JobAccepted,
+    JobOffer,
     JobRejected,
     Retired,
 } from "../generated/WorkerManager/WorkerManagerImpl"
 
-export function handleJobAccepted(event: JobAccepted): void {
-    let entity = Worker.load(event.params.worker.toHex())
+function checkOrCreate(user: Address, worker: Address): Worker {
+    let entity = Worker.load(worker.toHex())
 
-    if (entity === null) {
-        entity = new Worker(event.params.worker.toHex())
-        entity.owner = event.params.user.toHex()
+    if (Staker.load(user.toHex()) === null) {
+        let newUser = new Staker(user.toHex())
+        newUser.save()
     }
 
-    entity.status = "JobAccepted"
+    if (entity === null) {
+        entity = new Worker(worker.toHex())
+        entity.owner = user.toHex()
+    }
+
+    return entity!
+}
+
+export function handleJobOffer(event: JobOffer): void {
+    let entity = checkOrCreate(event.params.user, event.params.worker)
+    entity.status = "Pending"
+
+    entity.save()
+}
+
+export function handleJobAccepted(event: JobAccepted): void {
+    let entity = checkOrCreate(event.params.user, event.params.worker)
+    entity.status = "Owned"
 
     entity.save()
 }
 
 export function handleJobRejected(event: JobRejected): void {
-    let entity = Worker.load(event.params.worker.toHex())
-
-    if (entity === null) {
-        entity = new Worker(event.params.worker.toHex())
-        entity.owner = event.params.user.toHex()
-    }
-
-    entity.status = "JobRejected"
+    let entity = checkOrCreate(event.params.user, event.params.worker)
+    entity.status = "Available"
 
     entity.save()
 }
 
 export function handleRetired(event: Retired): void {
-    let entity = Worker.load(event.params.worker.toHex())
-
-    if (entity === null) {
-        entity = new Worker(event.params.worker.toHex())
-        entity.owner = event.params.user.toHex()
-    }
-
+    let entity = checkOrCreate(event.params.user, event.params.worker)
     entity.status = "Retired"
 
     entity.save()
