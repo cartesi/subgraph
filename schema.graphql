@@ -1,16 +1,25 @@
+type Summary @entity {
+    id: ID!
+    totalStakers: BigInt!
+    totalWorkers: BigInt!
+    totalStaked: BigInt!
+    totalTickets: BigInt!
+}
+
 type Staker @entity {
     id: ID!
     stakedBalance: BigInt!
     maturingBalance: BigInt!
     maturation: BigInt!
+    totalTickets: BigInt!
 }
 
 type Worker @entity {
     id: ID!
     owner: Staker
-    dapp: Bytes
-    time: BigInt!
+    timestamp: BigInt!
     status: String
+    totalTickets: BigInt!
 }
 
 type LotteryTicket @entity {
@@ -18,7 +27,7 @@ type LotteryTicket @entity {
     round: BigInt!
     winner: Bytes!
     difficulty: BigInt!
-    time: BigInt!
+    timestamp: BigInt!
     worker: Worker!
 
     user: Staker!
