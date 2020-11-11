@@ -25,14 +25,14 @@ type Worker @entity {
 
 type LotteryTicket @entity {
     id: ID!
-    round: BigInt!
-    winner: Bytes!
-    difficulty: BigInt!
-    timestamp: BigInt!
-    worker: Worker!
+    round: BigInt
+    winner: Bytes
+    difficulty: BigInt
+    timestamp: BigInt
+    worker: Worker
 
-    user: Staker!
-    userPrize: BigInt!
-    beneficiary: Bytes!
-    beneficiaryPrize: BigInt!
+    user: Staker
+    userPrize: BigInt
+    beneficiary: Bytes
+    beneficiaryPrize: BigInt
 }
