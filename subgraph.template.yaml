@@ -5,45 +5,27 @@ schema:
     file: ./schema.graphql
 dataSources:
     - kind: ethereum/contract
-      name: PoS
+      name: StakingImpl
       network:
       source:
-          address: PoS
-          abi: PoS
+          address: StakingImpl
+          abi: StakingImpl
           startBlock:
       mapping:
           kind: ethereum/events
           apiVersion: 0.0.4
           language: wasm/assemblyscript
           entities:
-              - LotteryTicket
+              - Staker
           abis:
-              - name: PoS
+              - name: StakingImpl
                 file:
           eventHandlers:
-              - event: "PrizePaid(indexed uint256,indexed address,indexed address,address,uint256,uint256)"
-                handler: handlePrizePaid
-          file: ./src/lottery.ts
-    - kind: ethereum/contract
-      name: Lottery
-      network:
-      source:
-          address: Lottery
-          abi: Lottery
-          startBlock:
-      mapping:
-          kind: ethereum/events
-          apiVersion: 0.0.4
-          language: wasm/assemblyscript
-          entities:
-              - LotteryTicket
-          abis:
-              - name: Lottery
-                file:
-          eventHandlers:
-              - event: "RoundClaimed(address,uint256,uint256,uint256)"
-                handler: handleRoundClaimed
-          file: ./src/lottery.ts
+              - event: "Stake(indexed uint256,indexed address,indexed uint256)"
+                handler: handleStake
+              - event: "Unstake(indexed uint256,indexed address,indexed uint256)"
+                handler: handleUnstake
+          file: ./src/staker.ts
     - kind: ethereum/contract
       name: WorkerManager
       network:
@@ -94,3 +76,47 @@ dataSources:
               - event: "Deauthorization(indexed address,indexed address,indexed address)"
                 handler: handleDeauthorization
           file: ./src/worker.ts
+    - kind: ethereum/contract
+      name: PoS
+      network:
+      source:
+          address: PoS
+          abi: PoS
+          startBlock:
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.4
+          language: wasm/assemblyscript
+          entities:
+              - LotteryTicket
+              - Staker
+              - Worker
+          abis:
+              - name: PoS
+                file:
+          eventHandlers:
+              - event: "PrizePaid(indexed uint256,indexed address,indexed address,address,uint256,uint256)"
+                handler: handlePrizePaid
+          file: ./src/lottery.ts
+    - kind: ethereum/contract
+      name: Lottery
+      network:
+      source:
+          address: Lottery
+          abi: Lottery
+          startBlock:
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.4
+          language: wasm/assemblyscript
+          entities:
+              - LotteryTicket
+              - Staker
+              - Worker
+          abis:
+              - name: Lottery
+                file:
+          eventHandlers:
+              - event: "RoundClaimed(address,uint256,uint256,uint256)"
+                handler: handleRoundClaimed
+          file: ./src/lottery.ts

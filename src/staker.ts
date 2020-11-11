@@ -1,5 +1,6 @@
 import { Address, BigInt } from "@graphprotocol/graph-ts"
 import { Staker } from "../generated/schema"
+import { Stake, Unstake } from "../generated/StakingImpl/StakingImpl"
 import { addStaker } from "./summary"
 
 export function loadOrCreate(address: Address): Staker {
@@ -16,4 +17,16 @@ export function loadOrCreate(address: Address): Staker {
     }
 
     return staker!
+}
+
+export function handleStake(event: Stake): void {
+    let staker = loadOrCreate(event.params._address)
+    staker.stakedBalance = staker.stakedBalance.plus(event.params._amount)
+    staker.save()
+}
+
+export function handleUnstake(event: Unstake): void {
+    let staker = loadOrCreate(event.params._address)
+    staker.stakedBalance = staker.stakedBalance.minus(event.params._amount)
+    staker.save()
 }
