@@ -28,7 +28,7 @@ type LotteryTicket @entity {
     round: BigInt
     winner: Bytes
     difficulty: BigInt
-    timestamp: BigInt
+    timestamp: BigInt!
     worker: Worker
 
     user: Staker
