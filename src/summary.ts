@@ -22,14 +22,26 @@ export function addWorker(): void {
     summary.save()
 }
 
+export function removeWorker(): void {
+    let summary = Summary.load("1") || createSummary()
+    summary.totalWorkers = summary.totalWorkers.minus(BigInt.fromI32(1))
+    summary.save()
+}
+
 export function addTicket(): void {
     let summary = Summary.load("1") || createSummary()
     summary.totalTickets = summary.totalTickets.plus(BigInt.fromI32(1))
     summary.save()
 }
 
-export function addStaked(balance: BigInt): void {
+export function addStake(balance: BigInt): void {
     let summary = Summary.load("1") || createSummary()
     summary.totalStaked = summary.totalStaked.plus(balance)
+    summary.save()
+}
+
+export function removeStake(balance: BigInt): void {
+    let summary = Summary.load("1") || createSummary()
+    summary.totalStaked = summary.totalStaked.minus(balance)
     summary.save()
 }

@@ -1,6 +1,6 @@
 import { Address, BigInt } from "@graphprotocol/graph-ts"
 import { Staker, Worker } from "../generated/schema"
-import { addStaker, addWorker } from "./summary"
+import { addStaker, addWorker, removeWorker } from "./summary"
 import {
     JobAccepted,
     JobOffer,
@@ -80,7 +80,7 @@ export function handleRetired(event: Retired): void {
     )
     worker.status = "Retired"
     worker.save()
-    // TODO: remove from active worker
+    removeWorker()
 }
 
 export function handleAuthorization(event: Authorization): void {
