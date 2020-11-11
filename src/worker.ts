@@ -1,43 +1,45 @@
-import { Address, BigInt } from "@graphprotocol/graph-ts";
-import { Staker, Worker } from "../generated/schema";
-import { addStaker, addWorker } from "./summary";
+import { Address, BigInt } from "@graphprotocol/graph-ts"
+import { Staker, Worker } from "../generated/schema"
+import { addStaker, addWorker } from "./summary"
 import {
     JobAccepted,
     JobOffer,
     JobRejected,
     Retired,
-} from "../generated/WorkerManager/WorkerManagerImpl";
+} from "../generated/WorkerManager/WorkerManagerImpl"
 import {
     Authorization,
     Deauthorization,
-} from "../generated/WorkerAuthManager/WorkerAuthManagerImpl";
+} from "../generated/WorkerAuthManager/WorkerAuthManagerImpl"
 
 function loadOrCreate(
     userAddress: Address,
     workerAddress: Address,
     timestamp: BigInt
 ): Worker {
-    let worker = Worker.load(workerAddress.toHex());
-    let user = Staker.load(userAddress.toHex());
+    let worker = Worker.load(workerAddress.toHex())
+    let user = Staker.load(userAddress.toHex())
 
     if (user === null) {
-        user = new Staker(userAddress.toHex());
-        user.stakedBalance = BigInt.fromI32(0);
-        user.maturingBalance = BigInt.fromI32(0);
-        user.maturation = BigInt.fromI32(0);
-        user.totalTickets = BigInt.fromI32(0);
-        user.save();
-        addStaker();
+        user = new Staker(userAddress.toHex())
+        user.stakedBalance = BigInt.fromI32(0)
+        user.maturingBalance = BigInt.fromI32(0)
+        user.maturation = BigInt.fromI32(0)
+        user.totalTickets = BigInt.fromI32(0)
+        user.save()
+        addStaker()
     }
 
     if (worker === null) {
-        worker = new Worker(workerAddress.toHex());
-        worker.owner = userAddress.toHex();
-        worker.timestamp = timestamp;
-        addWorker();
+        worker = new Worker(workerAddress.toHex())
+        worker.owner = userAddress.toHex()
+        worker.timestamp = timestamp
+        worker.totalTickets = BigInt.fromI32(0)
+        worker.totalReward = BigInt.fromI32(0)
+        addWorker()
     }
 
-    return worker!;
+    return worker!
 }
 
 export function handleJobOffer(event: JobOffer): void {
@@ -45,9 +47,9 @@ export function handleJobOffer(event: JobOffer): void {
         event.params.user,
         event.params.worker,
         event.block.timestamp
-    );
-    worker.status = "Pending";
-    worker.save();
+    )
+    worker.status = "Pending"
+    worker.save()
 }
 
 export function handleJobAccepted(event: JobAccepted): void {
@@ -55,9 +57,9 @@ export function handleJobAccepted(event: JobAccepted): void {
         event.params.user,
         event.params.worker,
         event.block.timestamp
-    );
-    worker.status = "Owned";
-    worker.save();
+    )
+    worker.status = "Owned"
+    worker.save()
 }
 
 export function handleJobRejected(event: JobRejected): void {
@@ -65,9 +67,9 @@ export function handleJobRejected(event: JobRejected): void {
         event.params.user,
         event.params.worker,
         event.block.timestamp
-    );
-    worker.status = "Available";
-    worker.save();
+    )
+    worker.status = "Available"
+    worker.save()
 }
 
 export function handleRetired(event: Retired): void {
@@ -75,9 +77,10 @@ export function handleRetired(event: Retired): void {
         event.params.user,
         event.params.worker,
         event.block.timestamp
-    );
-    worker.status = "Retired";
-    worker.save();
+    )
+    worker.status = "Retired"
+    worker.save()
+    // TODO: remove from active worker
 }
 
 export function handleAuthorization(event: Authorization): void {
@@ -85,9 +88,9 @@ export function handleAuthorization(event: Authorization): void {
         event.params.user,
         event.params.worker,
         event.block.timestamp
-    );
-    entity.status = "Authorized";
-    entity.save();
+    )
+    entity.status = "Authorized"
+    entity.save()
 }
 
 export function handleDeauthorization(event: Deauthorization): void {
@@ -95,7 +98,7 @@ export function handleDeauthorization(event: Deauthorization): void {
         event.params.user,
         event.params.worker,
         event.block.timestamp
-    );
-    entity.status = "Deauthorized";
-    entity.save();
+    )
+    entity.status = "Deauthorized"
+    entity.save()
 }

@@ -20,6 +20,7 @@ type Worker @entity {
     timestamp: BigInt!
     status: String
     totalTickets: BigInt!
+    totalReward: BigInt!
 }
 
 type LotteryTicket @entity {
