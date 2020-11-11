@@ -1,6 +1,7 @@
 import { Address, BigInt } from "@graphprotocol/graph-ts"
-import { Staker, Worker } from "../generated/schema"
-import { addStaker, addWorker, removeWorker } from "./summary"
+import { Worker } from "../generated/schema"
+import { addWorker, removeWorker } from "./summary"
+import { loadOrCreate as loadOrCreateStaker } from "./staker"
 import {
     JobAccepted,
     JobOffer,
@@ -12,23 +13,13 @@ import {
     Deauthorization,
 } from "../generated/WorkerAuthManager/WorkerAuthManagerImpl"
 
-function loadOrCreate(
+export function loadOrCreate(
     userAddress: Address,
     workerAddress: Address,
     timestamp: BigInt
 ): Worker {
     let worker = Worker.load(workerAddress.toHex())
-    let user = Staker.load(userAddress.toHex())
-
-    if (user === null) {
-        user = new Staker(userAddress.toHex())
-        user.stakedBalance = BigInt.fromI32(0)
-        user.maturingBalance = BigInt.fromI32(0)
-        user.maturation = BigInt.fromI32(0)
-        user.totalTickets = BigInt.fromI32(0)
-        user.save()
-        addStaker()
-    }
+    loadOrCreateStaker(userAddress)
 
     if (worker === null) {
         worker = new Worker(workerAddress.toHex())
@@ -84,21 +75,21 @@ export function handleRetired(event: Retired): void {
 }
 
 export function handleAuthorization(event: Authorization): void {
-    let entity = loadOrCreate(
+    let worker = loadOrCreate(
         event.params.user,
         event.params.worker,
         event.block.timestamp
     )
-    entity.status = "Authorized"
-    entity.save()
+    worker.status = "Authorized"
+    worker.save()
 }
 
 export function handleDeauthorization(event: Deauthorization): void {
-    let entity = loadOrCreate(
+    let worker = loadOrCreate(
         event.params.user,
         event.params.worker,
         event.block.timestamp
     )
-    entity.status = "Deauthorized"
-    entity.save()
+    worker.status = "Deauthorized"
+    worker.save()
 }
