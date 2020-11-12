@@ -1,7 +1,7 @@
 import { PrizePaid } from "../generated/PoS/PoS"
 import { RoundClaimed } from "../generated/Lottery/Lottery"
-import { LotteryTicket, Worker } from "../generated/schema"
-import { addTicket } from "./summary"
+import { LotteryTicket } from "../generated/schema"
+import { addTicket, addReward } from "./summary"
 import { loadOrCreate as loadOrCreateStaker } from "./staker"
 import { loadOrCreate as loadOrCreateWorker } from "./worker"
 import { BigInt } from "@graphprotocol/graph-ts"
@@ -40,11 +40,12 @@ export function handlePrizePaid(event: PrizePaid): void {
     worker.totalTickets = worker.totalTickets.plus(BigInt.fromI32(1))
 
     // add to the total reward acquired by the worker
-    worker.totalReward = worker.totalReward.plus(
-        event.params.userPrize.plus(event.params.beneficiaryPrize)
-    )
-
+    let reward = event.params.userPrize.plus(event.params.beneficiaryPrize)
+    worker.totalReward = worker.totalReward.plus(reward)
     worker.save()
+
+    // add to the global total reward
+    addReward(reward)
 }
 
 export function handleRoundClaimed(event: RoundClaimed): void {

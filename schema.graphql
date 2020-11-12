@@ -4,6 +4,7 @@ type Summary @entity {
     totalWorkers: BigInt!
     totalStaked: BigInt!
     totalTickets: BigInt!
+    totalReward: BigInt!
 }
 
 type Staker @entity {
