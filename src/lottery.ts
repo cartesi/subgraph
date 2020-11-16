@@ -18,6 +18,7 @@ function loadOrCreate(id: string): LotteryTicket {
 export function handlePrizePaid(event: PrizePaid): void {
     // create/update the ticket
     let ticket = loadOrCreate(event.transaction.hash.toHex())
+    ticket.chainId = event.params.index
     ticket.timestamp = event.block.timestamp
     ticket.user = event.params.user.toHex()
     ticket.userPrize = event.params.userPrize

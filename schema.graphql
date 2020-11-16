@@ -26,6 +26,7 @@ type Worker @entity {
 
 type LotteryTicket @entity {
     id: ID!
+    chainId: BigInt
     round: BigInt
     winner: Bytes
     difficulty: BigInt
