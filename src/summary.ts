@@ -6,7 +6,7 @@ function createSummary(): Summary {
     summary.totalStakers = BigInt.fromI32(0)
     summary.totalWorkers = BigInt.fromI32(0)
     summary.totalStaked = BigInt.fromI32(0)
-    summary.totalTickets = BigInt.fromI32(0)
+    summary.totalBlocks = BigInt.fromI32(0)
     summary.totalReward = BigInt.fromI32(0)
     return summary;
 }
@@ -29,9 +29,9 @@ export function removeWorker(): void {
     summary.save()
 }
 
-export function addTicket(): void {
+export function addBlock(): void {
     let summary = Summary.load("1") || createSummary()
-    summary.totalTickets = summary.totalTickets.plus(BigInt.fromI32(1))
+    summary.totalBlocks = summary.totalBlocks.plus(BigInt.fromI32(1))
     summary.save()
 }
 

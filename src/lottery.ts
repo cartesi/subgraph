@@ -1,35 +1,35 @@
 import { PrizePaid } from "../generated/PoS/PoS"
 import { RoundClaimed } from "../generated/Lottery/Lottery"
-import { LotteryTicket } from "../generated/schema"
-import { addTicket, addReward } from "./summary"
+import { Block } from "../generated/schema"
+import { addBlock, addReward } from "./summary"
 import { loadOrCreate as loadOrCreateStaker } from "./staker"
 import { loadOrCreate as loadOrCreateWorker } from "./worker"
 import { BigInt } from "@graphprotocol/graph-ts"
 
-function loadOrCreate(id: string): LotteryTicket {
-    let ticket = LotteryTicket.load(id)
-    if (ticket == null) {
-        ticket = new LotteryTicket(id)
-        addTicket()
+function loadOrCreate(id: string): Block {
+    let block = Block.load(id)
+    if (block == null) {
+        block = new Block(id)
+        addBlock()
     }
-    return ticket!
+    return block!
 }
 
 export function handlePrizePaid(event: PrizePaid): void {
-    // create/update the ticket
-    let ticket = loadOrCreate(event.transaction.hash.toHex())
-    ticket.chainId = event.params.index
-    ticket.timestamp = event.block.timestamp
-    ticket.user = event.params.user.toHex()
-    ticket.userPrize = event.params.userPrize
-    ticket.beneficiary = event.params.beneficiary
-    ticket.beneficiaryPrize = event.params.beneficiaryPrize
-    ticket.worker = event.params.worker.toHex()
-    ticket.save()
+    // create/update the block
+    let block = loadOrCreate(event.transaction.hash.toHex())
+    block.chainId = event.params.index
+    block.timestamp = event.block.timestamp
+    block.user = event.params.user.toHex()
+    block.userPrize = event.params.userPrize
+    block.beneficiary = event.params.beneficiary
+    block.beneficiaryPrize = event.params.beneficiaryPrize
+    block.producer = event.params.worker
+    block.save()
 
     let staker = loadOrCreateStaker(event.params.user)
-    // add one more ticket to the staker counter
-    staker.totalTickets = staker.totalTickets.plus(BigInt.fromI32(1))
+    // add one more block to the staker counter
+    staker.totalBlocks = staker.totalBlocks.plus(BigInt.fromI32(1))
     staker.save()
 
     let worker = loadOrCreateWorker(
@@ -38,7 +38,7 @@ export function handlePrizePaid(event: PrizePaid): void {
         event.block.timestamp
     )
     // add one more ticket to the worker counter
-    worker.totalTickets = worker.totalTickets.plus(BigInt.fromI32(1))
+    worker.totalBlocks = worker.totalBlocks.plus(BigInt.fromI32(1))
 
     // add to the total reward acquired by the worker
     let reward = event.params.userPrize.plus(event.params.beneficiaryPrize)
@@ -51,10 +51,10 @@ export function handlePrizePaid(event: PrizePaid): void {
 
 export function handleRoundClaimed(event: RoundClaimed): void {
     // create/update the ticket
-    let ticket = loadOrCreate(event.transaction.hash.toHex())
-    ticket.timestamp = event.block.timestamp
-    ticket.winner = event.params._winner
-    ticket.round = event.params._roundCount
-    ticket.difficulty = event.params._difficulty
-    ticket.save()
+    let block = loadOrCreate(event.transaction.hash.toHex())
+    block.timestamp = event.block.timestamp
+    block.producer = event.params._winner
+    block.number = event.params._roundCount
+    block.difficulty = event.params._difficulty
+    block.save()
 }

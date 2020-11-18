@@ -3,7 +3,7 @@ type Summary @entity {
     totalStakers: BigInt!
     totalWorkers: BigInt!
     totalStaked: BigInt!
-    totalTickets: BigInt!
+    totalBlocks: BigInt!
     totalReward: BigInt!
 }
 
@@ -12,7 +12,7 @@ type Staker @entity {
     stakedBalance: BigInt!
     maturingBalance: BigInt!
     maturation: BigInt!
-    totalTickets: BigInt!
+    totalBlocks: BigInt!
 }
 
 type Worker @entity {
@@ -20,18 +20,18 @@ type Worker @entity {
     owner: Staker
     timestamp: BigInt!
     status: String
-    totalTickets: BigInt!
+    totalBlocks: BigInt!
     totalReward: BigInt!
 }
 
-type LotteryTicket @entity {
+type Block @entity {
     id: ID!
     chainId: BigInt
-    round: BigInt
-    winner: Bytes
+    number: BigInt
+    producer: Bytes
     difficulty: BigInt
     timestamp: BigInt!
-    worker: Worker
+    node: Worker
 
     user: Staker
     userPrize: BigInt

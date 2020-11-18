@@ -25,7 +25,7 @@ export function loadOrCreate(
         worker = new Worker(workerAddress.toHex())
         worker.owner = userAddress.toHex()
         worker.timestamp = timestamp
-        worker.totalTickets = BigInt.fromI32(0)
+        worker.totalBlocks = BigInt.fromI32(0)
         worker.totalReward = BigInt.fromI32(0)
         addWorker()
     }

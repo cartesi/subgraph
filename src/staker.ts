@@ -11,7 +11,7 @@ export function loadOrCreate(address: Address): Staker {
         staker.stakedBalance = BigInt.fromI32(0)
         staker.maturingBalance = BigInt.fromI32(0)
         staker.maturation = BigInt.fromI32(0)
-        staker.totalTickets = BigInt.fromI32(0)
+        staker.totalBlocks = BigInt.fromI32(0)
         staker.save()
         addStaker()
     }
