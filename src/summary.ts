@@ -3,35 +3,36 @@ import { Summary } from "../generated/schema"
 
 function createSummary(): Summary {
     let summary = new Summary("1")
-    summary.totalStakers = BigInt.fromI32(0)
-    summary.totalWorkers = BigInt.fromI32(0)
+    summary.totalStakers = 0
+    summary.totalWorkers = 0
     summary.totalStaked = BigInt.fromI32(0)
-    summary.totalBlocks = BigInt.fromI32(0)
+    summary.totalBlocks = 0
     summary.totalReward = BigInt.fromI32(0)
+    summary.totalChains = 0
     return summary;
 }
 
 export function addStaker(): void {
     let summary = Summary.load("1") || createSummary()
-    summary.totalStakers = summary.totalStakers.plus(BigInt.fromI32(1))
+    summary.totalStakers++
     summary.save()
 }
 
 export function addWorker(): void {
     let summary = Summary.load("1") || createSummary()
-    summary.totalWorkers = summary.totalWorkers.plus(BigInt.fromI32(1))
+    summary.totalWorkers++
     summary.save()
 }
 
 export function removeWorker(): void {
     let summary = Summary.load("1") || createSummary()
-    summary.totalWorkers = summary.totalWorkers.minus(BigInt.fromI32(1))
+    summary.totalWorkers++
     summary.save()
 }
 
 export function addBlock(): void {
     let summary = Summary.load("1") || createSummary()
-    summary.totalBlocks = summary.totalBlocks.plus(BigInt.fromI32(1))
+    summary.totalBlocks++
     summary.save()
 }
 

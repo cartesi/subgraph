@@ -18,7 +18,7 @@ function loadOrCreate(id: string): Block {
 export function handlePrizePaid(event: PrizePaid): void {
     // create/update the block
     let block = loadOrCreate(event.transaction.hash.toHex())
-    block.chainId = event.params.index
+    block.chainId = event.params.index.toI32()
     block.timestamp = event.block.timestamp
     block.user = event.params.user.toHex()
     block.userPrize = event.params.userPrize
@@ -38,7 +38,7 @@ export function handlePrizePaid(event: PrizePaid): void {
         event.block.timestamp
     )
     // add one more ticket to the worker counter
-    worker.totalBlocks = worker.totalBlocks.plus(BigInt.fromI32(1))
+    worker.totalBlocks++
 
     // add to the total reward acquired by the worker
     let reward = event.params.userPrize.plus(event.params.beneficiaryPrize)
@@ -54,7 +54,7 @@ export function handleRoundClaimed(event: RoundClaimed): void {
     let block = loadOrCreate(event.transaction.hash.toHex())
     block.timestamp = event.block.timestamp
     block.producer = event.params._winner
-    block.number = event.params._roundCount
+    block.number = event.params._roundCount.toI32()
     block.difficulty = event.params._difficulty
     block.save()
 }

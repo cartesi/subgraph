@@ -1,10 +1,11 @@
 type Summary @entity {
     id: ID!
-    totalStakers: BigInt!
-    totalWorkers: BigInt!
+    totalStakers: Int!
+    totalWorkers: Int!
     totalStaked: BigInt!
-    totalBlocks: BigInt!
+    totalBlocks: Int!
     totalReward: BigInt!
+    totalChains: Int!
 }
 
 type Staker @entity {
@@ -20,14 +21,14 @@ type Worker @entity {
     owner: Staker
     timestamp: BigInt!
     status: String
-    totalBlocks: BigInt!
+    totalBlocks: Int!
     totalReward: BigInt!
 }
 
 type Block @entity {
     id: ID!
-    chainId: BigInt
-    number: BigInt
+    chainId: Int
+    number: Int
     producer: Bytes
     difficulty: BigInt
     timestamp: BigInt!
