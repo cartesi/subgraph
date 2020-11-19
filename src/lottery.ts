@@ -1,35 +1,26 @@
 import { PrizePaid } from "../generated/PoS/PoS"
 import { RoundClaimed } from "../generated/Lottery/Lottery"
 import { Block } from "../generated/schema"
-import { addBlock, addReward } from "./summary"
+import * as summary from "./summary"
 import { loadOrCreate as loadOrCreateStaker } from "./staker"
 import { loadOrCreate as loadOrCreateWorker } from "./worker"
-import { BigInt } from "@graphprotocol/graph-ts"
-
-function loadOrCreate(id: string): Block {
-    let block = Block.load(id)
-    if (block == null) {
-        block = new Block(id)
-        addBlock()
-    }
-    return block!
-}
 
 export function handlePrizePaid(event: PrizePaid): void {
-    // create/update the block
-    let block = loadOrCreate(event.transaction.hash.toHex())
+    // PrizePaid is always called before RoundClaimed, so create Block here
+    let block = new Block(event.transaction.hash.toHex())
     block.chainId = event.params.index.toI32()
     block.timestamp = event.block.timestamp
     block.user = event.params.user.toHex()
     block.userPrize = event.params.userPrize
     block.beneficiary = event.params.beneficiary
     block.beneficiaryPrize = event.params.beneficiaryPrize
-    block.producer = event.params.worker
     block.save()
+    summary.addBlock()
+    summary.setChainId(block.chainId)
 
     let staker = loadOrCreateStaker(event.params.user)
     // add one more block to the staker counter
-    staker.totalBlocks = staker.totalBlocks.plus(BigInt.fromI32(1))
+    staker.totalBlocks++
     staker.save()
 
     let worker = loadOrCreateWorker(
@@ -46,15 +37,16 @@ export function handlePrizePaid(event: PrizePaid): void {
     worker.save()
 
     // add to the global total reward
-    addReward(reward)
+    summary.addReward(reward)
 }
 
 export function handleRoundClaimed(event: RoundClaimed): void {
-    // create/update the ticket
-    let block = loadOrCreate(event.transaction.hash.toHex())
-    block.timestamp = event.block.timestamp
-    block.producer = event.params._winner
-    block.number = event.params._roundCount.toI32()
-    block.difficulty = event.params._difficulty
-    block.save()
+    // load Block and fill other properties
+    let block = Block.load(event.transaction.hash.toHex())
+    if (block) {
+        block.producer = event.params._winner
+        block.number = event.params._roundCount.toI32()
+        block.difficulty = event.params._difficulty
+        block.save()
+    }
 }

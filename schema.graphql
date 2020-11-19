@@ -11,9 +11,7 @@ type Summary @entity {
 type Staker @entity {
     id: ID!
     stakedBalance: BigInt!
-    maturingBalance: BigInt!
-    maturation: BigInt!
-    totalBlocks: BigInt!
+    totalBlocks: Int!
 }
 
 type Worker @entity {

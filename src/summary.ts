@@ -9,7 +9,7 @@ function createSummary(): Summary {
     summary.totalBlocks = 0
     summary.totalReward = BigInt.fromI32(0)
     summary.totalChains = 0
-    return summary;
+    return summary
 }
 
 export function addStaker(): void {
@@ -33,6 +33,14 @@ export function removeWorker(): void {
 export function addBlock(): void {
     let summary = Summary.load("1") || createSummary()
     summary.totalBlocks++
+    summary.save()
+}
+
+export function setChainId(chainId: i32): void {
+    let summary = Summary.load("1") || createSummary()
+    if ((chainId + 1) > summary.totalChains) {
+        summary.totalChains = chainId + 1
+    }
     summary.save()
 }
 
