@@ -11,21 +11,20 @@
 // under the License.
 
 import { BigInt } from "@graphprotocol/graph-ts"
-import { Summary } from "../generated/schema"
+import { Chain } from "../generated/schema"
+import * as summary from "./summary"
 
-export function loadOrCreate(): Summary {
-    let summary = Summary.load("1")
+export function loadOrCreate(id: string, timestamp: BigInt): Chain {
+    let chain = Chain.load(id)
+    if (chain === null) {
+        chain = new Chain(id)
+        chain.totalBlocks = 0
+        chain.totalReward = BigInt.fromI32(0)
+        chain.start = timestamp
 
-    if (summary == null) {
-        summary = new Summary("1")
-        summary.totalUsers = 0
-        summary.totalNodes = 0
-        summary.totalStaked = BigInt.fromI32(0)
-        summary.totalBlocks = 0
-        summary.totalReward = BigInt.fromI32(0)
-        summary.totalChains = 0
-        summary.save()
+        let s = summary.loadOrCreate()
+        s.totalChains++
+        s.save()
     }
-
-    return summary!
+    return chain!
 }

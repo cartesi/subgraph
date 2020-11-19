@@ -1,39 +1,44 @@
 type Summary @entity {
     id: ID!
-    totalStakers: Int!
-    totalWorkers: Int!
+    totalUsers: Int!
+    totalNodes: Int!
     totalStaked: BigInt!
     totalBlocks: Int!
     totalReward: BigInt!
     totalChains: Int!
 }
 
-type Staker @entity {
+type User @entity {
     id: ID!
     stakedBalance: BigInt!
     totalBlocks: Int!
+    totalReward: BigInt!
 }
 
-type Worker @entity {
+type Node @entity {
     id: ID!
-    owner: Staker
+    owner: User
     timestamp: BigInt!
     status: String
     totalBlocks: Int!
     totalReward: BigInt!
 }
 
+type Chain @entity {
+    id: ID!
+    totalBlocks: Int!
+    totalReward: BigInt!
+    start: BigInt!
+    targetInterval: Int
+}
+
 type Block @entity {
     id: ID!
-    chainId: Int
+    chain: Chain!
     number: Int
-    producer: Bytes
-    difficulty: BigInt
     timestamp: BigInt!
-    node: Worker
-
-    user: Staker
-    userPrize: BigInt
-    beneficiary: Bytes
-    beneficiaryPrize: BigInt
+    producer: User
+    node: Node
+    reward: BigInt
+    difficulty: BigInt
 }

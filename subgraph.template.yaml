@@ -25,7 +25,7 @@ dataSources:
                 handler: handleStake
               - event: "Unstake(indexed uint256,indexed address,indexed uint256)"
                 handler: handleUnstake
-          file: ./src/staker.ts
+          file: ./src/user.ts
     - kind: ethereum/contract
       name: WorkerManager
       network:
@@ -52,7 +52,7 @@ dataSources:
                 handler: handleJobRejected
               - event: "Retired(indexed address,indexed address)"
                 handler: handleRetired
-          file: ./src/worker.ts
+          file: ./src/node.ts
     - kind: ethereum/contract
       name: WorkerAuthManager
       network:
@@ -75,7 +75,7 @@ dataSources:
                 handler: handleAuthorization
               - event: "Deauthorization(indexed address,indexed address,indexed address)"
                 handler: handleDeauthorization
-          file: ./src/worker.ts
+          file: ./src/node.ts
     - kind: ethereum/contract
       name: PoS
       network:
@@ -88,35 +88,35 @@ dataSources:
           apiVersion: 0.0.4
           language: wasm/assemblyscript
           entities:
-              - LotteryTicket
+              - Block
               - Staker
               - Worker
           abis:
               - name: PoS
                 file:
           eventHandlers:
-              - event: "PrizePaid(indexed uint256,indexed address,indexed address,address,uint256,uint256)"
-                handler: handlePrizePaid
-          file: ./src/lottery.ts
+              - event: "Rewarded(indexed uint256,indexed address,indexed address,address,uint256,uint256)"
+                handler: handleRewarded
+          file: ./src/block.ts
     - kind: ethereum/contract
-      name: Lottery
+      name: BlockSelector
       network:
       source:
-          address: Lottery
-          abi: Lottery
+          address: BlockSelector
+          abi: BlockSelector
           startBlock:
       mapping:
           kind: ethereum/events
           apiVersion: 0.0.4
           language: wasm/assemblyscript
           entities:
-              - LotteryTicket
+              - Block
               - Staker
               - Worker
           abis:
-              - name: Lottery
+              - name: BlockSelector
                 file:
           eventHandlers:
-              - event: "RoundClaimed(address,uint256,uint256,uint256)"
-                handler: handleRoundClaimed
-          file: ./src/lottery.ts
+              - event: "BlockProduced(indexed uint256,indexed address,uint256,uint256,uint256,uint256)"
+                handler: handleBlockProduced
+          file: ./src/block.ts
