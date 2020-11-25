@@ -4,7 +4,8 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ cartesi/cartesi",
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ cartesi/pos",
+    "deploy:goerli": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ cartesi/pos-goerli",
     "create-local": "graph create --node http://localhost:8020/ cartesi/cartesi",
     "remove-local": "graph remove --node http://localhost:8020/ cartesi/cartesi",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 cartesi/cartesi",

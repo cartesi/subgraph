@@ -1,6 +1,6 @@
 specVersion: 0.0.2
 description: Cartesi Explorer
-repository: "https://github.com/cartesi/cartesi-subgraph"
+repository: "https://github.com/cartesi/subgraph"
 schema:
     file: ./schema.graphql
 dataSources:
@@ -17,6 +17,7 @@ dataSources:
           language: wasm/assemblyscript
           entities:
               - Staker
+              - Summary
           abis:
               - name: StakingImpl
                 file:
@@ -39,6 +40,7 @@ dataSources:
           language: wasm/assemblyscript
           entities:
               - Staker
+              - Summary
               - Worker
           abis:
               - name: WorkerManagerImpl
@@ -66,6 +68,7 @@ dataSources:
           language: wasm/assemblyscript
           entities:
               - Staker
+              - Summary
               - Worker
           abis:
               - name: WorkerAuthManagerImpl
@@ -89,7 +92,9 @@ dataSources:
           language: wasm/assemblyscript
           entities:
               - Block
+              - Chain
               - Staker
+              - Summary
               - Worker
           abis:
               - name: PoS
@@ -111,7 +116,9 @@ dataSources:
           language: wasm/assemblyscript
           entities:
               - Block
+              - Chain
               - Staker
+              - Summary
               - Worker
           abis:
               - name: BlockSelector

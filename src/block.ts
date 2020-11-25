@@ -47,9 +47,12 @@ export function handleRewarded(event: Rewarded): void {
     chain.save()
 
     // Rewarded is always called before BlockProduced, so create Block here
-    let block = new Block(event.transaction.hash.toHex())
-    block.chain = event.params.index.toString()
-    block.timestamp = event.block.timestamp
+    let block = Block.load(event.transaction.hash.toHex())
+    if (block == null) {
+        block = new Block(event.transaction.hash.toHex())
+        block.timestamp = event.block.timestamp
+        block.chain = event.params.index.toString()
+    }
     block.reward = reward
     block.producer = event.params.user.toHex()
     block.node = event.params.worker.toHex()
@@ -63,16 +66,23 @@ export function handleRewarded(event: Rewarded): void {
 }
 
 export function handleBlockProduced(event: BlockProduced): void {
+    // handle chain
+    let chain = chains.loadOrCreate(
+        event.params.index.toString(),
+        event.block.timestamp
+    )
+    // fill chain targetInterval
+    chain.targetInterval = event.params.targetInterval.toI32()
+    chain.save()
+
     // load Block and fill other properties
     let block = Block.load(event.transaction.hash.toHex())
-    if (block != null) {
-        block.number = event.params.blockNumber.toI32()
-        block.difficulty = event.params.difficulty
-        block.save()
-
-        // fill chain targetInterval
-        // let chain = Chain.load(block.chain)
-        // chain!.targetInterval = event.params.targetInterval
-        // chain!.save()
+    if (block == null) {
+        block = new Block(event.transaction.hash.toHex())
+        block.timestamp = event.block.timestamp
+        block.chain = event.params.index.toString()
     }
+    block.number = event.params.blockNumber.toI32()
+    block.difficulty = event.params.difficulty
+    block.save()
 }
