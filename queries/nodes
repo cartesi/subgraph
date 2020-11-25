@@ -1,0 +1,12 @@
+{
+  nodes {
+    id
+    owner {
+      id
+    }
+    timestamp
+    status
+    totalBlocks
+    totalReward
+  }
+}

@@ -1,0 +1,9 @@
+{
+  chains {
+    id
+    totalBlocks
+    totalReward
+    start
+    targetInterval
+  }
+}

@@ -1,0 +1,18 @@
+{
+  blocks(orderBy: timestamp, orderDirection: desc) {
+    id
+    chain {
+      id
+    }
+    number
+    timestamp
+    reward
+    difficulty
+    node {
+      id
+    }
+    producer {
+      id
+    }
+  }
+}

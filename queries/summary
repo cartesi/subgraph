@@ -1,0 +1,12 @@
+{
+    summaries {
+      id
+      totalUsers
+      totalNodes
+      totalStaked
+      totalBlocks
+      totalReward
+      totalChains
+    }
+  }
+  
