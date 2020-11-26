@@ -13,7 +13,7 @@
     "prepare:mainnet": "hardhat --network mainnet subgraph"
   },
   "dependencies": {
-    "@cartesi/pos": "^0.1.0-beta.14",
+    "@cartesi/pos": "^0.1.0-beta.16",
     "@graphprotocol/graph-cli": "0.19.0",
     "@graphprotocol/graph-ts": "0.19.0"
   },

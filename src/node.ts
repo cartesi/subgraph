@@ -15,15 +15,13 @@ import { Node } from "../generated/schema"
 import * as summary from "./summary"
 import * as users from "./user"
 import {
+    Authorization,
+    Deauthorization,
     JobAccepted,
     JobOffer,
     JobRejected,
     Retired,
-} from "../generated/WorkerManager/WorkerManagerImpl"
-import {
-    Authorization,
-    Deauthorization,
-} from "../generated/WorkerAuthManager/WorkerAuthManagerImpl"
+} from "../generated/WorkerManagerAuthManager/WorkerManagerAuthManagerImpl"
 
 export function loadOrCreate(
     userAddress: Address,

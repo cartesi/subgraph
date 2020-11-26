@@ -34,6 +34,7 @@ export function handleRewarded(event: Rewarded): void {
         event.block.timestamp
     )
     node.totalBlocks++
+    node.status = "Authorized"
     node.totalReward = node.totalReward.plus(reward)
     node.save()
 
