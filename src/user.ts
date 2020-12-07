@@ -34,21 +34,21 @@ export function loadOrCreate(address: Address): User {
 }
 
 export function handleStake(event: Stake): void {
-    let user = loadOrCreate(event.params._address)
-    user.stakedBalance = user.stakedBalance.plus(event.params._amount)
+    let user = loadOrCreate(event.params.user)
+    user.stakedBalance = user.stakedBalance.plus(event.params.amount)
     user.save()
 
     let s = summary.loadOrCreate()
-    s.totalStaked = s.totalStaked.plus(event.params._amount)
+    s.totalStaked = s.totalStaked.plus(event.params.amount)
     s.save()
 }
 
 export function handleUnstake(event: Unstake): void {
-    let user = loadOrCreate(event.params._address)
-    user.stakedBalance = user.stakedBalance.minus(event.params._amount)
+    let user = loadOrCreate(event.params.user)
+    user.stakedBalance = user.stakedBalance.minus(event.params.amount)
     user.save()
 
     let s = summary.loadOrCreate()
-    s.totalStaked = s.totalStaked.minus(event.params._amount)
+    s.totalStaked = s.totalStaked.minus(event.params.amount)
     s.save()
 }

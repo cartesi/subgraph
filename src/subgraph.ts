@@ -13,7 +13,7 @@
 import fs from "fs"
 import path from "path"
 import { HardhatRuntimeEnvironment } from "hardhat/types"
-import { DeploymentsExtension } from "hardhat-deploy/types"
+import { DeploymentsExtension, Export } from "hardhat-deploy/types"
 import { task, types } from "hardhat/config"
 import { SubgraphManifest } from "../src/thegraph"
 import yaml from "js-yaml"
@@ -27,72 +27,97 @@ const DEFAULT_OPTIONS: SubgraphOptions = {
     abiDir: "./abi",
 }
 
-/**
- * Resolves the address of a contract by name from a deployment
- * @param deployments deployment artifacts
- * @param contractName name of contract
- */
-const resolveAddress = async (
-    deployments: DeploymentsExtension,
-    contractName: string
-): Promise<string> => {
-    if (contractName.startsWith("0x")) {
-        return contractName
-    } else {
-        const deployment = await deployments.get(contractName)
+interface Resolver {
+    /**
+     * Resolves the address of a contract by its name
+     * @param contractName name of contract
+     */
+    getAddress(contractName: string): Promise<string>
+
+    /**
+     * Extract the ABI object of a contract by its name
+     * @param contractName name of contract
+     */
+    getAbi(contractName: string): any
+
+    /**
+     * Returns the block on which the contract was deployed
+     * @param contractName name of contract
+     */
+    getStartBlock(contractName: string): Promise<number | undefined>
+}
+
+class DeploymentsResolver implements Resolver {
+    private deployments: DeploymentsExtension
+
+    constructor(deployments: DeploymentsExtension) {
+        this.deployments = deployments
+    }
+
+    async getAddress(contractName: string): Promise<string> {
+        if (contractName.startsWith("0x")) {
+            return contractName
+        }
+        const deployment = await this.deployments.get(contractName)
         console.log(`${contractName} resolved to ${deployment.address}`)
         return deployment.address
     }
+
+    async getAbi(contractName: string): Promise<any> {
+        const deployment = await this.deployments.get(contractName)
+        return deployment.abi
+    }
+
+    async getStartBlock(contractName: string): Promise<number | undefined> {
+        const deployment = await this.deployments.get(contractName)
+        return deployment.receipt?.blockNumber
+    }
 }
 
-/**
- * Returns the block on which the contract was deployed
- * @param deployments deployment artifacts
- * @param contractName name of contract
- */
-const startBlock = async (
-    deployments: DeploymentsExtension,
-    contractName: string
-): Promise<number | undefined> => {
-    const deployment = await deployments.get(contractName)
-    return deployment.receipt?.blockNumber
-}
+class ExportResolver implements Resolver {
+    private exportFile: Export
 
-/**
- *
- * @param deployments deployment artifacts
- * @param abiDir output directory for ABI
- * @param contractName name of contract
- */
-const extractAbi = async (
-    deployments: DeploymentsExtension,
-    abiDir: string,
-    contractName: string
-): Promise<string> => {
-    const deployment = await deployments.get(contractName)
-    const filename = path.join(abiDir, `${contractName}.json`)
-    console.log(`Extracting ABI of ${contractName} and writing to ${filename}`)
-    const abiStr = JSON.stringify(deployment.abi, null, 1)
-    fs.writeFileSync(filename, abiStr)
-    return filename
+    constructor(exportFile: Export) {
+        this.exportFile = exportFile
+    }
+
+    async getAddress(contractName: string): Promise<string> {
+        if (contractName.startsWith("0x")) {
+            return contractName
+        }
+        const contract = this.exportFile.contracts[contractName]
+        console.log(`${contractName} resolved to ${contract.address}`)
+        return contract.address
+    }
+
+    async getAbi(contractName: string): Promise<any> {
+        const contract = this.exportFile.contracts[contractName]
+        return contract.abi
+    }
+
+    async getStartBlock(_contractName: string): Promise<number | undefined> {
+        return undefined
+    }
 }
 
 export interface SubgraphOptions {
     inputFile?: string
     outputFile?: string
     abiDir?: string
+    exportFile?: string
 }
 
 const subgraph = async (
-    bre: HardhatRuntimeEnvironment,
+    hre: HardhatRuntimeEnvironment,
     options?: SubgraphOptions
 ) => {
-    const { deployments } = bre
+    const { deployments } = hre
     const inputFile =
         options?.inputFile || (DEFAULT_OPTIONS.inputFile as string)
     const outputFile =
         options?.outputFile || (DEFAULT_OPTIONS.outputFile as string)
     const abiDir = options?.abiDir || (DEFAULT_OPTIONS.abiDir as string)
+    const resolver = new DeploymentsResolver(deployments)
 
     // load input yaml template file
     console.log(`Loading ${inputFile}`)
@@ -103,21 +128,19 @@ const subgraph = async (
     if (template.dataSources) {
         for (const dataSource of template.dataSources) {
             // set network using buidler network name
-            dataSource.network = bre.network.name
+            dataSource.network = hre.network.name
 
             if (dataSource.kind == "ethereum/contract") {
                 // assume the `address` is the contract name
                 const contractName = dataSource.source.address
 
                 // and resolve the address using the buidler deployment
-                dataSource.source.address = await resolveAddress(
-                    deployments,
+                dataSource.source.address = await resolver.getAddress(
                     contractName
                 )
 
                 // set start block as the contract deployment block
-                dataSource.source.startBlock = await startBlock(
-                    deployments,
+                dataSource.source.startBlock = await resolver.getStartBlock(
                     contractName
                 )
             }
@@ -125,7 +148,15 @@ const subgraph = async (
             if (dataSource.mapping.abis) {
                 for (const abi of dataSource.mapping.abis) {
                     // extract ABI to dedicated file assuming name is the name of contract
-                    abi.file = await extractAbi(deployments, abiDir, abi.name)
+                    const contractName = abi.name
+                    const abiDefinition = await resolver.getAbi(contractName)
+                    const filename = path.join(abiDir, `${contractName}.json`)
+                    console.log(
+                        `Extracting ABI of ${contractName} and writing to ${filename}`
+                    )
+                    const abiStr = JSON.stringify(abiDefinition, null, 1)
+                    fs.writeFileSync(filename, abiStr)
+                    abi.file = filename
                 }
             }
         }

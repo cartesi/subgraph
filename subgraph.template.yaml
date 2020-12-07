@@ -22,9 +22,9 @@ dataSources:
               - name: StakingImpl
                 file:
           eventHandlers:
-              - event: "Stake(indexed uint256,indexed address,indexed uint256)"
+              - event: "Stake(indexed address,uint256,uint256)"
                 handler: handleStake
-              - event: "Unstake(indexed uint256,indexed address,indexed uint256)"
+              - event: "Unstake(indexed address,uint256,uint256)"
                 handler: handleUnstake
           file: ./src/user.ts
     - kind: ethereum/contract

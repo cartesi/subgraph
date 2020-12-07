@@ -4,28 +4,29 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ cartesi/pos",
+    "deploy:mainnet": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ cartesi/pos",
     "deploy:goerli": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ cartesi/pos-goerli",
     "create-local": "graph create --node http://localhost:8020/ cartesi/cartesi",
     "remove-local": "graph remove --node http://localhost:8020/ cartesi/cartesi",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 cartesi/cartesi",
+    "prepare:localhost": "hardhat --network localhost subgraph",
     "prepare:goerli": "hardhat --network goerli subgraph",
     "prepare:mainnet": "hardhat --network mainnet subgraph"
   },
   "dependencies": {
-    "@cartesi/pos": "^0.1.0-beta.16",
+    "@cartesi/pos": "^0.1.0-beta.20",
     "@graphprotocol/graph-cli": "0.19.0",
     "@graphprotocol/graph-ts": "0.19.0"
   },
   "devDependencies": {
-    "@nomiclabs/hardhat-ethers": "^2.0.0",
+    "@nomiclabs/hardhat-ethers": "^2.0.1",
     "@types/js-yaml": "^3.12.5",
-    "hardhat": "^2.0.2",
-    "hardhat-deploy": "^0.7.0-beta.28",
-    "ethers": "^5.0.0",
-    "js-yaml": "^3.14.0",
-    "prettier": "^2.1.2",
+    "hardhat": "^2.0.4",
+    "hardhat-deploy": "^0.7.0-beta.37",
+    "ethers": "^5.0.23",
+    "js-yaml": "^3.14.1",
+    "prettier": "^2.2.1",
     "ts-node": "^9.0.0",
-    "typescript": "^4.0.5"
+    "typescript": "^4.1.2"
   }
 }
