@@ -40,6 +40,7 @@ const config: HardhatUserConfig = {
             url: "http://localhost:8545",
             accounts: mnemonic ? { mnemonic } : undefined,
         },
+        mainnet: infuraNetwork("mainnet", 1, 6283185),
         rinkeby: infuraNetwork("rinkeby", 4, 6283185),
         kovan: infuraNetwork("kovan", 42, 6283185),
         goerli: infuraNetwork("goerli", 5, 6283185),
@@ -87,6 +88,11 @@ const config: HardhatUserConfig = {
                 "node_modules/@cartesi/util/deployments/localhost",
                 "node_modules/@cartesi/token/deployments/localhost",
                 "node_modules/@cartesi/pos/deployments/localhost",
+            ],
+            mainnet: [
+                "node_modules/@cartesi/util/deployments/mainnet",
+                "node_modules/@cartesi/token/deployments/mainnet",
+                "node_modules/@cartesi/pos/deployments/mainnet",
             ],
             ropsten: [
                 "node_modules/@cartesi/util/deployments/ropsten",
