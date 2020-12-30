@@ -21,10 +21,10 @@ dataSources:
           abis:
               - name: StakingImpl
                 file:
-          eventHandlers:
-              - event: "Stake(indexed address,uint256,uint256)"
+          callHandlers:
+              - function: stake(uint256)
                 handler: handleStake
-              - event: "Unstake(indexed address,uint256,uint256)"
+              - function: unstake(uint256)
                 handler: handleUnstake
           file: ./src/user.ts
     - kind: ethereum/contract

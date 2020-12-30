@@ -12,7 +12,7 @@
 
 import { Address, BigInt } from "@graphprotocol/graph-ts"
 import { User } from "../generated/schema"
-import { Stake, Unstake } from "../generated/StakingImpl/StakingImpl"
+import { StakeCall, UnstakeCall } from "../generated/StakingImpl/StakingImpl"
 import * as summary from "./summary"
 
 export function loadOrCreate(address: Address): User {
@@ -33,22 +33,22 @@ export function loadOrCreate(address: Address): User {
     return user!
 }
 
-export function handleStake(event: Stake): void {
-    let user = loadOrCreate(event.params.user)
-    user.stakedBalance = user.stakedBalance.plus(event.params.amount)
+export function handleStake(call: StakeCall): void {
+    let user = loadOrCreate(call.from)
+    user.stakedBalance = user.stakedBalance.plus(call.inputs._amount)
     user.save()
 
     let s = summary.loadOrCreate()
-    s.totalStaked = s.totalStaked.plus(event.params.amount)
+    s.totalStaked = s.totalStaked.plus(call.inputs._amount)
     s.save()
 }
 
-export function handleUnstake(event: Unstake): void {
-    let user = loadOrCreate(event.params.user)
-    user.stakedBalance = user.stakedBalance.minus(event.params.amount)
+export function handleUnstake(call: UnstakeCall): void {
+    let user = loadOrCreate(call.from)
+    user.stakedBalance = user.stakedBalance.minus(call.inputs._amount)
     user.save()
 
     let s = summary.loadOrCreate()
-    s.totalStaked = s.totalStaked.minus(event.params.amount)
+    s.totalStaked = s.totalStaked.minus(call.inputs._amount)
     s.save()
 }
