@@ -41,4 +41,6 @@ type Block @entity {
     node: Node
     reward: BigInt
     difficulty: BigInt
+    gasPrice: BigInt!
+    gasLimit: BigInt!
 }

@@ -53,6 +53,8 @@ export function handleRewarded(event: Rewarded): void {
         block = new Block(event.transaction.hash.toHex())
         block.timestamp = event.block.timestamp
         block.chain = event.params.index.toString()
+        block.gasPrice = event.transaction.gasPrice
+        block.gasLimit = event.transaction.gasUsed
     }
     block.reward = reward
     block.producer = event.params.user.toHex()
@@ -82,6 +84,8 @@ export function handleBlockProduced(event: BlockProduced): void {
         block = new Block(event.transaction.hash.toHex())
         block.timestamp = event.block.timestamp
         block.chain = event.params.index.toString()
+        block.gasPrice = event.transaction.gasPrice
+        block.gasLimit = event.transaction.gasUsed
     }
     block.number = event.params.blockNumber.toI32()
     block.difficulty = event.params.difficulty
