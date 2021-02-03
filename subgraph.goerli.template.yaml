@@ -21,11 +21,11 @@ dataSources:
           abis:
               - name: StakingImpl
                 file:
-          callHandlers:
-              - function: stake(uint256)
-                handler: handleStakeCall
-              - function: unstake(uint256)
-                handler: handleUnstakeCall
+          eventHandlers:
+              - event: "Stake(indexed address,uint256,uint256)"
+                handler: handleStakeEvent
+              - event: "Unstake(indexed address,uint256,uint256)"
+                handler: handleStakeEvent
           file: ./src/user.ts
     - kind: ethereum/contract
       name: WorkerManagerAuthManager

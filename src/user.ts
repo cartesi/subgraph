@@ -11,8 +11,13 @@
 // under the License.
 
 import { Address, BigInt } from "@graphprotocol/graph-ts"
-import { Stake, User } from "../generated/schema"
-import { StakeCall, UnstakeCall } from "../generated/StakingImpl/StakingImpl"
+import { Stake as StakeEntity, User } from "../generated/schema"
+import {
+    Stake,
+    StakeCall,
+    Unstake,
+    UnstakeCall,
+} from "../generated/StakingImpl/StakingImpl"
 import * as summary from "./summary"
 
 export function loadOrCreate(address: Address): User {
@@ -33,7 +38,7 @@ export function loadOrCreate(address: Address): User {
     return user!
 }
 
-export function handleStake(call: StakeCall): void {
+export function handleStakeCall(call: StakeCall): void {
     // update user
     let user = loadOrCreate(call.from)
     user.stakedBalance = user.stakedBalance.plus(call.inputs._amount)
@@ -45,14 +50,33 @@ export function handleStake(call: StakeCall): void {
     s.save()
 
     // create a Stake
-    let stake = new Stake(call.transaction.hash.toHex())
+    let stake = new StakeEntity(call.transaction.hash.toHex())
     stake.user = user.id
     stake.value = call.inputs._amount
     stake.timestamp = call.block.timestamp
     stake.save()
 }
 
-export function handleUnstake(call: UnstakeCall): void {
+export function handleStakeEvent(event: Stake): void {
+    // update user
+    let user = loadOrCreate(event.params.user)
+    user.stakedBalance = user.stakedBalance.plus(event.params.amount)
+    user.save()
+
+    // update global summary
+    let s = summary.loadOrCreate()
+    s.totalStaked = s.totalStaked.plus(event.params.amount)
+    s.save()
+
+    // create a Stake
+    let stake = new StakeEntity(event.transaction.hash.toHex())
+    stake.user = user.id
+    stake.value = event.params.amount
+    stake.timestamp = event.block.timestamp
+    stake.save()
+}
+
+export function handleUnstakeCall(call: UnstakeCall): void {
     // update user
     let user = loadOrCreate(call.from)
     user.stakedBalance = user.stakedBalance.minus(call.inputs._amount)
@@ -64,9 +88,28 @@ export function handleUnstake(call: UnstakeCall): void {
     s.save()
 
     // create a Stake
-    let stake = new Stake(call.transaction.hash.toHex())
+    let stake = new StakeEntity(call.transaction.hash.toHex())
     stake.user = user.id
     stake.value = call.inputs._amount.neg()
     stake.timestamp = call.block.timestamp
+    stake.save()
+}
+
+export function handleUnstakeEvent(event: Unstake): void {
+    // update user
+    let user = loadOrCreate(event.params.user)
+    user.stakedBalance = user.stakedBalance.minus(event.params.amount)
+    user.save()
+
+    // update global summary
+    let s = summary.loadOrCreate()
+    s.totalStaked = s.totalStaked.minus(event.params.amount)
+    s.save()
+
+    // create a Stake
+    let stake = new StakeEntity(event.transaction.hash.toHex())
+    stake.user = user.id
+    stake.value = event.params.amount.neg()
+    stake.timestamp = event.block.timestamp
     stake.save()
 }
