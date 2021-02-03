@@ -22,6 +22,20 @@ type Stake @entity {
     timestamp: BigInt!
 }
 
+type Unstake @entity {
+    id: ID!
+    user: User!
+    value: BigInt!
+    timestamp: BigInt!
+}
+
+type Withdraw @entity {
+    id: ID!
+    user: User!
+    value: BigInt!
+    timestamp: BigInt!
+}
+
 type Node @entity {
     id: ID!
     owner: User

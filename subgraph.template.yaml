@@ -26,6 +26,8 @@ dataSources:
                 handler: handleStakeCall
               - function: unstake(uint256)
                 handler: handleUnstakeCall
+              - function: withdraw(uint256)
+                handler: handleWithdrawCall
           file: ./src/user.ts
     - kind: ethereum/contract
       name: WorkerManagerAuthManager

@@ -25,7 +25,9 @@ dataSources:
               - event: "Stake(indexed address,uint256,uint256)"
                 handler: handleStakeEvent
               - event: "Unstake(indexed address,uint256,uint256)"
-                handler: handleStakeEvent
+                handler: handleUnstakeEvent
+              - event: "Withdraw(indexed address,uint256)"
+                handler: handleWithdrawEvent
           file: ./src/user.ts
     - kind: ethereum/contract
       name: WorkerManagerAuthManager
