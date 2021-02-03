@@ -15,6 +15,13 @@ type User @entity {
     totalReward: BigInt!
 }
 
+type Stake @entity {
+    id: ID!
+    user: User!
+    value: BigInt!
+    timestamp: BigInt!
+}
+
 type Node @entity {
     id: ID!
     owner: User

@@ -11,7 +11,7 @@
 // under the License.
 
 import { Address, BigInt } from "@graphprotocol/graph-ts"
-import { User } from "../generated/schema"
+import { Stake, User } from "../generated/schema"
 import { StakeCall, UnstakeCall } from "../generated/StakingImpl/StakingImpl"
 import * as summary from "./summary"
 
@@ -34,21 +34,39 @@ export function loadOrCreate(address: Address): User {
 }
 
 export function handleStake(call: StakeCall): void {
+    // update user
     let user = loadOrCreate(call.from)
     user.stakedBalance = user.stakedBalance.plus(call.inputs._amount)
     user.save()
 
+    // update global summary
     let s = summary.loadOrCreate()
     s.totalStaked = s.totalStaked.plus(call.inputs._amount)
     s.save()
+
+    // create a Stake
+    let stake = new Stake(call.transaction.hash.toHex())
+    stake.user = user.id
+    stake.value = call.inputs._amount
+    stake.timestamp = call.block.timestamp
+    stake.save()
 }
 
 export function handleUnstake(call: UnstakeCall): void {
+    // update user
     let user = loadOrCreate(call.from)
     user.stakedBalance = user.stakedBalance.minus(call.inputs._amount)
     user.save()
 
+    // update global summary
     let s = summary.loadOrCreate()
     s.totalStaked = s.totalStaked.minus(call.inputs._amount)
     s.save()
+
+    // create a Stake
+    let stake = new Stake(call.transaction.hash.toHex())
+    stake.user = user.id
+    stake.value = call.inputs._amount.neg()
+    stake.timestamp = call.block.timestamp
+    stake.save()
 }
