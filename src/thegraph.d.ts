@@ -1,4 +1,4 @@
-// Copyright 2020 Cartesi Pte. Ltd.
+// Copyright 2021 Cartesi Pte. Ltd.
 
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy
@@ -11,63 +11,63 @@
 // under the License.
 
 export interface Schema {
-    file: string;
+    file: string
 }
 
 export interface Source {
-    address: string;
-    abi: string;
-    startBlock?: number;
+    address: string
+    abi: string
+    startBlock?: number
 }
 
 export interface Abi {
-    name: string;
-    file: string;
+    name: string
+    file: string
 }
 
 export interface EventHandler {
-    event: string;
-    handler: string;
+    event: string
+    handler: string
 }
 
 export interface CallHandler {
-    function: string;
-    handler: string;
+    function: string
+    handler: string
 }
 
 export interface BlockFilter {
-    kind: string;
+    kind: string
 }
 
 export interface BlockHandler {
-    function: string;
-    filter?: BlockFilter;
+    function: string
+    filter?: BlockFilter
 }
 
 export interface Mapping {
-    kind: string;
-    apiVersion: string;
-    language: string;
-    entities: string[];
-    abis: Abi[];
-    eventHandlers: EventHandler[];
-    callHandlers: CallHandler[];
-    blockHandlers: BlockHandler[];
-    file: string;
+    kind: string
+    apiVersion: string
+    language: string
+    entities: string[]
+    abis: Abi[]
+    eventHandlers: EventHandler[]
+    callHandlers: CallHandler[]
+    blockHandlers: BlockHandler[]
+    file: string
 }
 
 export interface DataSource {
-    kind: string;
-    name: string;
-    network: string;
-    source: Source;
-    mapping: Mapping;
+    kind: string
+    name: string
+    network: string
+    source: Source
+    mapping: Mapping
 }
 
 export interface SubgraphManifest {
-    specVersion: string;
-    description?: string;
-    repository?: string;
-    schema?: Schema;
-    dataSources?: DataSource[];
+    specVersion: string
+    description?: string
+    repository?: string
+    schema?: Schema
+    dataSources?: DataSource[]
 }

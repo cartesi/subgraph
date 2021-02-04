@@ -10,15 +10,15 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-import { HardhatUserConfig } from "hardhat/config";
-import { HttpNetworkUserConfig } from "hardhat/types";
+import { HardhatUserConfig } from "hardhat/config"
+import { HttpNetworkUserConfig } from "hardhat/types"
 
-import "@nomiclabs/hardhat-ethers";
-import "hardhat-deploy";
-import "./src/subgraph";
+import "@nomiclabs/hardhat-ethers"
+import "hardhat-deploy"
+import "./src/subgraph"
 
 // read MNEMONIC from env variable
-let mnemonic = process.env.MNEMONIC;
+let mnemonic = process.env.MNEMONIC
 
 const infuraNetwork = (
     network: string,
@@ -30,8 +30,8 @@ const infuraNetwork = (
         chainId,
         gas,
         accounts: mnemonic ? { mnemonic } : undefined,
-    };
-};
+    }
+}
 
 const config: HardhatUserConfig = {
     networks: {
@@ -59,9 +59,9 @@ const config: HardhatUserConfig = {
         version: "0.7.4",
         settings: {
             optimizer: {
-                enabled: true
-            }
-        }
+                enabled: true,
+            },
+        },
     },
     paths: {
         artifacts: "artifacts",
@@ -72,15 +72,15 @@ const config: HardhatUserConfig = {
         contracts: [
             {
                 artifacts: "node_modules/@cartesi/util/artifacts",
-                deploy: "node_modules/@cartesi/util/dist/deploy"
+                deploy: "node_modules/@cartesi/util/dist/deploy",
             },
             {
                 artifacts: "node_modules/@cartesi/token/artifacts",
-                deploy: "node_modules/@cartesi/token/dist/deploy"
+                deploy: "node_modules/@cartesi/token/dist/deploy",
             },
             {
                 artifacts: "node_modules/@cartesi/pos/artifacts",
-                deploy: "node_modules/@cartesi/pos/dist/deploy"
+                deploy: "node_modules/@cartesi/pos/dist/deploy",
             },
         ],
         deployments: {
@@ -137,6 +137,6 @@ const config: HardhatUserConfig = {
             default: 1,
         },
     },
-};
+}
 
-export default config;
+export default config
