@@ -14,7 +14,8 @@ Some of the steps require a [Infura](https://infura.io) application id to be spe
 ```
 yarn
 yarn prepare:goerli
-yarn codegen
+yarn codegen subgraph.goerli.yaml
+yarn build subgraph.goerli.yaml
 yarn create-local
 yarn deploy-local
 ```

@@ -1,0 +1,9 @@
+{
+  protocols {
+    id
+    version
+    address
+    timestamp
+    totalChains
+  }
+}

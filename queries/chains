@@ -5,5 +5,9 @@
     totalReward
     start
     targetInterval
+    protocol {
+      id
+      version
+    }
   }
 }
