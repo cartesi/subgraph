@@ -68,7 +68,7 @@ dataSources:
       name: PoS-1.0
       network:
       source:
-          address: node_modules/@cartesi/pos-1.0/export/abi/goerli.json:PoS
+          address: node_modules/@cartesi/pos-1.0/deployments/goerli/PoS.json
           abi: PoS
           startBlock:
       mapping:

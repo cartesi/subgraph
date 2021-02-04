@@ -13,7 +13,7 @@
 import fs from "fs"
 import path from "path"
 import { HardhatRuntimeEnvironment } from "hardhat/types"
-import { DeploymentsExtension, Export } from "hardhat-deploy/types"
+import { Deployment, DeploymentsExtension, Export } from "hardhat-deploy/types"
 import { task, types } from "hardhat/config"
 import { SubgraphManifest } from "../src/thegraph"
 import yaml from "js-yaml"
@@ -73,6 +73,32 @@ class DeploymentsResolver implements Resolver {
     async getStartBlock(contractName: string): Promise<number | undefined> {
         const deployment = await this.deployments.get(contractName)
         return deployment.receipt?.blockNumber
+    }
+}
+
+class DeploymentResolver implements Resolver {
+    private deployment: Deployment
+
+    constructor(deployment: Deployment) {
+        this.deployment = deployment
+    }
+
+    async getAddress(contractName: string): Promise<string> {
+        if (contractName.startsWith("0x")) {
+            return contractName
+        }
+        console.log(
+            `${contractName} resolved to ${this.deployment.address} by ExportResolver`
+        )
+        return this.deployment.address
+    }
+
+    async getAbi(contractName: string): Promise<any> {
+        return this.deployment.abi
+    }
+
+    async getStartBlock(contractName: string): Promise<number | undefined> {
+        return this.deployment.receipt?.blockNumber
     }
 }
 
@@ -146,6 +172,11 @@ const subgraph = async (
                     resolver = new ExportResolver(
                         JSON.parse(fs.readFileSync(exportFile).toString())
                     )
+                } else if (contractName.endsWith(".json")) {
+                    const deployment: Deployment = JSON.parse(
+                        fs.readFileSync(contractName).toString()
+                    )
+                    resolver = new DeploymentResolver(deployment)
                 }
 
                 // and resolve the address using the buidler deployment
@@ -171,7 +202,7 @@ const subgraph = async (
                             `Extracting ABI of ${contractName} and writing to ${filename}`
                         )
                         const abiStr = JSON.stringify(abiDefinition, null, 1)
-                        fs.mkdirSync(abiDir, { recursive: true }) // make sure output directoy exist
+                        fs.mkdirSync(dir, { recursive: true }) // make sure output directoy exist
                         fs.writeFileSync(filename, abiStr)
                         abi.file = filename
                     }
