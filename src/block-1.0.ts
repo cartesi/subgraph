@@ -10,8 +10,8 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-import { NewChain, Rewarded } from "../generated/PoS/PoS"
-import { BlockProduced } from "../generated/BlockSelector/BlockSelector"
+import { Rewarded } from "../generated/PoS-1.0/PoS"
+import { BlockProduced } from "../generated/BlockSelector-1.0/BlockSelector"
 import { Block } from "../generated/schema"
 import * as chains from "./chain"
 import * as nodes from "./node"
@@ -19,7 +19,7 @@ import * as summary from "./summary"
 import * as users from "./user"
 
 export function handleRewarded(event: Rewarded): void {
-    let reward = event.params.reward
+    let reward = event.params.userReward.plus(event.params.beneficiaryReward)
 
     // handle user
     let user = users.loadOrCreate(event.params.user)
@@ -70,18 +70,6 @@ export function handleRewarded(event: Rewarded): void {
     s.save()
 }
 
-export function handleNewChain(event: NewChain): void {
-    // handle chain
-    let posAddress = event.transaction.to ? event.transaction.to.toHex() : ""
-    let chain = chains.loadOrCreate(
-        posAddress,
-        event.params.index.toI32(),
-        event.block.timestamp
-    )
-    chain.targetInterval = event.params.targetInterval.toI32()
-    chain.save()
-}
-
 export function handleBlockProduced(event: BlockProduced): void {
     // handle chain
     let posAddress = event.transaction.to ? event.transaction.to.toHex() : ""
@@ -90,6 +78,9 @@ export function handleBlockProduced(event: BlockProduced): void {
         event.params.index.toI32(),
         event.block.timestamp
     )
+    // fill chain targetInterval
+    chain.targetInterval = event.params.targetInterval.toI32()
+    chain.save()
 
     // load Block and fill other properties
     let block = Block.load(event.transaction.hash.toHex())

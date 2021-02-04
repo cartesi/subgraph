@@ -1,4 +1,4 @@
-// Copyright 2020 Cartesi Pte. Ltd.
+// Copyright 2021 Cartesi Pte. Ltd.
 
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy
@@ -59,7 +59,9 @@ class DeploymentsResolver implements Resolver {
             return contractName
         }
         const deployment = await this.deployments.get(contractName)
-        console.log(`${contractName} resolved to ${deployment.address}`)
+        console.log(
+            `${contractName} resolved to ${deployment.address} by DeploymentsResolver`
+        )
         return deployment.address
     }
 
@@ -86,7 +88,9 @@ class ExportResolver implements Resolver {
             return contractName
         }
         const contract = this.exportFile.contracts[contractName]
-        console.log(`${contractName} resolved to ${contract.address}`)
+        console.log(
+            `${contractName} resolved to ${contract.address} by ExportResolver`
+        )
         return contract.address
     }
 
@@ -117,7 +121,7 @@ const subgraph = async (
     const outputFile =
         options?.outputFile || (DEFAULT_OPTIONS.outputFile as string)
     const abiDir = options?.abiDir || (DEFAULT_OPTIONS.abiDir as string)
-    const resolver = new DeploymentsResolver(deployments)
+    const deploymentResolver = new DeploymentsResolver(deployments)
 
     // load input yaml template file
     console.log(`Loading ${inputFile}`)
@@ -132,7 +136,17 @@ const subgraph = async (
 
             if (dataSource.kind == "ethereum/contract") {
                 // assume the `address` is the contract name
-                const contractName = dataSource.source.address
+                let contractName = dataSource.source.address
+                let resolver: Resolver = deploymentResolver
+
+                if (contractName.indexOf(":") >= 0) {
+                    const components = contractName.split(":")
+                    const exportFile = components[0]
+                    contractName = components[1]
+                    resolver = new ExportResolver(
+                        JSON.parse(fs.readFileSync(exportFile).toString())
+                    )
+                }
 
                 // and resolve the address using the buidler deployment
                 dataSource.source.address = await resolver.getAddress(
@@ -143,26 +157,59 @@ const subgraph = async (
                 dataSource.source.startBlock = await resolver.getStartBlock(
                     contractName
                 )
-            }
 
-            if (dataSource.mapping.abis) {
-                for (const abi of dataSource.mapping.abis) {
-                    // extract ABI to dedicated file assuming name is the name of contract
-                    const contractName = abi.name
-                    const abiDefinition = await resolver.getAbi(contractName)
-                    const filename = path.join(abiDir, `${contractName}.json`)
-                    console.log(
-                        `Extracting ABI of ${contractName} and writing to ${filename}`
-                    )
-                    const abiStr = JSON.stringify(abiDefinition, null, 1)
-                    fs.writeFileSync(filename, abiStr)
-                    abi.file = filename
+                if (dataSource.mapping.abis) {
+                    for (const abi of dataSource.mapping.abis) {
+                        // extract ABI to dedicated file assuming name is the name of contract
+                        const contractName = abi.name
+                        const abiDefinition = await resolver.getAbi(
+                            contractName
+                        )
+                        const dir = abi.file || abiDir
+                        const filename = path.join(dir, `${contractName}.json`)
+                        console.log(
+                            `Extracting ABI of ${contractName} and writing to ${filename}`
+                        )
+                        const abiStr = JSON.stringify(abiDefinition, null, 1)
+                        fs.mkdirSync(abiDir, { recursive: true }) // make sure output directoy exist
+                        fs.writeFileSync(filename, abiStr)
+                        abi.file = filename
+                    }
                 }
             }
         }
     }
     console.log(`Writing config to ${outputFile}`)
     fs.writeFileSync(outputFile, yaml.dump(template))
+}
+
+export interface ExportAbiOptions {
+    contractName: string
+    exportFile?: string
+    abiDir?: string
+}
+
+const exportAbi = async (
+    hre: HardhatRuntimeEnvironment,
+    options: ExportAbiOptions
+) => {
+    const { deployments } = hre
+    const contractName = options.contractName
+    const abiDir = options?.abiDir || (DEFAULT_OPTIONS.abiDir as string)
+
+    const resolver = options.exportFile
+        ? new ExportResolver(
+              JSON.parse(fs.readFileSync(options.exportFile).toString())
+          )
+        : new DeploymentsResolver(deployments)
+
+    const abiDefinition = await resolver.getAbi(contractName)
+    const filename = path.join(abiDir, `${contractName}.json`)
+    console.log(`Extracting ABI of ${contractName} and writing to ${filename}`)
+    const abiStr = JSON.stringify(abiDefinition, null, 1)
+
+    fs.mkdirSync(abiDir, { recursive: true }) // make sure output directoy exist
+    fs.writeFileSync(filename, abiStr)
 }
 
 // Task to generate thegraph subgraph definition
@@ -185,6 +232,24 @@ task("subgraph", "Generate thegraph config from a template")
         DEFAULT_OPTIONS.abiDir,
         types.string
     )
-    .setAction(async (taskArgs, bre) => {
-        await subgraph(bre, taskArgs)
+    .setAction(async (taskArgs, hre) => {
+        await subgraph(hre, taskArgs)
+    })
+
+task("export-abi", "Export ABI of contract")
+    .addOptionalParam(
+        "abiDir",
+        "Directory to export required ABIs",
+        DEFAULT_OPTIONS.abiDir,
+        types.string
+    )
+    .addOptionalParam(
+        "exportFile",
+        "Deployment export file to read address and ABI from",
+        undefined,
+        types.string
+    )
+    .addPositionalParam("contractName", "Name of contract")
+    .setAction(async (taskArgs, hre) => {
+        await exportAbi(hre, taskArgs)
     })
