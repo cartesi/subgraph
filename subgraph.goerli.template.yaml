@@ -16,8 +16,11 @@ dataSources:
           apiVersion: 0.0.4
           language: wasm/assemblyscript
           entities:
-              - Staker
+              - Stake
               - Summary
+              - Unstake
+              - User
+              - Withdrawn
           abis:
               - name: StakingImpl
                 file:
@@ -41,8 +44,8 @@ dataSources:
           apiVersion: 0.0.4
           language: wasm/assemblyscript
           entities:
-              - Staker
               - Summary
+              - User
               - Worker
           abis:
               - name: WorkerManagerAuthManagerImpl
@@ -75,8 +78,9 @@ dataSources:
           entities:
               - Block
               - Chain
-              - Staker
+              - Protocol
               - Summary
+              - User
               - Worker
           abis:
               - name: PoS
@@ -99,8 +103,9 @@ dataSources:
           entities:
               - Block
               - Chain
-              - Staker
+              - Protocol
               - Summary
+              - User
               - Worker
           abis:
               - name: BlockSelector
