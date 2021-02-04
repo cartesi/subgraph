@@ -57,6 +57,7 @@ type Protocol @entity {
 type Chain @entity {
     id: ID!
     protocol: Protocol!
+    number: Int!
     totalBlocks: Int!
     totalReward: BigInt!
     start: BigInt!

@@ -17,9 +17,10 @@ import { loadOrCreate as loadOrCreateProtocol } from "./protocol"
 
 export function loadOrCreate(
     address: string,
-    id: string,
+    index: i32,
     timestamp: BigInt
 ): Chain {
+    let id = address + "-" + index.toString()
     let chain = Chain.load(id)
     if (chain === null) {
         // load or create protocol
@@ -28,6 +29,7 @@ export function loadOrCreate(
         protocol.save()
 
         chain = new Chain(id)
+        chain.number = index
         chain.totalBlocks = 0
         chain.totalReward = BigInt.fromI32(0)
         chain.start = timestamp
