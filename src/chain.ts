@@ -13,14 +13,25 @@
 import { BigInt } from "@graphprotocol/graph-ts"
 import { Chain } from "../generated/schema"
 import * as summary from "./summary"
+import { loadOrCreate as loadOrCreateProtocol } from "./protocol"
 
-export function loadOrCreate(id: string, timestamp: BigInt): Chain {
+export function loadOrCreate(
+    address: string,
+    id: string,
+    timestamp: BigInt
+): Chain {
     let chain = Chain.load(id)
     if (chain === null) {
+        // load or create protocol
+        let protocol = loadOrCreateProtocol(address, timestamp)
+        protocol.totalChains++
+        protocol.save()
+
         chain = new Chain(id)
         chain.totalBlocks = 0
         chain.totalReward = BigInt.fromI32(0)
         chain.start = timestamp
+        chain.protocol = protocol.id
 
         let s = summary.loadOrCreate()
         s.totalChains++

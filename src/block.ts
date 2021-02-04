@@ -39,7 +39,9 @@ export function handleRewarded(event: Rewarded): void {
     node.save()
 
     // handle chain
+    let posAddress = event.transaction.to ? event.transaction.to.toHex() : ""
     let chain = chains.loadOrCreate(
+        posAddress,
         event.params.index.toString(),
         event.block.timestamp
     )
@@ -70,7 +72,9 @@ export function handleRewarded(event: Rewarded): void {
 
 export function handleBlockProduced(event: BlockProduced): void {
     // handle chain
+    let posAddress = event.transaction.to ? event.transaction.to.toHex() : ""
     let chain = chains.loadOrCreate(
+        posAddress,
         event.params.index.toString(),
         event.block.timestamp
     )

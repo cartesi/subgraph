@@ -5,6 +5,7 @@ type Summary @entity {
     totalStaked: BigInt!
     totalBlocks: Int!
     totalReward: BigInt!
+    totalProtocols: Int!
     totalChains: Int!
 }
 
@@ -45,8 +46,17 @@ type Node @entity {
     totalReward: BigInt!
 }
 
+type Protocol @entity {
+    id: ID!
+    version: Int!
+    address: ID!
+    timestamp: BigInt!
+    totalChains: Int!
+}
+
 type Chain @entity {
     id: ID!
+    protocol: Protocol!
     totalBlocks: Int!
     totalReward: BigInt!
     start: BigInt!
