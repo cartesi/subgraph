@@ -13,3 +13,10 @@ jobs:
       
       - name: Code format check
         run: yarn prettier
+
+      - run: yarn prepare:goerli
+        env:
+          PROJECT_ID: ${{ secrets.PROJECT_ID }}
+        
+      - run: yarn codegen subgraph.goerli.yaml
+      - run: yarn build subgraph.goerli.yaml
