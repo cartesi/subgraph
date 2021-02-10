@@ -4,6 +4,7 @@
       totalUsers
       totalNodes
       totalStaked
+      totalStakers
       totalBlocks
       totalReward
       totalChains
