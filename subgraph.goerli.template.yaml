@@ -120,7 +120,7 @@ dataSources:
       name: BlockSelector-1.0
       network:
       source:
-          address: node_modules/@cartesi/pos-1.0/export/abi/goerli.json:BlockSelector
+          address: node_modules/@cartesi/pos-1.0/deployments/goerli/BlockSelector.json
           abi: BlockSelector
           startBlock:
       mapping:
