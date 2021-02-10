@@ -46,7 +46,7 @@ export function handleStakeCall(call: StakeCall): void {
     // update global summary
     let s = summary.loadOrCreate()
     s.totalStaked = s.totalStaked.plus(call.inputs._amount)
-    if (user.stakedBalance.equals(BigInt.fromI32(0))) {
+    if (user.stakedBalance.isZero()) {
         s.totalStakers++
     }
     s.save()
@@ -69,7 +69,7 @@ export function handleStakeEvent(event: StakeEvent): void {
     // update global summary
     let s = summary.loadOrCreate()
     s.totalStaked = s.totalStaked.plus(event.params.amount)
-    if (user.stakedBalance.equals(BigInt.fromI32(0))) {
+    if (user.stakedBalance.isZero()) {
         s.totalStakers++
     }
     s.save()
@@ -95,7 +95,7 @@ export function handleUnstakeCall(call: UnstakeCall): void {
     // update global summary
     let s = summary.loadOrCreate()
     s.totalStaked = s.totalStaked.minus(call.inputs._amount)
-    if (user.stakedBalance.equals(BigInt.fromI32(0))) {
+    if (user.stakedBalance.isZero()) {
         s.totalStakers--
     }
     s.save()
@@ -117,7 +117,7 @@ export function handleUnstakeEvent(event: UnstakeEvent): void {
     // update global summary
     let s = summary.loadOrCreate()
     s.totalStaked = s.totalStaked.minus(event.params.amount)
-    if (user.stakedBalance.equals(BigInt.fromI32(0))) {
+    if (user.stakedBalance.isZero()) {
         s.totalStakers--
     }
     s.save()
