@@ -1,0 +1,16 @@
+{
+  stakes(orderBy:timestamp, orderDirection: asc, first: 1000) {
+    user {
+      id
+    }
+    value
+    timestamp
+  }
+  unstakes(orderBy:timestamp, orderDirection: asc, first: 1000) {
+    user{
+      id
+    }
+    value
+    timestamp
+  }
+}
