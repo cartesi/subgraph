@@ -1,6 +1,7 @@
 type Summary @entity {
     id: ID!
     totalUsers: Int!
+    totalStakers: Int!
     totalNodes: Int!
     totalStaked: BigInt!
     totalBlocks: Int!

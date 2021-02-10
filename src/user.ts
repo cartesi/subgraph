@@ -41,15 +41,19 @@ export function loadOrCreate(address: Address): User {
 }
 
 export function handleStakeCall(call: StakeCall): void {
-    // update user
     let user = loadOrCreate(call.from)
-    user.stakedBalance = user.stakedBalance.plus(call.inputs._amount)
-    user.save()
 
     // update global summary
     let s = summary.loadOrCreate()
     s.totalStaked = s.totalStaked.plus(call.inputs._amount)
+    if (user.stakedBalance.gt(BigInt.fromI32(0))) {
+        s.totalStakers++
+    }
     s.save()
+
+    // update user
+    user.stakedBalance = user.stakedBalance.plus(call.inputs._amount)
+    user.save()
 
     // create a Stake
     let stake = new Stake(call.transaction.hash.toHex())
@@ -60,15 +64,19 @@ export function handleStakeCall(call: StakeCall): void {
 }
 
 export function handleStakeEvent(event: StakeEvent): void {
-    // update user
     let user = loadOrCreate(event.params.user)
-    user.stakedBalance = user.stakedBalance.plus(event.params.amount)
-    user.save()
 
     // update global summary
     let s = summary.loadOrCreate()
     s.totalStaked = s.totalStaked.plus(event.params.amount)
+    if (user.stakedBalance.gt(BigInt.fromI32(0))) {
+        s.totalStakers++
+    }
     s.save()
+
+    // update user
+    user.stakedBalance = user.stakedBalance.plus(event.params.amount)
+    user.save()
 
     // create a Stake
     let stake = new Stake(event.transaction.hash.toHex())
@@ -87,6 +95,9 @@ export function handleUnstakeCall(call: UnstakeCall): void {
     // update global summary
     let s = summary.loadOrCreate()
     s.totalStaked = s.totalStaked.minus(call.inputs._amount)
+    if (!user.stakedBalance.gt(BigInt.fromI32(0))) {
+        s.totalStakers--
+    }
     s.save()
 
     // create a Unstake
@@ -106,6 +117,9 @@ export function handleUnstakeEvent(event: UnstakeEvent): void {
     // update global summary
     let s = summary.loadOrCreate()
     s.totalStaked = s.totalStaked.minus(event.params.amount)
+    if (!user.stakedBalance.gt(BigInt.fromI32(0))) {
+        s.totalStakers--
+    }
     s.save()
 
     // create a Unstake
