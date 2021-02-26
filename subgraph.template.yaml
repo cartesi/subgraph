@@ -90,6 +90,33 @@ dataSources:
                 handler: handleRewarded
           file: ./src/block-1.0.ts
     - kind: ethereum/contract
+      name: PoS
+      network:
+      source:
+          address: PoS
+          abi: PoS
+          startBlock:
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.4
+          language: wasm/assemblyscript
+          entities:
+              - Block
+              - Chain
+              - Protocol
+              - Summary
+              - User
+              - Worker
+          abis:
+              - name: PoS
+                file:
+          eventHandlers:
+              - event: "NewChain(indexed uint256,address,address,address,uint256,uint256,uint32,uint32,address,uint256,uint256,uint256,uint256)"
+                handler: handleNewChain
+              - event: "Rewarded(indexed uint256,indexed address,indexed address,uint256)"
+                handler: handleRewarded
+          file: ./src/block.ts
+    - kind: ethereum/contract
       name: BlockSelector-1.0
       network:
       source:
@@ -114,3 +141,28 @@ dataSources:
               - event: "BlockProduced(indexed uint256,indexed address,uint256,uint256,uint256,uint256)"
                 handler: handleBlockProduced
           file: ./src/block-1.0.ts
+    - kind: ethereum/contract
+      name: BlockSelector
+      network:
+      source:
+          address: BlockSelector
+          abi: BlockSelector
+          startBlock:
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.4
+          language: wasm/assemblyscript
+          entities:
+              - Block
+              - Chain
+              - Protocol
+              - Summary
+              - User
+              - Worker
+          abis:
+              - name: BlockSelector
+                file:
+          eventHandlers:
+              - event: "BlockProduced(indexed uint256,indexed address,uint32,uint256,uint256)"
+                handler: handleBlockProduced
+          file: ./src/block.ts
