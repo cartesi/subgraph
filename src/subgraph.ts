@@ -18,6 +18,15 @@ import { task, types } from "hardhat/config"
 import { SubgraphManifest } from "../src/thegraph"
 import yaml from "js-yaml"
 
+const hexToNumber = (
+    value: string | number | undefined
+): number | undefined => {
+    if (typeof value == "string") {
+        return parseInt(value, 16)
+    }
+    return value
+}
+
 /**
  * Default options
  */
@@ -72,7 +81,15 @@ class DeploymentsResolver implements Resolver {
 
     async getStartBlock(contractName: string): Promise<number | undefined> {
         const deployment = await this.deployments.get(contractName)
-        return deployment.receipt?.blockNumber
+        const blockNumber = deployment.receipt?.blockNumber
+        if (blockNumber) {
+            console.log(
+                `Block number of ${contractName} resolved to ${blockNumber} by DeploymentsResolver`
+            )
+        } else {
+            console.log(`Block number undefined for contract ${contractName}`)
+        }
+        return hexToNumber(blockNumber)
     }
 }
 
@@ -88,7 +105,7 @@ class DeploymentResolver implements Resolver {
             return contractName
         }
         console.log(
-            `${contractName} resolved to ${this.deployment.address} by ExportResolver`
+            `${contractName} resolved to ${this.deployment.address} by DeploymentResolver`
         )
         return this.deployment.address
     }
@@ -98,7 +115,15 @@ class DeploymentResolver implements Resolver {
     }
 
     async getStartBlock(contractName: string): Promise<number | undefined> {
-        return this.deployment.receipt?.blockNumber
+        const blockNumber = this.deployment.receipt?.blockNumber
+        if (blockNumber) {
+            console.log(
+                `Block number of ${contractName} resolved to ${blockNumber} by DeploymentResolver`
+            )
+        } else {
+            console.log(`Block number undefined for contract ${contractName}`)
+        }
+        return hexToNumber(blockNumber)
     }
 }
 
@@ -126,6 +151,7 @@ class ExportResolver implements Resolver {
     }
 
     async getStartBlock(_contractName: string): Promise<number | undefined> {
+        console.log(`Block number undefined for contract ${_contractName}`)
         return undefined
     }
 }
