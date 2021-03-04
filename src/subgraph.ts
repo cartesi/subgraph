@@ -13,7 +13,12 @@
 import fs from "fs"
 import path from "path"
 import { HardhatRuntimeEnvironment } from "hardhat/types"
-import { Deployment, DeploymentsExtension, Export } from "hardhat-deploy/types"
+import {
+    Deployment,
+    DeploymentsExtension,
+    Export,
+    ExtendedArtifact,
+} from "hardhat-deploy/types"
 import { task, types } from "hardhat/config"
 import { SubgraphManifest } from "../src/thegraph"
 import yaml from "js-yaml"
@@ -56,6 +61,9 @@ interface Resolver {
     getStartBlock(contractName: string): Promise<number | undefined>
 }
 
+/**
+ * Resolve information from hardhat-deploy deployments API
+ */
 class DeploymentsResolver implements Resolver {
     private deployments: DeploymentsExtension
 
@@ -75,8 +83,23 @@ class DeploymentsResolver implements Resolver {
     }
 
     async getAbi(contractName: string): Promise<any> {
-        const deployment = await this.deployments.get(contractName)
-        return deployment.abi
+        const deployment = await this.deployments.getOrNull(contractName)
+        if (deployment) {
+            return deployment.abi
+        }
+        const artifact = await this.deployments.getArtifact(contractName)
+        if (artifact) {
+            return artifact.abi
+        }
+        const extendedArtifact = await this.deployments.getExtendedArtifact(
+            contractName
+        )
+        if (extendedArtifact) {
+            extendedArtifact.abi
+        }
+        throw new Error(
+            `DeploymentsResolver cannot resolve abi for contract ${contractName}`
+        )
     }
 
     async getStartBlock(contractName: string): Promise<number | undefined> {
@@ -93,6 +116,9 @@ class DeploymentsResolver implements Resolver {
     }
 }
 
+/**
+ * Resolver from a specific deployment file
+ */
 class DeploymentResolver implements Resolver {
     private deployment: Deployment
 
@@ -127,6 +153,9 @@ class DeploymentResolver implements Resolver {
     }
 }
 
+/**
+ * Resolver from a deployment export file
+ */
 class ExportResolver implements Resolver {
     private exportFile: Export
 
@@ -156,6 +185,32 @@ class ExportResolver implements Resolver {
     }
 }
 
+/**
+ * Resolver from export artifact file
+ */
+class ExtendedArtifactResolver implements Resolver {
+    private artifact: ExtendedArtifact
+    constructor(artifact: ExtendedArtifact) {
+        this.artifact = artifact
+    }
+
+    async getAddress(contractName: string): Promise<string> {
+        throw new Error(
+            `ExtendedArtifactResolver cannot resolve address for contract ${contractName}`
+        )
+    }
+
+    async getAbi(_contractName: string): Promise<any> {
+        return this.artifact.abi
+    }
+
+    async getStartBlock(contractName: string): Promise<number | undefined> {
+        throw new Error(
+            `ExtendedArtifactResolver cannot resolve start block for contract ${contractName}`
+        )
+    }
+}
+
 export interface SubgraphOptions {
     inputFile?: string
     outputFile?: string
@@ -173,7 +228,7 @@ const subgraph = async (
     const outputFile =
         options?.outputFile || (DEFAULT_OPTIONS.outputFile as string)
     const abiDir = options?.abiDir || (DEFAULT_OPTIONS.abiDir as string)
-    const deploymentResolver = new DeploymentsResolver(deployments)
+    const deploymentsResolver = new DeploymentsResolver(deployments)
 
     // load input yaml template file
     console.log(`Loading ${inputFile}`)
@@ -189,7 +244,7 @@ const subgraph = async (
             if (dataSource.kind == "ethereum/contract") {
                 // assume the `address` is the contract name
                 let contractName = dataSource.source.address
-                let resolver: Resolver = deploymentResolver
+                let resolver: Resolver = deploymentsResolver
 
                 if (contractName.indexOf(":") >= 0) {
                     const components = contractName.split(":")
