@@ -1,0 +1,134 @@
+[User]
+*id
+stakedBalance
+totalStaked
+totalUnstaked
+totalBlocks
+totalReward
+
+[Node]
+*id
++owner
+timestamp
+status
+totalBlocks
+totalReward
+
+[StakingPool] {bgcolor: "#fbfbdb"}
+*id
++user
+commission
+
+[PoolUser] {bgcolor: "#fbfbdb"}
+*id
+
+[Block]
+*id
++chain
+number
+timestamp
++user
++node
+reward
+difficulty
+gasPrice
+gasLimit
+
+[Chain]
+*id
++protocol
+number
+totalBlocks
+totalReward
+start
+targetInterval
+
+[Protocol]
+*id
+version
+address
+timestamp
+totalChains
+
+[Stake]
+*id
++user
+value
+timestamp
+
+[Unstake]
+*id
++user
+value
+timestamp
+
+[Withdraw]
+*id
++user
+value
+timestamp
+
+[PoolBalance] {bgcolor: "#fbfbdb"}
+*id
++pool
++user
+stakedBalance
+totalStaked
+totalUnstaked
+totalWithdraw
+
+[PoolStake] {bgcolor: "#fbfbdb"}
+*id
++pool
++user
+value
+timestamp
+
+[PoolUnstake] {bgcolor: "#fbfbdb"}
+*id
++pool
++user
+value
+timestamp
+
+[PoolWithdraw] {bgcolor: "#fbfbdb"}
+*id
++pool
++user
+value
+timestamp
+
+[Summary]
+*id
+totalUsers
+totalPools {bgcolor: "#fbfbdb"}
+totalStakers
+totalNodes
+totalStaked
+totalBlocks
+totalReward
+totalProtocols
+totalChains
+
+# Cardinality    Syntax
+# 0 or 1         ?
+# exactly 1      1
+# 0 or more      *
+# 1 or more      +
+Protocol 1--* Chain
+Chain 1--* Block
+Block *--1 User
+Block *--1 Node
+Node *--? User
+User ?--? StakingPool
+User 1--* Stake
+User 1--* Unstake
+User 1--* Withdraw
+StakingPool 1--* PoolBalance
+StakingPool 1--* PoolStake
+StakingPool 1--* PoolUnstake
+StakingPool 1--* PoolWithdraw
+PoolBalance *--1 PoolUser
+PoolStake *--1 PoolUser
+PoolUnstake *--1 PoolUser
+PoolWithdraw *--1 PoolUser
