@@ -4,3 +4,4 @@ generated
 node_modules
 subgraph.yaml
 subgraph.goerli.yaml
+subgraph.localhost.yaml
