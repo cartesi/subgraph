@@ -166,3 +166,52 @@ dataSources:
               - event: "BlockProduced(indexed uint256,indexed address,uint32,uint256,uint256)"
                 handler: handleBlockProduced
           file: ./src/block.ts
+    - kind: ethereum/contract
+      name: StakingPoolFactoryImpl
+      network:
+      source:
+          address: StakingPoolFactoryImpl
+          abi: StakingPoolFactoryImpl
+          startBlock:
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.4
+          language: wasm/assemblyscript
+          entities:
+              - StakingPool
+              - Summary
+              - User
+          abis:
+              - name: StakingPoolFactoryImpl
+                file:
+          eventHandlers:
+              - event: "NewStakingPool(indexed address,uint256)"
+                handler: handleNewStakingPool
+          file: ./src/pool.ts
+templates:
+    - kind: ethereum/contract
+      name: StakingPoolImpl
+      network:
+      source:
+          abi: StakingPoolImpl
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.4
+          language: wasm/assemblyscript
+          entities:
+              - PoolBalance
+              - PoolStake
+              - PoolUnstake
+              - PoolUser
+              - PoolWithdraw
+          abis:
+              - name: StakingPoolImpl
+                file:
+          eventHandlers:
+              - event: "Stake(indexed address,uint256,uint256)"
+                handler: handleStake
+              - event: "Unstake(indexed address,uint256,uint256)"
+                handler: handleUnstake
+              - event: "Withdraw(indexed address,uint256)"
+                handler: handleWithdraw
+          file: ./src/pool.ts

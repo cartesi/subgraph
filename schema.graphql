@@ -1,6 +1,7 @@
 type Summary @entity {
     id: ID!
     totalUsers: Int!
+    totalPools: Int!
     totalStakers: Int!
     totalNodes: Int!
     totalStaked: BigInt!
@@ -15,6 +16,16 @@ type User @entity {
     stakedBalance: BigInt!
     totalBlocks: Int!
     totalReward: BigInt!
+}
+
+type StakingPool @entity {
+    id: ID!
+    user: User!
+    commission: BigInt!
+}
+
+type PoolUser @entity {
+    id: ID!
 }
 
 type Stake @entity {
@@ -36,6 +47,40 @@ type Withdraw @entity {
     user: User!
     value: BigInt!
     timestamp: BigInt!
+}
+
+type PoolStake @entity {
+    id: ID!
+    pool: StakingPool!
+    user: PoolUser!
+    value: BigInt!
+    timestamp: BigInt!
+}
+
+type PoolUnstake @entity {
+    id: ID!
+    pool: StakingPool!
+    user: PoolUser!
+    value: BigInt!
+    timestamp: BigInt!
+}
+
+type PoolWithdraw @entity {
+    id: ID!
+    pool: StakingPool!
+    user: PoolUser!
+    value: BigInt!
+    timestamp: BigInt!
+}
+
+type PoolBalance @entity {
+    id: ID!
+    pool: StakingPool!
+    user: PoolUser
+    stakedBalance: BigInt!
+    totalStaked: BigInt!
+    totalUnstaked: BigInt!
+    totalWithdraw: BigInt!
 }
 
 type Node @entity {
