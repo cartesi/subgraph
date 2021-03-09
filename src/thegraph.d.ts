@@ -70,4 +70,5 @@ export interface SubgraphManifest {
     repository?: string
     schema?: Schema
     dataSources?: DataSource[]
+    templates?: DataSource[]
 }

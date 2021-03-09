@@ -291,6 +291,37 @@ const subgraph = async (
             }
         }
     }
+
+    if (template.templates) {
+        for (const dataSource of template.templates) {
+            // set network using buidler network name
+            dataSource.network = hre.network.name
+
+            if (dataSource.kind == "ethereum/contract") {
+                let resolver: Resolver = deploymentsResolver
+
+                if (dataSource.mapping.abis) {
+                    for (const abi of dataSource.mapping.abis) {
+                        // extract ABI to dedicated file assuming name is the name of contract
+                        const contractName = abi.name
+                        const abiDefinition = await resolver.getAbi(
+                            contractName
+                        )
+                        const dir = abi.file || abiDir
+                        const filename = path.join(dir, `${contractName}.json`)
+                        console.log(
+                            `Extracting ABI of ${contractName} and writing to ${filename}`
+                        )
+                        const abiStr = JSON.stringify(abiDefinition, null, 1)
+                        fs.mkdirSync(dir, { recursive: true }) // make sure output directoy exist
+                        fs.writeFileSync(filename, abiStr)
+                        abi.file = filename
+                    }
+                }
+            }
+        }
+    }
+
     console.log(`Writing config to ${outputFile}`)
     fs.writeFileSync(outputFile, yaml.dump(template))
 }
