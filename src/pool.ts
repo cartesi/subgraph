@@ -10,7 +10,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-import { Address } from "@graphprotocol/graph-ts"
+import { Address, BigInt } from "@graphprotocol/graph-ts"
 import {
     StakingPool,
     PoolBalance,
@@ -27,7 +27,7 @@ import * as summary from "./summary"
 
 export function handleNewStakingPool(event: NewStakingPool): void {
     // create pool
-    let pool = loadOrCreatePool(event.params.pool)
+    let pool = loadOrCreatePool(event.params.pool, event.block.timestamp)
     pool.commission = event.params.commission
     pool.save()
 
@@ -48,18 +48,27 @@ function loadOrCreateBalance(pool: Address, user: Address): PoolBalance {
     return balance!
 }
 
-function loadOrCreatePool(poolAddress: Address): StakingPool {
+function loadOrCreatePool(
+    poolAddress: Address,
+    timestamp: BigInt = BigInt.fromI32(0)
+): StakingPool {
     // create user
     let u = user.loadOrCreate(poolAddress)
 
-    // create pool
-    let pool = new StakingPool(poolAddress.toHex())
-    pool.user = u.id
-    pool.totalUsers = 0
+    let pool = StakingPool.load(poolAddress.toHex())
 
-    pool.save()
+    if (pool == null) {
+        // create pool
+        pool = new StakingPool(poolAddress.toHex())
 
-    return pool
+        pool.user = u.id
+        pool.totalUsers = 0
+        pool.timestamp = timestamp
+
+        pool.save()
+    }
+
+    return pool!
 }
 
 export function handleStake(event: Stake): void {

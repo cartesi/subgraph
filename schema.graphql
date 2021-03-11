@@ -23,6 +23,7 @@ type StakingPool @entity {
     user: User!
     commission: BigInt!
     totalUsers: Int!
+    timestamp: BigInt!
 }
 
 type PoolUser @entity {
