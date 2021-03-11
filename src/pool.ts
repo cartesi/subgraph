@@ -26,12 +26,8 @@ import * as user from "./user"
 import * as summary from "./summary"
 
 export function handleNewStakingPool(event: NewStakingPool): void {
-    // create user
-    let u = user.loadOrCreate(event.params.pool)
-
     // create pool
-    let pool = new StakingPool(event.params.pool.toHex())
-    pool.user = u.id
+    let pool = loadOrCreatePool(event.params.pool)
     pool.commission = event.params.commission
     pool.save()
 
@@ -52,6 +48,20 @@ function loadOrCreateBalance(pool: Address, user: Address): PoolBalance {
     return balance!
 }
 
+function loadOrCreatePool(poolAddress: Address): StakingPool {
+    // create user
+    let u = user.loadOrCreate(poolAddress)
+
+    // create pool
+    let pool = new StakingPool(poolAddress.toHex())
+    pool.user = u.id
+    pool.totalUsers = 0
+
+    pool.save()
+
+    return pool
+}
+
 export function handleStake(event: Stake): void {
     // save user
     let user = new PoolUser(event.params.user.toHex())
@@ -67,6 +77,13 @@ export function handleStake(event: Stake): void {
 
     // update balance
     let balance = loadOrCreateBalance(event.address, event.params.user)
+
+    if (balance.stakedBalance.isZero()) {
+        let pool = loadOrCreatePool(event.address)
+        pool.totalUsers++
+        pool.save()
+    }
+
     balance.stakedBalance = balance.stakedBalance.plus(event.params.amount)
     balance.totalStaked = balance.totalStaked.plus(event.params.amount)
     balance.save()
