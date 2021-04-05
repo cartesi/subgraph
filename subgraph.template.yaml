@@ -185,7 +185,7 @@ dataSources:
               - name: StakingPoolFactoryImpl
                 file:
           eventHandlers:
-              - event: "NewStakingPool(indexed address,uint256)"
+              - event: "NewFlatRateCommissionStakingPool(indexed address,uint256)"
                 handler: handleNewStakingPool
           file: ./src/pool.ts
 templates:

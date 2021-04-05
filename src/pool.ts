@@ -21,11 +21,13 @@ import {
 } from "../generated/schema"
 import { StakingPoolImpl } from "../generated/templates"
 import { Stake, Unstake, Withdraw } from "../generated/StakingImpl/StakingImpl"
-import { NewStakingPool } from "../generated/StakingPoolFactoryImpl/StakingPoolFactoryImpl"
+import { NewFlatRateCommissionStakingPool } from "../generated/StakingPoolFactoryImpl/StakingPoolFactoryImpl"
 import * as user from "./user"
 import * as summary from "./summary"
 
-export function handleNewStakingPool(event: NewStakingPool): void {
+export function handleNewStakingPool(
+    event: NewFlatRateCommissionStakingPool
+): void {
     // create pool
     let pool = loadOrCreatePool(event.params.pool, event.block.timestamp)
     pool.commission = event.params.commission
