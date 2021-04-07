@@ -35,10 +35,10 @@
   optionalDependencies:
     fsevents "^2.1.3"
 
-"@cartesi/pos@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@cartesi/pos/-/pos-1.1.0.tgz#56f009426ef28200e943c577d595c2ca6a3336b1"
-  integrity sha512-QsDZT70GqurxaCvQLMrIzfJT7qMqNW2CItjmg2gfZTgysXQAcyABhTkgA48+Q9g9V8OIfjXJyi9/d99hBg+whg==
+"@cartesi/pos-private@^2.0.0-alpha.0":
+  version "2.0.0-alpha.0"
+  resolved "https://registry.yarnpkg.com/@cartesi/pos-private/-/pos-private-2.0.0-alpha.0.tgz#4bbc99c9009506e5bd8e3d09fc29849b6b84ab71"
+  integrity sha512-gqq5/F5DVN5gMEWrWndrQytMI0E3zNBX40O8GS/HCOkj8cJpkcWWfprGUYGE0Y4q4zAAbkGELByW33su0X45aQ==
   dependencies:
     "@cartesi/token" "^1.2.5"
     "@cartesi/util" "^1.0.0"
@@ -823,9 +823,9 @@ asn1@~0.2.3:
   dependencies:
     safer-buffer "~2.1.0"
 
-"assemblyscript@git+https://github.com/AssemblyScript/assemblyscript.git#36040d5b5312f19a025782b5e36663823494c2f3":
+"assemblyscript@https://github.com/AssemblyScript/assemblyscript#36040d5b5312f19a025782b5e36663823494c2f3":
   version "0.6.0"
-  resolved "git+https://github.com/AssemblyScript/assemblyscript.git#36040d5b5312f19a025782b5e36663823494c2f3"
+  resolved "https://github.com/AssemblyScript/assemblyscript#36040d5b5312f19a025782b5e36663823494c2f3"
   dependencies:
     "@protobufjs/utf8" "^1.1.0"
     binaryen "77.0.0-nightly.20190407"
