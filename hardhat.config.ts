@@ -71,15 +71,15 @@ const config: HardhatUserConfig = {
     external: {
         contracts: [
             {
-                artifacts: "node_modules/@cartesi/util/artifacts",
+                artifacts: "node_modules/@cartesi/util/export/artifacts",
                 deploy: "node_modules/@cartesi/util/dist/deploy",
             },
             {
-                artifacts: "node_modules/@cartesi/token/artifacts",
+                artifacts: "node_modules/@cartesi/token/export/artifacts",
                 deploy: "node_modules/@cartesi/token/dist/deploy",
             },
             {
-                artifacts: "node_modules/@cartesi/pos-private/artifacts",
+                artifacts: "node_modules/@cartesi/pos-private/export/artifacts",
                 deploy: "node_modules/@cartesi/pos-private/dist/deploy",
             },
         ],
