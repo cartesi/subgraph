@@ -9,7 +9,11 @@ jobs:
         with:
           node-version: '15'
       
-      - run: yarn install
+      - run: |
+          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+          yarn install
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       
       - name: Code format check
         run: yarn prettier
