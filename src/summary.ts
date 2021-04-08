@@ -19,6 +19,7 @@ export function loadOrCreate(): Summary {
     if (summary == null) {
         summary = new Summary("1")
         summary.totalUsers = 0
+        summary.totalPools = 0
         summary.totalStakers = 0
         summary.totalNodes = 0
         summary.totalStaked = BigInt.fromI32(0)
