@@ -66,8 +66,6 @@ function loadOrCreatePool(
         pool.user = u.id
         pool.totalUsers = 0
         pool.timestamp = timestamp
-
-        pool.save()
     }
 
     return pool!
