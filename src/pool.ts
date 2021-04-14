@@ -46,6 +46,12 @@ function loadOrCreateBalance(pool: Address, user: Address): PoolBalance {
     let balance = PoolBalance.load(id)
     if (balance == null) {
         balance = new PoolBalance(id)
+        balance.pool = pool.toHex()
+        balance.user = user.toHex()
+        balance.stakedBalance = BigInt.fromI32(0)
+        balance.totalStaked = BigInt.fromI32(0)
+        balance.totalUnstaked = BigInt.fromI32(0)
+        balance.totalWithdraw = BigInt.fromI32(0)
     }
     return balance!
 }
