@@ -62,6 +62,8 @@ function loadOrCreatePool(
 ): StakingPool {
     // create user
     let u = user.loadOrCreate(poolAddress)
+    u.isPool = true
+    u.save()
 
     let pool = StakingPool.load(poolAddress.toHex())
 
