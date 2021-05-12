@@ -22,15 +22,32 @@ import {
 import { StakingPoolImpl } from "../generated/templates"
 import { Stake, Unstake, Withdraw } from "../generated/StakingImpl/StakingImpl"
 import { NewFlatRateCommissionStakingPool } from "../generated/StakingPoolFactoryImpl/StakingPoolFactoryImpl"
+import { NewGasTaxCommissionStakingPool } from "../generated/StakingPoolFactoryImpl/StakingPoolFactoryImpl"
 import * as user from "./user"
 import * as summary from "./summary"
 
-export function handleNewStakingPool(
+export function handleNewFlatRateStakingPool(
     event: NewFlatRateCommissionStakingPool
 ): void {
     // create pool
     let pool = loadOrCreatePool(event.params.pool, event.block.timestamp)
     pool.commission = event.params.commission
+    pool.save()
+
+    let s = summary.loadOrCreate()
+    s.totalPools++
+    s.save()
+
+    // create template
+    StakingPoolImpl.create(event.params.pool)
+}
+
+export function handleNewGasTaxStakingPool(
+    event: NewGasTaxCommissionStakingPool
+): void {
+    // create pool
+    let pool = loadOrCreatePool(event.params.pool, event.block.timestamp)
+    pool.gas = event.params.gas
     pool.save()
 
     let s = summary.loadOrCreate()

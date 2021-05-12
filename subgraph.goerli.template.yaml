@@ -186,7 +186,9 @@ dataSources:
                 file:
           eventHandlers:
               - event: "NewFlatRateCommissionStakingPool(indexed address,uint256)"
-                handler: handleNewStakingPool
+                handler: handleNewFlatRateStakingPool
+              - event: "NewGasTaxCommissionStakingPool(indexed address,uint256)"
+                handler: handleNewGasTaxStakingPool
           file: ./src/pool.ts
 templates:
     - kind: ethereum/contract
