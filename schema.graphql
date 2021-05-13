@@ -22,8 +22,8 @@ type User @entity {
 type StakingPool @entity {
     id: ID!
     user: User!
-    commission: BigInt
-    gas: BigInt
+    commission: Int
+    gas: Int
     totalUsers: Int!
     timestamp: BigInt!
 }

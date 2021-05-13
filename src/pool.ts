@@ -31,7 +31,7 @@ export function handleNewFlatRateStakingPool(
 ): void {
     // create pool
     let pool = loadOrCreatePool(event.params.pool, event.block.timestamp)
-    pool.commission = event.params.commission
+    pool.commission = event.params.commission.toI32()
     pool.save()
 
     let s = summary.loadOrCreate()
@@ -47,7 +47,7 @@ export function handleNewGasTaxStakingPool(
 ): void {
     // create pool
     let pool = loadOrCreatePool(event.params.pool, event.block.timestamp)
-    pool.gas = event.params.gas
+    pool.gas = event.params.gas.toI32()
     pool.save()
 
     let s = summary.loadOrCreate()
