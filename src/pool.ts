@@ -12,6 +12,7 @@
 
 import { Address, BigInt } from "@graphprotocol/graph-ts"
 import {
+    Block,
     StakingPool,
     PoolBalance,
     PoolStake,
@@ -25,6 +26,7 @@ import { NewFlatRateCommissionStakingPool } from "../generated/StakingPoolFactor
 import { NewGasTaxCommissionStakingPool } from "../generated/StakingPoolFactoryImpl/StakingPoolFactoryImpl"
 import * as user from "./user"
 import * as summary from "./summary"
+import { BlockProduced } from "../generated/templates/StakingPoolImpl/StakingPoolImpl"
 
 export function handleNewFlatRateStakingPool(
     event: NewFlatRateCommissionStakingPool
@@ -90,6 +92,7 @@ function loadOrCreatePool(
 
         pool.user = u.id
         pool.totalUsers = 0
+        pool.totalCommission = BigInt.fromI32(0)
         pool.timestamp = timestamp
     }
 
@@ -152,4 +155,22 @@ export function handleWithdraw(event: Withdraw): void {
     let balance = loadOrCreateBalance(event.address, event.params.user)
     balance.totalWithdraw = balance.totalWithdraw.plus(event.params.amount)
     balance.save()
+}
+
+export function handleBlockProduced(event: BlockProduced): void {
+    // save block commission
+    let block = Block.load(event.transaction.hash.toHex())
+    if (block) {
+        block.commission = event.params.commission
+        block.save()
+    }
+
+    // increment the total commission of the pool
+    let pool = StakingPool.load(event.address.toHex())
+    if (pool) {
+        pool.totalCommission = pool.totalCommission.plus(
+            event.params.commission
+        )
+        pool.save()
+    }
 }

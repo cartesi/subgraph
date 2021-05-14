@@ -25,6 +25,7 @@ type StakingPool @entity {
     commission: Int
     gas: Int
     totalUsers: Int!
+    totalCommission: BigInt!
     timestamp: BigInt!
 }
 
@@ -122,6 +123,7 @@ type Block @entity {
     producer: User
     node: Node
     reward: BigInt
+    commission: BigInt
     difficulty: BigInt
     gasPrice: BigInt!
     gasLimit: BigInt!

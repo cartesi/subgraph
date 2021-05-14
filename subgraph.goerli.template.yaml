@@ -216,4 +216,6 @@ templates:
                 handler: handleUnstake
               - event: "Withdraw(indexed address,uint256)"
                 handler: handleWithdraw
+              - event: "BlockProduced(uint256,uint256,uint256,uint256)"
+                handler: handleBlockProduced
           file: ./src/pool.ts
