@@ -39,7 +39,7 @@ export function handleRewarded(event: Rewarded): void {
     node.save()
 
     // handle chain
-    let posAddress = event.transaction.to ? event.transaction.to.toHex() : ""
+    let posAddress = event.address.toHex()
     let chain = chains.loadOrCreate(
         posAddress,
         event.params.index.toI32(),
@@ -54,10 +54,10 @@ export function handleRewarded(event: Rewarded): void {
     if (block == null) {
         block = new Block(event.transaction.hash.toHex())
         block.timestamp = event.block.timestamp
-        block.chain = chain.id
         block.gasPrice = event.transaction.gasPrice
         block.gasLimit = event.transaction.gasUsed
     }
+    block.chain = chain.id
     block.reward = reward
     block.producer = event.params.user.toHex()
     block.node = event.params.worker.toHex()
@@ -71,23 +71,11 @@ export function handleRewarded(event: Rewarded): void {
 }
 
 export function handleBlockProduced(event: BlockProduced): void {
-    // handle chain
-    let posAddress = event.transaction.to ? event.transaction.to.toHex() : ""
-    let chain = chains.loadOrCreate(
-        posAddress,
-        event.params.index.toI32(),
-        event.block.timestamp
-    )
-    // fill chain targetInterval
-    chain.targetInterval = event.params.targetInterval.toI32()
-    chain.save()
-
     // load Block and fill other properties
     let block = Block.load(event.transaction.hash.toHex())
     if (block == null) {
         block = new Block(event.transaction.hash.toHex())
         block.timestamp = event.block.timestamp
-        block.chain = chain.id
         block.gasPrice = event.transaction.gasPrice
         block.gasLimit = event.transaction.gasUsed
     }

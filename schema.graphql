@@ -117,7 +117,7 @@ type Chain @entity {
 
 type Block @entity {
     id: ID!
-    chain: Chain!
+    chain: Chain
     number: Int
     timestamp: BigInt!
     producer: User
