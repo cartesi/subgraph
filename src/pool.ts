@@ -32,7 +32,11 @@ export function handleNewFlatRateStakingPool(
     event: NewFlatRateCommissionStakingPool
 ): void {
     // create pool
-    let pool = loadOrCreatePool(event.params.pool, event.block.timestamp)
+    let pool = createPool(
+        event.params.pool,
+        event.transaction.from,
+        event.block.timestamp
+    )
     pool.commission = event.params.commission.toI32()
     pool.save()
 
@@ -48,7 +52,11 @@ export function handleNewGasTaxStakingPool(
     event: NewGasTaxCommissionStakingPool
 ): void {
     // create pool
-    let pool = loadOrCreatePool(event.params.pool, event.block.timestamp)
+    let pool = createPool(
+        event.params.pool,
+        event.transaction.from,
+        event.block.timestamp
+    )
     pool.gas = event.params.gas.toI32()
     pool.save()
 
@@ -75,28 +83,26 @@ function loadOrCreateBalance(pool: Address, user: Address): PoolBalance {
     return balance!
 }
 
-function loadOrCreatePool(
-    poolAddress: Address,
+function createPool(
+    address: Address,
+    manager: Address,
     timestamp: BigInt = BigInt.fromI32(0)
 ): StakingPool {
     // create user
-    let u = user.loadOrCreate(poolAddress)
+    let u = user.loadOrCreate(address)
     u.isPool = true
     u.save()
 
-    let pool = StakingPool.load(poolAddress.toHex())
+    // create pool
+    let pool = new StakingPool(address.toHex())
 
-    if (pool == null) {
-        // create pool
-        pool = new StakingPool(poolAddress.toHex())
+    pool.manager = manager.toHex()
+    pool.user = u.id
+    pool.totalUsers = 0
+    pool.totalCommission = BigInt.fromI32(0)
+    pool.timestamp = timestamp
 
-        pool.user = u.id
-        pool.totalUsers = 0
-        pool.totalCommission = BigInt.fromI32(0)
-        pool.timestamp = timestamp
-    }
-
-    return pool!
+    return pool
 }
 
 export function handleStake(event: Stake): void {
@@ -116,7 +122,7 @@ export function handleStake(event: Stake): void {
     let balance = loadOrCreateBalance(event.address, event.params.user)
 
     if (balance.stakedBalance.isZero()) {
-        let pool = loadOrCreatePool(event.address)
+        let pool = StakingPool.load(event.address.toHex())!
         pool.totalUsers++
         pool.save()
     }
