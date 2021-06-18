@@ -8,6 +8,7 @@
         "deploy:mainnet": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ cartesi/pos",
         "deploy:mainnet-staging": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ cartesi/pos-staging",
         "deploy:goerli": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ cartesi/pos-goerli subgraph.goerli.yaml",
+        "deploy:goerli-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 cartesi/pos subgraph.goerli.yaml",
         "create-local": "graph create --node http://localhost:8020/ cartesi/pos",
         "remove-local": "graph remove --node http://localhost:8020/ cartesi/pos",
         "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 cartesi/pos",

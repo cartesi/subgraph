@@ -16,7 +16,7 @@ type User @entity {
     stakedBalance: BigInt!
     totalBlocks: Int!
     totalReward: BigInt!
-    isPool: Boolean!
+    pool: StakingPool
 }
 
 type StakingPool @entity {

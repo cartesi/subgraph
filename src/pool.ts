@@ -90,8 +90,6 @@ function createPool(
 ): StakingPool {
     // create user
     let u = user.loadOrCreate(address)
-    u.isPool = true
-    u.save()
 
     // create pool
     let pool = new StakingPool(address.toHex())
@@ -101,6 +99,10 @@ function createPool(
     pool.totalUsers = 0
     pool.totalCommission = BigInt.fromI32(0)
     pool.timestamp = timestamp
+
+    // circular reference between pool and user
+    u.pool = pool.id
+    u.save()
 
     return pool
 }

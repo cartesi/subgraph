@@ -30,7 +30,6 @@ export function loadOrCreate(address: Address): User {
         user.stakedBalance = BigInt.fromI32(0)
         user.totalBlocks = 0
         user.totalReward = BigInt.fromI32(0)
-        user.isPool = false
         user.save()
 
         let s = summary.loadOrCreate()

@@ -5,6 +5,7 @@ totalStaked
 totalUnstaked
 totalBlocks
 totalReward
++pool
 
 [Node]
 *id
@@ -17,7 +18,12 @@ totalReward
 [StakingPool] {bgcolor: "#fbfbdb"}
 *id
 +user
+manager
 commission
+gas
+totalUsers
+totalCommission
+timestamp
 
 [PoolUser] {bgcolor: "#fbfbdb"}
 *id
