@@ -14,13 +14,18 @@ import { Address, BigInt } from "@graphprotocol/graph-ts"
 import {
     Block,
     StakingPool,
+    StakingPoolFee,
     PoolBalance,
     PoolStake,
     PoolUnstake,
     PoolUser,
     PoolWithdraw,
 } from "../generated/schema"
-import { StakingPoolImpl } from "../generated/templates"
+import {
+    FlatRateCommission,
+    GasTaxCommission,
+    StakingPoolImpl,
+} from "../generated/templates"
 import { Stake, Unstake, Withdraw } from "../generated/StakingImpl/StakingImpl"
 import { NewFlatRateCommissionStakingPool } from "../generated/StakingPoolFactoryImpl/StakingPoolFactoryImpl"
 import { NewGasTaxCommissionStakingPool } from "../generated/StakingPoolFactoryImpl/StakingPoolFactoryImpl"
@@ -37,15 +42,23 @@ export function handleNewFlatRateStakingPool(
         event.transaction.from,
         event.block.timestamp
     )
-    pool.commission = event.params.commission.toI32()
+    pool.fee = event.params.fee.toHex()
     pool.save()
+
+    // create fee
+    let fee = new StakingPoolFee(event.params.fee.toHex())
+    fee.created = event.block.timestamp
+    fee.lastUpdated = event.block.timestamp
+    fee.pool = event.params.pool.toHex()
+    fee.save()
 
     let s = summary.loadOrCreate()
     s.totalPools++
     s.save()
 
-    // create template
+    // create templates
     StakingPoolImpl.create(event.params.pool)
+    FlatRateCommission.create(event.params.fee)
 }
 
 export function handleNewGasTaxStakingPool(
@@ -57,15 +70,23 @@ export function handleNewGasTaxStakingPool(
         event.transaction.from,
         event.block.timestamp
     )
-    pool.gas = event.params.gas.toI32()
+    pool.fee = event.params.fee.toHex()
     pool.save()
+
+    // create fee
+    let fee = new StakingPoolFee(event.params.fee.toHex())
+    fee.created = event.block.timestamp
+    fee.lastUpdated = event.block.timestamp
+    fee.pool = event.params.pool.toHex()
+    fee.save()
 
     let s = summary.loadOrCreate()
     s.totalPools++
     s.save()
 
-    // create template
+    // create templates
     StakingPoolImpl.create(event.params.pool)
+    GasTaxCommission.create(event.params.fee)
 }
 
 function loadOrCreateBalance(pool: Address, user: Address): PoolBalance {

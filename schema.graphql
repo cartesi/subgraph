@@ -23,11 +23,19 @@ type StakingPool @entity {
     id: ID!
     user: User!
     manager: ID!
-    commission: Int
-    gas: Int
+    fee: StakingPoolFee!
     totalUsers: Int!
     totalCommission: BigInt!
     timestamp: BigInt!
+}
+
+type StakingPoolFee @entity {
+    id: ID!
+    pool: StakingPool!
+    commission: Int
+    gas: Int
+    created: BigInt!
+    lastUpdated: BigInt!
 }
 
 type PoolUser @entity {

@@ -83,19 +83,24 @@ class DeploymentsResolver implements Resolver {
     }
 
     async getAbi(contractName: string): Promise<any> {
-        const deployment = await this.deployments.getOrNull(contractName)
-        if (deployment) {
-            return deployment.abi
-        }
         const artifact = await this.deployments.getArtifact(contractName)
         if (artifact) {
+            console.log(`Resolved ABI for ${contractName} with artifact`)
             return artifact.abi
         }
         const extendedArtifact = await this.deployments.getExtendedArtifact(
             contractName
         )
         if (extendedArtifact) {
-            extendedArtifact.abi
+            console.log(
+                `Resolved ABI for ${contractName} with extendedArtifact`
+            )
+            return extendedArtifact.abi
+        }
+        const deployment = await this.deployments.getOrNull(contractName)
+        if (deployment) {
+            console.log(`Resolved ABI for ${contractName} with deployment`)
+            return deployment.abi
         }
         throw new Error(
             `DeploymentsResolver cannot resolve abi for contract ${contractName}`
