@@ -31,7 +31,11 @@ import { NewFlatRateCommissionStakingPool } from "../generated/StakingPoolFactor
 import { NewGasTaxCommissionStakingPool } from "../generated/StakingPoolFactoryImpl/StakingPoolFactoryImpl"
 import * as user from "./user"
 import * as summary from "./summary"
-import { BlockProduced } from "../generated/templates/StakingPoolImpl/StakingPoolImpl"
+import {
+    BlockProduced,
+    StakingPoolLocked,
+    StakingPoolUnlocked,
+} from "../generated/templates/StakingPoolImpl/StakingPoolImpl"
 
 export function handleNewFlatRateStakingPool(
     event: NewFlatRateCommissionStakingPool
@@ -120,6 +124,7 @@ function createPool(
     pool.totalUsers = 0
     pool.totalCommission = BigInt.fromI32(0)
     pool.timestamp = timestamp
+    pool.isLocked = false
 
     // circular reference between pool and user
     u.pool = pool.id
@@ -202,4 +207,16 @@ export function handleBlockProduced(event: BlockProduced): void {
         )
         pool.save()
     }
+}
+
+export function handleLocked(event: StakingPoolLocked): void {
+    let pool = StakingPool.load(event.address.toHex())!
+    pool.isLocked = true
+    pool.save()
+}
+
+export function handleUnlocked(event: StakingPoolUnlocked): void {
+    let pool = StakingPool.load(event.address.toHex())!
+    pool.isLocked = false
+    pool.save()
 }

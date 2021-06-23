@@ -219,6 +219,10 @@ templates:
                 handler: handleWithdraw
               - event: "BlockProduced(uint256,uint256,uint256,uint256)"
                 handler: handleBlockProduced
+              - event: "StakingPoolLocked()"
+                handler: handleLocked
+              - event: "StakingPoolUnlocked()"
+                handler: handleUnlocked
           file: ./src/pool.ts
     - kind: ethereum/contract
       name: FlatRateCommission

@@ -23,6 +23,7 @@ type StakingPool @entity {
     id: ID!
     user: User!
     manager: ID!
+    isLocked: Boolean!
     fee: StakingPoolFee!
     totalUsers: Int!
     totalCommission: BigInt!

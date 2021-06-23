@@ -18,12 +18,20 @@ totalReward
 [StakingPool] {bgcolor: "#fbfbdb"}
 *id
 +user
++fee
 manager
-commission
-gas
+isLocked
 totalUsers
 totalCommission
 timestamp
+
+[StakingPoolFee] {bgcolor: "#fbfbdb"}
+*id
++pool
+commission
+gas
+created
+lastUpdated
 
 [PoolUser] {bgcolor: "#fbfbdb"}
 *id
@@ -134,6 +142,7 @@ StakingPool 1--* PoolBalance
 StakingPool 1--* PoolStake
 StakingPool 1--* PoolUnstake
 StakingPool 1--* PoolWithdraw
+StakingPool 1--1 StakingPoolFee
 PoolBalance *--1 PoolUser
 PoolStake *--1 PoolUser
 PoolUnstake *--1 PoolUser
