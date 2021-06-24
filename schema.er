@@ -20,7 +20,7 @@ totalReward
 +user
 +fee
 manager
-isLocked
+paused
 totalUsers
 totalCommission
 timestamp

@@ -33,8 +33,8 @@ import * as user from "./user"
 import * as summary from "./summary"
 import {
     BlockProduced,
-    StakingPoolLocked,
-    StakingPoolUnlocked,
+    Paused,
+    Unpaused,
 } from "../generated/templates/StakingPoolImpl/StakingPoolImpl"
 
 export function handleNewFlatRateStakingPool(
@@ -124,7 +124,7 @@ function createPool(
     pool.totalUsers = 0
     pool.totalCommission = BigInt.fromI32(0)
     pool.timestamp = timestamp
-    pool.isLocked = false
+    pool.paused = false
 
     // circular reference between pool and user
     u.pool = pool.id
@@ -209,14 +209,14 @@ export function handleBlockProduced(event: BlockProduced): void {
     }
 }
 
-export function handleLocked(event: StakingPoolLocked): void {
+export function handlePaused(event: Paused): void {
     let pool = StakingPool.load(event.address.toHex())!
-    pool.isLocked = true
+    pool.paused = true
     pool.save()
 }
 
-export function handleUnlocked(event: StakingPoolUnlocked): void {
+export function handleUnpaused(event: Unpaused): void {
     let pool = StakingPool.load(event.address.toHex())!
-    pool.isLocked = false
+    pool.paused = false
     pool.save()
 }
