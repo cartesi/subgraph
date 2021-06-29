@@ -1,7 +1,7 @@
 {
     "name": "cartesi-subgraph",
     "license": "Apache-2.0",
-    "version": "2.0.0-beta.0",
+    "version": "2.0.0-alpha.0",
     "scripts": {
         "codegen": "graph codegen",
         "clean": "rimraf abi/**/*.json && rimraf build && rimraf generated",
