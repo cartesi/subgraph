@@ -23,9 +23,9 @@
     },
     "dependencies": {
         "@cartesi/util": "^1.0.1",
-        "@cartesi/pos": "^1.1.1",
+        "@cartesi/pos": "^1.1.2",
         "@cartesi/pos-1.0": "npm:@cartesi/pos@1.0.0",
-        "@cartesi/staking-pool": "^1.0.0-alpha.0",
+        "@cartesi/staking-pool": "^1.0.0-alpha.1",
         "@graphprotocol/graph-cli": "^0.20.0",
         "@graphprotocol/graph-ts": "^0.20.0"
     },
