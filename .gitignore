@@ -4,4 +4,5 @@ generated
 node_modules
 subgraph.yaml
 subgraph.goerli.yaml
+subgraph.ropsten.yaml
 subgraph.localhost.yaml

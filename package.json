@@ -1,6 +1,7 @@
 {
     "name": "cartesi-subgraph",
     "license": "Apache-2.0",
+    "version": "2.0.0-beta.0",
     "scripts": {
         "codegen": "graph codegen",
         "clean": "rimraf abi/**/*.json && rimraf build && rimraf generated",
@@ -9,30 +10,35 @@
         "deploy:mainnet-staging": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ cartesi/pos-staging",
         "deploy:goerli": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ cartesi/pos-goerli subgraph.goerli.yaml",
         "deploy:goerli-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 cartesi/pos subgraph.goerli.yaml",
+        "deploy:ropsten": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ cartesi/pos-ropsten subgraph.ropsten.yaml",
+        "deploy:ropsten-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 cartesi/pos subgraph.ropsten.yaml",
         "create-local": "graph create --node http://localhost:8020/ cartesi/pos",
         "remove-local": "graph remove --node http://localhost:8020/ cartesi/pos",
         "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 cartesi/pos",
-        "prepare:localhost": "hardhat --network localhost subgraph --input-file subgraph.goerli.template.yaml --output-file subgraph.localhost.yaml",
-        "prepare:goerli": "hardhat --network goerli subgraph --input-file subgraph.goerli.template.yaml --output-file subgraph.goerli.yaml",
+        "prepare:localhost": "hardhat --network localhost subgraph --input-file subgraph.testnet.template.yaml --output-file subgraph.localhost.yaml",
+        "prepare:goerli": "hardhat --network goerli subgraph --input-file subgraph.testnet.template.yaml --output-file subgraph.goerli.yaml",
+        "prepare:ropsten": "hardhat --network ropsten subgraph --input-file subgraph.testnet.template.yaml --output-file subgraph.ropsten.yaml",
         "prepare:mainnet": "hardhat --network mainnet subgraph",
         "prettier": "prettier --check **/*.ts"
     },
     "dependencies": {
-        "@cartesi/pos-private": "^2.0.0-alpha.14",
+        "@cartesi/util": "^1.0.1",
+        "@cartesi/pos": "^1.1.1-beta.2",
         "@cartesi/pos-1.0": "npm:@cartesi/pos@1.0.0",
-        "@graphprotocol/graph-cli": "0.20.0",
-        "@graphprotocol/graph-ts": "0.20.0"
+        "@cartesi/staking-pool": "^1.0.0-alpha.0",
+        "@graphprotocol/graph-cli": "^0.20.0",
+        "@graphprotocol/graph-ts": "^0.20.0"
     },
     "devDependencies": {
         "@nomiclabs/hardhat-ethers": "^2.0.2",
         "@types/js-yaml": "^4.0.1",
-        "ethers": "^5.1.4",
-        "hardhat": "^2.2.1",
-        "hardhat-deploy": "^0.7.5",
-        "js-yaml": "^4.0.0",
-        "prettier": "^2.3.0",
+        "ethers": "^5.4.0",
+        "hardhat": "^2.4.1",
+        "hardhat-deploy": "^0.8.9",
+        "js-yaml": "^4.1.0",
+        "prettier": "^2.3.2",
         "rimraf": "^3.0.2",
-        "ts-node": "^9.1.1",
-        "typescript": "^4.2.4"
+        "ts-node": "^10.0.0",
+        "typescript": "^4.3.4"
     }
 }

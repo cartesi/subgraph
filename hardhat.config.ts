@@ -1,4 +1,4 @@
-// Copyright 2020 Cartesi Pte. Ltd.
+// Copyright 2021 Cartesi Pte. Ltd.
 
 // Licensed under the Apache License, Version 2.0 (the "License"); you may not
 // use this file except in compliance with the License. You may obtain a copy
@@ -41,14 +41,11 @@ const config: HardhatUserConfig = {
             accounts: mnemonic ? { mnemonic } : undefined,
         },
         mainnet: infuraNetwork("mainnet", 1, 6283185),
+        ropsten: infuraNetwork("ropsten", 3, 6283185),
         rinkeby: infuraNetwork("rinkeby", 4, 6283185),
         kovan: infuraNetwork("kovan", 42, 6283185),
         goerli: infuraNetwork("goerli", 5, 6283185),
-        matic_testnet: {
-            url: "https://rpc-mumbai.matic.today",
-            chainId: 80001,
-            accounts: mnemonic ? { mnemonic } : undefined,
-        },
+        matic_testnet: infuraNetwork("polygon-mumbai", 80001),
         bsc_testnet: {
             url: "https://data-seed-prebsc-1-s1.binance.org:8545",
             chainId: 97,
@@ -79,50 +76,62 @@ const config: HardhatUserConfig = {
                 deploy: "node_modules/@cartesi/token/dist/deploy",
             },
             {
-                artifacts: "node_modules/@cartesi/pos-private/export/artifacts",
-                deploy: "node_modules/@cartesi/pos-private/dist/deploy",
+                artifacts: "node_modules/@cartesi/pos/export/artifacts",
+                deploy: "node_modules/@cartesi/pos/dist/deploy",
+            },
+            {
+                artifacts: "node_modules/@cartesi/staking-pool/export/artifacts",
+                deploy: "node_modules/@cartesi/staking-pool/dist/deploy",
             },
         ],
         deployments: {
             localhost: [
                 "node_modules/@cartesi/util/deployments/localhost",
                 "node_modules/@cartesi/token/deployments/localhost",
-                "node_modules/@cartesi/pos-private/deployments/localhost",
+                "node_modules/@cartesi/pos/deployments/localhost",
+                "node_modules/@cartesi/staking-pool/deployments/localhost",
             ],
             mainnet: [
                 "node_modules/@cartesi/util/deployments/mainnet",
                 "node_modules/@cartesi/token/deployments/mainnet",
-                "node_modules/@cartesi/pos-private/deployments/mainnet",
+                "node_modules/@cartesi/pos/deployments/mainnet",
+                "node_modules/@cartesi/staking-pool/deployments/mainnet",
             ],
             ropsten: [
                 "node_modules/@cartesi/util/deployments/ropsten",
                 "node_modules/@cartesi/token/deployments/ropsten",
-                "node_modules/@cartesi/pos-private/deployments/ropsten",
+                "node_modules/@cartesi/pos/deployments/ropsten",
+                "node_modules/@cartesi/staking-pool/deployments/ropsten",
             ],
             rinkeby: [
                 "node_modules/@cartesi/util/deployments/rinkeby",
                 "node_modules/@cartesi/token/deployments/rinkeby",
-                "node_modules/@cartesi/pos-private/deployments/rinkeby",
+                "node_modules/@cartesi/pos/deployments/rinkeby",
+                "node_modules/@cartesi/staking-pool/deployments/rinkeby",
             ],
             kovan: [
                 "node_modules/@cartesi/util/deployments/kovan",
                 "node_modules/@cartesi/token/deployments/kovan",
-                "node_modules/@cartesi/pos-private/deployments/kovan",
+                "node_modules/@cartesi/pos/deployments/kovan",
+                "node_modules/@cartesi/staking-pool/deployments/kovan",
             ],
             goerli: [
                 "node_modules/@cartesi/util/deployments/goerli",
                 "node_modules/@cartesi/token/deployments/goerli",
-                "node_modules/@cartesi/pos-private/deployments/goerli",
+                "node_modules/@cartesi/pos/deployments/goerli",
+                "node_modules/@cartesi/staking-pool/deployments/goerli",
             ],
             matic_testnet: [
                 "node_modules/@cartesi/util/deployments/matic_testnet",
                 "node_modules/@cartesi/token/deployments/matic_testnet",
-                "node_modules/@cartesi/pos-private/deployments/matic_testnet",
+                "node_modules/@cartesi/pos/deployments/matic_testnet",
+                "node_modules/@cartesi/staking-pool/deployments/matic_testnet",
             ],
             bsc_testnet: [
                 "node_modules/@cartesi/util/deployments/bsc_testnet",
                 "node_modules/@cartesi/token/deployments/bsc_testnet",
-                "node_modules/@cartesi/pos-private/deployments/bsc_testnet",
+                "node_modules/@cartesi/pos/deployments/bsc_testnet",
+                "node_modules/@cartesi/staking-pool/deployments/bsc_testnet",
             ],
         },
     },
