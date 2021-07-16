@@ -13,24 +13,16 @@
 import fs from "fs"
 import path from "path"
 import { HardhatRuntimeEnvironment } from "hardhat/types"
-import {
-    Deployment,
-    DeploymentsExtension,
-    Export,
-    ExtendedArtifact,
-} from "hardhat-deploy/types"
+import { Deployment } from "hardhat-deploy/types"
 import { task, types } from "hardhat/config"
-import { SubgraphManifest } from "../src/thegraph"
+import { SubgraphManifest } from "./thegraph"
+import {
+    Resolver,
+    DeploymentResolver,
+    DeploymentsResolver,
+    ExportResolver,
+} from "./resolver"
 import yaml from "js-yaml"
-
-const hexToNumber = (
-    value: string | number | undefined
-): number | undefined => {
-    if (typeof value == "string") {
-        return parseInt(value, 16)
-    }
-    return value
-}
 
 /**
  * Default options
@@ -39,181 +31,6 @@ const DEFAULT_OPTIONS: SubgraphOptions = {
     inputFile: "./subgraph.template.yaml",
     outputFile: "./subgraph.yaml",
     abiDir: "./abi",
-}
-
-interface Resolver {
-    /**
-     * Resolves the address of a contract by its name
-     * @param contractName name of contract
-     */
-    getAddress(contractName: string): Promise<string>
-
-    /**
-     * Extract the ABI object of a contract by its name
-     * @param contractName name of contract
-     */
-    getAbi(contractName: string): any
-
-    /**
-     * Returns the block on which the contract was deployed
-     * @param contractName name of contract
-     */
-    getStartBlock(contractName: string): Promise<number | undefined>
-}
-
-/**
- * Resolve information from hardhat-deploy deployments API
- */
-class DeploymentsResolver implements Resolver {
-    private deployments: DeploymentsExtension
-
-    constructor(deployments: DeploymentsExtension) {
-        this.deployments = deployments
-    }
-
-    async getAddress(contractName: string): Promise<string> {
-        if (contractName.startsWith("0x")) {
-            return contractName
-        }
-        const deployment = await this.deployments.get(contractName)
-        console.log(
-            `${contractName} resolved to ${deployment.address} by DeploymentsResolver`
-        )
-        return deployment.address
-    }
-
-    async getAbi(contractName: string): Promise<any> {
-        const artifact = await this.deployments.getArtifact(contractName)
-        if (artifact) {
-            console.log(`Resolved ABI for ${contractName} with artifact`)
-            return artifact.abi
-        }
-        const extendedArtifact = await this.deployments.getExtendedArtifact(
-            contractName
-        )
-        if (extendedArtifact) {
-            console.log(
-                `Resolved ABI for ${contractName} with extendedArtifact`
-            )
-            return extendedArtifact.abi
-        }
-        const deployment = await this.deployments.getOrNull(contractName)
-        if (deployment) {
-            console.log(`Resolved ABI for ${contractName} with deployment`)
-            return deployment.abi
-        }
-        throw new Error(
-            `DeploymentsResolver cannot resolve abi for contract ${contractName}`
-        )
-    }
-
-    async getStartBlock(contractName: string): Promise<number | undefined> {
-        const deployment = await this.deployments.get(contractName)
-        const blockNumber = deployment.receipt?.blockNumber
-        if (blockNumber) {
-            console.log(
-                `Block number of ${contractName} resolved to ${blockNumber} by DeploymentsResolver`
-            )
-        } else {
-            console.log(`Block number undefined for contract ${contractName}`)
-        }
-        return hexToNumber(blockNumber)
-    }
-}
-
-/**
- * Resolver from a specific deployment file
- */
-class DeploymentResolver implements Resolver {
-    private deployment: Deployment
-
-    constructor(deployment: Deployment) {
-        this.deployment = deployment
-    }
-
-    async getAddress(contractName: string): Promise<string> {
-        if (contractName.startsWith("0x")) {
-            return contractName
-        }
-        console.log(
-            `${contractName} resolved to ${this.deployment.address} by DeploymentResolver`
-        )
-        return this.deployment.address
-    }
-
-    async getAbi(contractName: string): Promise<any> {
-        return this.deployment.abi
-    }
-
-    async getStartBlock(contractName: string): Promise<number | undefined> {
-        const blockNumber = this.deployment.receipt?.blockNumber
-        if (blockNumber) {
-            console.log(
-                `Block number of ${contractName} resolved to ${blockNumber} by DeploymentResolver`
-            )
-        } else {
-            console.log(`Block number undefined for contract ${contractName}`)
-        }
-        return hexToNumber(blockNumber)
-    }
-}
-
-/**
- * Resolver from a deployment export file
- */
-class ExportResolver implements Resolver {
-    private exportFile: Export
-
-    constructor(exportFile: Export) {
-        this.exportFile = exportFile
-    }
-
-    async getAddress(contractName: string): Promise<string> {
-        if (contractName.startsWith("0x")) {
-            return contractName
-        }
-        const contract = this.exportFile.contracts[contractName]
-        console.log(
-            `${contractName} resolved to ${contract.address} by ExportResolver`
-        )
-        return contract.address
-    }
-
-    async getAbi(contractName: string): Promise<any> {
-        const contract = this.exportFile.contracts[contractName]
-        return contract.abi
-    }
-
-    async getStartBlock(_contractName: string): Promise<number | undefined> {
-        console.log(`Block number undefined for contract ${_contractName}`)
-        return undefined
-    }
-}
-
-/**
- * Resolver from export artifact file
- */
-class ExtendedArtifactResolver implements Resolver {
-    private artifact: ExtendedArtifact
-    constructor(artifact: ExtendedArtifact) {
-        this.artifact = artifact
-    }
-
-    async getAddress(contractName: string): Promise<string> {
-        throw new Error(
-            `ExtendedArtifactResolver cannot resolve address for contract ${contractName}`
-        )
-    }
-
-    async getAbi(_contractName: string): Promise<any> {
-        return this.artifact.abi
-    }
-
-    async getStartBlock(contractName: string): Promise<number | undefined> {
-        throw new Error(
-            `ExtendedArtifactResolver cannot resolve start block for contract ${contractName}`
-        )
-    }
 }
 
 export interface SubgraphOptions {
@@ -225,7 +42,7 @@ export interface SubgraphOptions {
 
 const subgraph = async (
     hre: HardhatRuntimeEnvironment,
-    options?: SubgraphOptions
+    options: SubgraphOptions
 ) => {
     const { deployments } = hre
     const inputFile =
@@ -233,7 +50,11 @@ const subgraph = async (
     const outputFile =
         options?.outputFile || (DEFAULT_OPTIONS.outputFile as string)
     const abiDir = options?.abiDir || (DEFAULT_OPTIONS.abiDir as string)
-    const deploymentsResolver = new DeploymentsResolver(deployments)
+    const primaryResolver = options.exportFile
+        ? new ExportResolver(
+              JSON.parse(fs.readFileSync(options.exportFile).toString())
+          )
+        : new DeploymentsResolver(deployments)
 
     // load input yaml template file
     console.log(`Loading ${inputFile}`)
@@ -249,7 +70,7 @@ const subgraph = async (
             if (dataSource.kind == "ethereum/contract") {
                 // assume the `address` is the contract name
                 let contractName = dataSource.source.address
-                let resolver: Resolver = deploymentsResolver
+                let resolver: Resolver = primaryResolver
 
                 if (contractName.indexOf(":") >= 0) {
                     const components = contractName.split(":")
@@ -303,13 +124,11 @@ const subgraph = async (
             dataSource.network = hre.network.name
 
             if (dataSource.kind == "ethereum/contract") {
-                let resolver: Resolver = deploymentsResolver
-
                 if (dataSource.mapping.abis) {
                     for (const abi of dataSource.mapping.abis) {
                         // extract ABI to dedicated file assuming name is the name of contract
                         const contractName = abi.name
-                        const abiDefinition = await resolver.getAbi(
+                        const abiDefinition = await primaryResolver.getAbi(
                             contractName
                         )
                         const dir = abi.file || abiDir
@@ -378,6 +197,12 @@ task("subgraph", "Generate thegraph config from a template")
         "abiDir",
         "Directory to export required ABIs",
         DEFAULT_OPTIONS.abiDir,
+        types.string
+    )
+    .addOptionalParam(
+        "exportFile",
+        "Deployment export file to read address and ABI from",
+        undefined,
         types.string
     )
     .setAction(async (taskArgs, hre) => {

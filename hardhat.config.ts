@@ -15,7 +15,7 @@ import { HttpNetworkUserConfig } from "hardhat/types"
 
 import "@nomiclabs/hardhat-ethers"
 import "hardhat-deploy"
-import "./src/subgraph"
+import "./src/tasks/subgraph"
 
 // read MNEMONIC from env variable
 let mnemonic = process.env.MNEMONIC
@@ -80,7 +80,8 @@ const config: HardhatUserConfig = {
                 deploy: "node_modules/@cartesi/pos/dist/deploy",
             },
             {
-                artifacts: "node_modules/@cartesi/staking-pool/export/artifacts",
+                artifacts:
+                    "node_modules/@cartesi/staking-pool/export/artifacts",
                 deploy: "node_modules/@cartesi/staking-pool/dist/deploy",
             },
         ],

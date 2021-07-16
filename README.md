@@ -14,8 +14,8 @@ yarn
 yarn prepare:goerli
 yarn codegen subgraph.goerli.yaml
 yarn build subgraph.goerli.yaml
-yarn create-local
-yarn deploy-local
+yarn create:localhost
+yarn deploy:localhost
 ```
 
 ## Schema
@@ -39,8 +39,8 @@ Please note we have a [Code of Conduct](CODE_OF_CONDUCT.md), please follow it in
 
 ## Authors
 
-* *Danilo Tuler*
-* *Alexander Bai*
+-   _Danilo Tuler_
+-   _Alexander Bai_
 
 ## License
 
