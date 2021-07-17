@@ -24,6 +24,8 @@ type StakingPool @entity {
     user: User!
     manager: ID!
     paused: Boolean!
+    shares: BigInt!
+    amount: BigInt!
     fee: StakingPoolFee!
     totalUsers: Int!
     totalCommission: BigInt!
@@ -68,7 +70,8 @@ type PoolStake @entity {
     id: ID!
     pool: StakingPool!
     user: PoolUser!
-    value: BigInt!
+    amount: BigInt!
+    shares: BigInt!
     timestamp: BigInt!
 }
 
@@ -76,7 +79,8 @@ type PoolUnstake @entity {
     id: ID!
     pool: StakingPool!
     user: PoolUser!
-    value: BigInt!
+    shares: BigInt!
+    amount: BigInt!
     timestamp: BigInt!
 }
 
@@ -84,7 +88,7 @@ type PoolWithdraw @entity {
     id: ID!
     pool: StakingPool!
     user: PoolUser!
-    value: BigInt!
+    amount: BigInt!
     timestamp: BigInt!
 }
 
@@ -92,10 +96,9 @@ type PoolBalance @entity {
     id: ID!
     pool: StakingPool!
     user: PoolUser
-    stakedBalance: BigInt!
-    totalStaked: BigInt!
-    totalUnstaked: BigInt!
-    totalWithdraw: BigInt!
+    shares: BigInt!
+    released: BigInt!
+    unstakeTimestamp: BigInt!
 }
 
 type Node @entity {

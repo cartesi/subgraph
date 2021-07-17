@@ -26,7 +26,11 @@ import {
     GasTaxCommission,
     StakingPoolImpl,
 } from "../generated/templates"
-import { Stake, Unstake, Withdraw } from "../generated/StakingImpl/StakingImpl"
+import {
+    Stake,
+    Unstake,
+    Withdraw,
+} from "../generated/templates/StakingPoolImpl/StakingPoolImpl"
 import { NewFlatRateCommissionStakingPool } from "../generated/StakingPoolFactoryImpl/StakingPoolFactoryImpl"
 import { NewGasTaxCommissionStakingPool } from "../generated/StakingPoolFactoryImpl/StakingPoolFactoryImpl"
 import * as user from "./user"
@@ -100,10 +104,9 @@ function loadOrCreateBalance(pool: Address, user: Address): PoolBalance {
         balance = new PoolBalance(id)
         balance.pool = pool.toHex()
         balance.user = user.toHex()
-        balance.stakedBalance = BigInt.fromI32(0)
-        balance.totalStaked = BigInt.fromI32(0)
-        balance.totalUnstaked = BigInt.fromI32(0)
-        balance.totalWithdraw = BigInt.fromI32(0)
+        balance.shares = BigInt.fromI32(0)
+        balance.released = BigInt.fromI32(0)
+        balance.unstakeTimestamp = BigInt.fromI32(0)
     }
     return balance!
 }
@@ -121,6 +124,8 @@ function createPool(
 
     pool.manager = manager.toHex()
     pool.user = u.id
+    pool.amount = BigInt.fromI32(0)
+    pool.shares = BigInt.fromI32(0)
     pool.totalUsers = 0
     pool.totalCommission = BigInt.fromI32(0)
     pool.timestamp = timestamp
@@ -138,26 +143,34 @@ export function handleStake(event: Stake): void {
     let user = new PoolUser(event.params.user.toHex())
     user.save()
 
-    // save entity
+    // save stake entity
     let entity = new PoolStake(event.transaction.hash.toHex())
     entity.pool = event.address.toHex()
     entity.user = event.params.user.toHex()
-    entity.value = event.params.amount
+    entity.amount = event.params.amount
+    entity.shares = event.params.shares
     entity.timestamp = event.block.timestamp
     entity.save()
 
     // update balance
     let balance = loadOrCreateBalance(event.address, event.params.user)
 
-    if (balance.stakedBalance.isZero()) {
+    if (balance.shares.isZero()) {
+        // increment number of users
         let pool = StakingPool.load(event.address.toHex())!
         pool.totalUsers++
         pool.save()
     }
 
-    balance.stakedBalance = balance.stakedBalance.plus(event.params.amount)
-    balance.totalStaked = balance.totalStaked.plus(event.params.amount)
+    balance.shares = balance.shares.plus(event.params.shares)
+    balance.unstakeTimestamp = event.params.unlockTimestamp
     balance.save()
+
+    // update pool
+    let pool = StakingPool.load(event.address.toHex())!
+    pool.amount = pool.amount.plus(event.params.amount)
+    pool.shares = pool.shares.plus(event.params.shares)
+    pool.save()
 }
 
 export function handleUnstake(event: Unstake): void {
@@ -165,15 +178,26 @@ export function handleUnstake(event: Unstake): void {
     let entity = new PoolUnstake(event.transaction.hash.toHex())
     entity.pool = event.address.toHex()
     entity.user = event.params.user.toHex()
-    entity.value = event.params.amount
+    entity.shares = event.params.shares
+    entity.amount = event.params.amount
     entity.timestamp = event.block.timestamp
     entity.save()
 
     // update balance
     let balance = loadOrCreateBalance(event.address, event.params.user)
-    balance.stakedBalance = balance.stakedBalance.minus(event.params.amount)
-    balance.totalUnstaked = balance.totalUnstaked.plus(event.params.amount)
+    balance.shares = balance.shares.minus(event.params.shares)
+    balance.released = balance.released.plus(event.params.amount)
     balance.save()
+
+    // update pool
+    let pool = StakingPool.load(event.address.toHex())!
+    if (balance.shares.isZero()) {
+        // decrement number of users
+        pool.totalUsers--
+    }
+    pool.shares = pool.shares.minus(event.params.shares)
+    pool.amount = pool.amount.minus(event.params.amount)
+    pool.save()
 }
 
 export function handleWithdraw(event: Withdraw): void {
@@ -181,13 +205,13 @@ export function handleWithdraw(event: Withdraw): void {
     let entity = new PoolWithdraw(event.transaction.hash.toHex())
     entity.pool = event.address.toHex()
     entity.user = event.params.user.toHex()
-    entity.value = event.params.amount
+    entity.amount = event.params.amount
     entity.timestamp = event.block.timestamp
     entity.save()
 
     // update balance
     let balance = loadOrCreateBalance(event.address, event.params.user)
-    balance.totalWithdraw = balance.totalWithdraw.plus(event.params.amount)
+    balance.released = BigInt.fromI32(0)
     balance.save()
 }
 
@@ -199,14 +223,15 @@ export function handleBlockProduced(event: BlockProduced): void {
         block.save()
     }
 
+    let pool = StakingPool.load(event.address.toHex())!
+
     // increment the total commission of the pool
-    let pool = StakingPool.load(event.address.toHex())
-    if (pool) {
-        pool.totalCommission = pool.totalCommission.plus(
-            event.params.commission
-        )
-        pool.save()
-    }
+    pool.totalCommission = pool.totalCommission.plus(event.params.commission)
+
+    // increment the pool amount
+    let remainingReward = event.params.reward.minus(event.params.commission)
+    pool.amount = pool.amount.plus(remainingReward)
+    pool.save()
 }
 
 export function handlePaused(event: Paused): void {

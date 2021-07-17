@@ -21,6 +21,8 @@ totalReward
 +fee
 manager
 paused
+shares
+amount
 totalUsers
 totalCommission
 timestamp
@@ -86,30 +88,31 @@ timestamp
 *id
 +pool
 +user
-stakedBalance
-totalStaked
-totalUnstaked
-totalWithdraw
+shares
+released
+unstakeTimestamp
 
 [PoolStake] {bgcolor: "#fbfbdb"}
 *id
 +pool
 +user
-value
+amount
+shares
 timestamp
 
 [PoolUnstake] {bgcolor: "#fbfbdb"}
 *id
 +pool
 +user
-value
+amount
+shares
 timestamp
 
 [PoolWithdraw] {bgcolor: "#fbfbdb"}
 *id
 +pool
 +user
-value
+amount
 timestamp
 
 [Summary]
