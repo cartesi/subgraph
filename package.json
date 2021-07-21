@@ -1,7 +1,7 @@
 {
     "name": "cartesi-subgraph",
     "license": "Apache-2.0",
-    "version": "2.0.0-alpha.0",
+    "version": "2.0.0-alpha.1",
     "scripts": {
         "codegen": "graph codegen",
         "clean": "rimraf abi/**/*.json && rimraf build && rimraf generated",
@@ -25,20 +25,20 @@
         "@cartesi/util": "^1.0.1",
         "@cartesi/pos": "^1.1.2",
         "@cartesi/pos-1.0": "npm:@cartesi/pos@1.0.0",
-        "@cartesi/staking-pool": "^1.0.0-alpha.2",
+        "@cartesi/staking-pool": "^1.0.0-alpha.3",
         "@graphprotocol/graph-cli": "^0.20.0",
         "@graphprotocol/graph-ts": "^0.20.0"
     },
     "devDependencies": {
         "@nomiclabs/hardhat-ethers": "^2.0.2",
-        "@types/js-yaml": "^4.0.1",
-        "ethers": "^5.4.0",
-        "hardhat": "^2.4.1",
-        "hardhat-deploy": "^0.8.9",
+        "@types/js-yaml": "^4.0.2",
+        "ethers": "^5.4.1",
+        "hardhat": "^2.4.3",
+        "hardhat-deploy": "^0.8.11",
         "js-yaml": "^4.1.0",
         "prettier": "^2.3.2",
         "rimraf": "^3.0.2",
-        "ts-node": "^10.0.0",
-        "typescript": "^4.3.4"
+        "ts-node": "^10.1.0",
+        "typescript": "^4.3.5"
     }
 }
