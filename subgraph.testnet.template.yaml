@@ -207,17 +207,18 @@ templates:
               - PoolUnstake
               - PoolUser
               - PoolWithdraw
+              - StakingPool
           abis:
               - name: StakingPoolImpl
                 file:
           eventHandlers:
-              - event: "Stake(indexed address,uint256,uint256)"
+              - event: "Stake(indexed address,uint256,uint256,uint256)"
                 handler: handleStake
               - event: "Unstake(indexed address,uint256,uint256)"
                 handler: handleUnstake
               - event: "Withdraw(indexed address,uint256)"
                 handler: handleWithdraw
-              - event: "BlockProduced(uint256,uint256,uint256,uint256)"
+              - event: "BlockProduced(uint256,uint256)"
                 handler: handleBlockProduced
               - event: "Paused(address)"
                 handler: handlePaused
