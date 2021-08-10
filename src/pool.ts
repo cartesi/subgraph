@@ -20,6 +20,7 @@ import {
     PoolUnstake,
     PoolUser,
     PoolWithdraw,
+    PoolDeposit,
 } from "../generated/schema"
 import {
     FlatRateCommission,
@@ -27,6 +28,7 @@ import {
     StakingPoolImpl,
 } from "../generated/templates"
 import {
+    Deposit,
     Stake,
     Unstake,
     Withdraw,
@@ -105,8 +107,8 @@ function loadOrCreateBalance(pool: Address, user: Address): PoolBalance {
         balance.pool = pool.toHex()
         balance.user = user.toHex()
         balance.shares = BigInt.fromI32(0)
-        balance.released = BigInt.fromI32(0)
-        balance.unstakeTimestamp = BigInt.fromI32(0)
+        balance.balance = BigInt.fromI32(0)
+        balance.stakeTimestamp = BigInt.fromI32(0)
     }
     return balance!
 }
@@ -138,6 +140,34 @@ function createPool(
     return pool
 }
 
+export function handleDeposit(event: Deposit): void {
+    // save user
+    let user = new PoolUser(event.params.user.toHex())
+    user.save()
+
+    // save deposit entity
+    let entity = new PoolDeposit(event.transaction.hash.toHex())
+    entity.pool = event.address.toHex()
+    entity.user = event.params.user.toHex()
+    entity.amount = event.params.amount
+    entity.timestamp = event.block.timestamp
+    entity.save()
+
+    // update balance
+    let balance = loadOrCreateBalance(event.address, event.params.user)
+
+    if (balance.shares.isZero()) {
+        // increment number of users
+        let pool = StakingPool.load(event.address.toHex())!
+        pool.totalUsers++
+        pool.save()
+    }
+
+    balance.balance = balance.balance.plus(event.params.amount)
+    balance.stakeTimestamp = event.params.stakeTimestamp
+    balance.save()
+}
+
 export function handleStake(event: Stake): void {
     // save user
     let user = new PoolUser(event.params.user.toHex())
@@ -163,7 +193,7 @@ export function handleStake(event: Stake): void {
     }
 
     balance.shares = balance.shares.plus(event.params.shares)
-    balance.unstakeTimestamp = event.params.unlockTimestamp
+    balance.balance = balance.balance.minus(event.params.amount)
     balance.save()
 
     // update pool
@@ -186,7 +216,7 @@ export function handleUnstake(event: Unstake): void {
     // update balance
     let balance = loadOrCreateBalance(event.address, event.params.user)
     balance.shares = balance.shares.minus(event.params.shares)
-    balance.released = balance.released.plus(event.params.amount)
+    balance.balance = balance.balance.plus(event.params.amount)
     balance.save()
 
     // update pool
@@ -211,7 +241,7 @@ export function handleWithdraw(event: Withdraw): void {
 
     // update balance
     let balance = loadOrCreateBalance(event.address, event.params.user)
-    balance.released = BigInt.fromI32(0)
+    balance.balance = balance.balance.minus(event.params.amount)
     balance.save()
 }
 

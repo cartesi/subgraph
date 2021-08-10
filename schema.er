@@ -89,8 +89,8 @@ timestamp
 +pool
 +user
 shares
-released
-unstakeTimestamp
+balance
+stakeTimestamp
 
 [PoolStake] {bgcolor: "#fbfbdb"}
 *id

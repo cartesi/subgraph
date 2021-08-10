@@ -66,6 +66,14 @@ type Withdraw @entity {
     timestamp: BigInt!
 }
 
+type PoolDeposit @entity {
+    id: ID!
+    pool: StakingPool!
+    user: PoolUser!
+    amount: BigInt!
+    timestamp: BigInt!
+}
+
 type PoolStake @entity {
     id: ID!
     pool: StakingPool!
@@ -97,8 +105,8 @@ type PoolBalance @entity {
     pool: StakingPool!
     user: PoolUser
     shares: BigInt!
-    released: BigInt!
-    unstakeTimestamp: BigInt!
+    balance: BigInt!
+    stakeTimestamp: BigInt!
 }
 
 type Node @entity {

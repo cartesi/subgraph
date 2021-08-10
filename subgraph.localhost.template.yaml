@@ -162,7 +162,9 @@ templates:
               - name: StakingPoolImpl
                 file:
           eventHandlers:
-              - event: "Stake(indexed address,uint256,uint256,uint256)"
+              - event: "Deposit(indexed address,uint256,uint256)"
+                handler: handleDeposit
+              - event: "Stake(indexed address,uint256,uint256)"
                 handler: handleStake
               - event: "Unstake(indexed address,uint256,uint256)"
                 handler: handleUnstake
