@@ -192,7 +192,7 @@ templates:
               - name: FlatRateCommission
                 file:
           eventHandlers:
-              - event: "FlatRateChanged(uint256)"
+              - event: "FlatRateChanged(uint256,uint256)"
                 handler: handleFlatRateChanged
           file: ./src/fee.ts
     - kind: ethereum/contract
@@ -210,6 +210,6 @@ templates:
               - name: GasTaxCommission
                 file:
           eventHandlers:
-              - event: "GasTaxChanged(uint256)"
+              - event: "GasTaxChanged(uint256,uint256)"
                 handler: handleGasTaxChanged
           file: ./src/fee.ts
