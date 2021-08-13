@@ -1,26 +1,26 @@
 name: Build
 on: [push]
 jobs:
-  build:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
-        with:
-          node-version: '15'
-      
-      - run: |
-          echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
-          yarn install
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-      
-      - name: Code format check
-        run: yarn prettier
+    build:
+        runs-on: ubuntu-20.04
+        steps:
+            - uses: actions/checkout@v2
+            - uses: actions/setup-node@v2
+              with:
+                  node-version: "16"
 
-      - run: yarn prepare:goerli
-        env:
-          PROJECT_ID: ${{ secrets.PROJECT_ID }}
-        
-      - run: yarn codegen subgraph.goerli.yaml
-      - run: yarn build subgraph.goerli.yaml
+            - run: |
+                  echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+                  yarn install
+              env:
+                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            - name: Code format check
+              run: yarn prettier
+
+            - run: yarn prepare:goerli
+              env:
+                  PROJECT_ID: ${{ secrets.PROJECT_ID }}
+
+            - run: yarn codegen subgraph.goerli.yaml
+            - run: yarn build subgraph.goerli.yaml
