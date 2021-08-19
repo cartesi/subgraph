@@ -155,14 +155,6 @@ export function handleDeposit(event: Deposit): void {
 
     // update balance
     let balance = loadOrCreateBalance(event.address, event.params.user)
-
-    if (balance.shares.isZero()) {
-        // increment number of users
-        let pool = StakingPool.load(event.address.toHex())!
-        pool.totalUsers++
-        pool.save()
-    }
-
     balance.balance = balance.balance.plus(event.params.amount)
     balance.stakeTimestamp = event.params.stakeTimestamp
     balance.save()
