@@ -22,23 +22,23 @@
         "prettier": "prettier --check **/*.ts"
     },
     "dependencies": {
-        "@cartesi/util": "^1.0.1",
         "@cartesi/pos": "^1.1.2",
         "@cartesi/pos-1.0": "npm:@cartesi/pos@1.0.0",
-        "@cartesi/staking-pool": "^1.0.0-beta.0",
-        "@graphprotocol/graph-cli": "^0.20.1",
+        "@cartesi/staking-pool": "^1.0.0-beta.2",
+        "@cartesi/util": "^1.0.1",
+        "@graphprotocol/graph-cli": "^0.21.1",
         "@graphprotocol/graph-ts": "^0.20.1"
     },
     "devDependencies": {
         "@nomiclabs/hardhat-ethers": "^2.0.2",
-        "@types/js-yaml": "^4.0.2",
-        "ethers": "^5.4.4",
-        "hardhat": "^2.6.0",
-        "hardhat-deploy": "^0.8.11",
+        "@types/js-yaml": "^4.0.3",
+        "ethers": "^5.4.6",
+        "hardhat": "^2.6.3",
+        "hardhat-deploy": "^0.9.1",
         "js-yaml": "^4.1.0",
         "prettier": "^2.3.2",
         "rimraf": "^3.0.2",
-        "ts-node": "^10.2.0",
-        "typescript": "^4.3.5"
+        "ts-node": "^10.2.1",
+        "typescript": "^4.4.2"
     }
 }
