@@ -179,14 +179,17 @@ dataSources:
           language: wasm/assemblyscript
           entities:
               - StakingPool
+              - StakingPoolFee
               - Summary
               - User
           abis:
               - name: StakingPoolFactoryImpl
                 file:
           eventHandlers:
-              - event: "NewFlatRateCommissionStakingPool(indexed address,uint256)"
-                handler: handleNewStakingPool
+              - event: "NewFlatRateCommissionStakingPool(indexed address,address)"
+                handler: handleNewFlatRateStakingPool
+              - event: "NewGasTaxCommissionStakingPool(indexed address,address)"
+                handler: handleNewGasTaxStakingPool
           file: ./src/pool.ts
 templates:
     - kind: ethereum/contract
@@ -204,14 +207,59 @@ templates:
               - PoolUnstake
               - PoolUser
               - PoolWithdraw
+              - StakingPool
           abis:
               - name: StakingPoolImpl
                 file:
           eventHandlers:
+              - event: "Deposit(indexed address,uint256,uint256)"
+                handler: handleDeposit
               - event: "Stake(indexed address,uint256,uint256)"
                 handler: handleStake
               - event: "Unstake(indexed address,uint256,uint256)"
                 handler: handleUnstake
               - event: "Withdraw(indexed address,uint256)"
                 handler: handleWithdraw
+              - event: "BlockProduced(uint256,uint256)"
+                handler: handleBlockProduced
+              - event: "Paused(address)"
+                handler: handlePaused
+              - event: "Unpaused(address)"
+                handler: handleUnpaused
           file: ./src/pool.ts
+    - kind: ethereum/contract
+      name: FlatRateCommission
+      network:
+      source:
+          abi: FlatRateCommission
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.4
+          language: wasm/assemblyscript
+          entities:
+              - StakingPoolFee
+          abis:
+              - name: FlatRateCommission
+                file:
+          eventHandlers:
+              - event: "FlatRateChanged(uint256,uint256)"
+                handler: handleFlatRateChanged
+          file: ./src/fee.ts
+    - kind: ethereum/contract
+      name: GasTaxCommission
+      network:
+      source:
+          abi: GasTaxCommission
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.4
+          language: wasm/assemblyscript
+          entities:
+              - StakingPoolFee
+          abis:
+              - name: GasTaxCommission
+                file:
+          eventHandlers:
+              - event: "GasTaxChanged(uint256,uint256)"
+                handler: handleGasTaxChanged
+          file: ./src/fee.ts
