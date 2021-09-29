@@ -10,17 +10,19 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-import { Address, BigInt } from "@graphprotocol/graph-ts"
+import { Address, BigDecimal, BigInt } from "@graphprotocol/graph-ts"
 import {
     Block,
     StakingPool,
     StakingPoolFee,
     PoolBalance,
+    PoolDeposit,
+    PoolShareValue,
     PoolStake,
     PoolUnstake,
     PoolUser,
     PoolWithdraw,
-    PoolDeposit,
+    User,
 } from "../generated/schema"
 import {
     FlatRateCommission,
@@ -246,14 +248,32 @@ export function handleBlockProduced(event: BlockProduced): void {
     }
 
     let pool = StakingPool.load(event.address.toHex())!
+    let user = User.load(event.address.toHex())!
+    let totalReward = user.totalReward
 
     // increment the total commission of the pool
-    pool.totalCommission = pool.totalCommission.plus(event.params.commission)
+    let totalCommission = pool.totalCommission.plus(event.params.commission)
+    pool.totalCommission = totalCommission
+
+    // calculate the commission percentage
+    let commissionPercentage = totalCommission.divDecimal(
+        totalReward.toBigDecimal()
+    )
+    pool.commissionPercentage = commissionPercentage
 
     // increment the pool amount
     let remainingReward = event.params.reward.minus(event.params.commission)
     pool.amount = pool.amount.plus(remainingReward)
     pool.save()
+
+    // save pool share value
+    let shareValue = new PoolShareValue(event.transaction.hash.toHex())
+    shareValue.pool = pool.id
+    shareValue.timestamp = event.block.timestamp
+    shareValue.value = pool.amount
+        .times(BigInt.fromString("1000000000"))
+        .divDecimal(pool.shares.toBigDecimal())
+    shareValue.save()
 }
 
 export function handlePaused(event: Paused): void {

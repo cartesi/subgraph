@@ -29,6 +29,7 @@ type StakingPool @entity {
     fee: StakingPoolFee!
     totalUsers: Int!
     totalCommission: BigInt!
+    commissionPercentage: BigDecimal
     timestamp: BigInt!
 }
 
@@ -107,6 +108,13 @@ type PoolBalance @entity {
     shares: BigInt!
     balance: BigInt!
     stakeTimestamp: BigInt!
+}
+
+type PoolShareValue @entity {
+    id: ID!
+    pool: StakingPool!
+    timestamp: BigInt!
+    value: BigDecimal!
 }
 
 type Node @entity {
