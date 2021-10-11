@@ -30,5 +30,5 @@ export function loadOrCreate(address: string, timestamp: BigInt): Protocol {
 
         s.save()
     }
-    return protocol!
+    return protocol
 }

@@ -13,7 +13,7 @@ dataSources:
           startBlock:
       mapping:
           kind: ethereum/events
-          apiVersion: 0.0.4
+          apiVersion: 0.0.5
           language: wasm/assemblyscript
           entities:
               - Stake
@@ -41,7 +41,7 @@ dataSources:
           startBlock:
       mapping:
           kind: ethereum/events
-          apiVersion: 0.0.4
+          apiVersion: 0.0.5
           language: wasm/assemblyscript
           entities:
               - Summary
@@ -73,7 +73,7 @@ dataSources:
           startBlock:
       mapping:
           kind: ethereum/events
-          apiVersion: 0.0.4
+          apiVersion: 0.0.5
           language: wasm/assemblyscript
           entities:
               - Block
@@ -100,7 +100,7 @@ dataSources:
           startBlock:
       mapping:
           kind: ethereum/events
-          apiVersion: 0.0.4
+          apiVersion: 0.0.5
           language: wasm/assemblyscript
           entities:
               - Block
@@ -125,7 +125,7 @@ dataSources:
           startBlock:
       mapping:
           kind: ethereum/events
-          apiVersion: 0.0.4
+          apiVersion: 0.0.5
           language: wasm/assemblyscript
           entities:
               - StakingPool
@@ -149,7 +149,7 @@ templates:
           abi: StakingPoolImpl
       mapping:
           kind: ethereum/events
-          apiVersion: 0.0.4
+          apiVersion: 0.0.5
           language: wasm/assemblyscript
           entities:
               - PoolBalance
@@ -184,7 +184,7 @@ templates:
           abi: FlatRateCommission
       mapping:
           kind: ethereum/events
-          apiVersion: 0.0.4
+          apiVersion: 0.0.5
           language: wasm/assemblyscript
           entities:
               - StakingPoolFee
@@ -202,7 +202,7 @@ templates:
           abi: GasTaxCommission
       mapping:
           kind: ethereum/events
-          apiVersion: 0.0.4
+          apiVersion: 0.0.5
           language: wasm/assemblyscript
           entities:
               - StakingPoolFee

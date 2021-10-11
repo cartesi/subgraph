@@ -112,7 +112,7 @@ function loadOrCreateBalance(pool: Address, user: Address): PoolBalance {
         balance.balance = BigInt.fromI32(0)
         balance.stakeTimestamp = BigInt.fromI32(0)
     }
-    return balance!
+    return balance
 }
 
 function createPool(

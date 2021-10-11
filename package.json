@@ -1,7 +1,7 @@
 {
     "name": "cartesi-subgraph",
     "license": "Apache-2.0",
-    "version": "2.0.0-beta.0",
+    "version": "2.1.0-alpha.0",
     "scripts": {
         "codegen": "graph codegen",
         "clean": "rimraf abi/**/*.json && rimraf build && rimraf generated",
@@ -10,6 +10,7 @@
         "remove:localhost": "graph remove --node http://localhost:8020/ cartesi/pos",
         "deploy:localhost": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 cartesi/pos subgraph.localhost.yaml",
         "deploy:mainnet": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ cartesi/pos",
+        "deploy:mainnet-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 cartesi/pos subgraph.yaml",
         "deploy:mainnet-staging": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ cartesi/pos-staging",
         "deploy:goerli": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ cartesi/pos-goerli subgraph.goerli.yaml",
         "deploy:goerli-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 cartesi/pos subgraph.goerli.yaml",
@@ -32,19 +33,20 @@
         "@cartesi/pos-1.0": "npm:@cartesi/pos@1.0.0",
         "@cartesi/staking-pool": "^1.0.0",
         "@cartesi/util": "^1.0.1",
-        "@graphprotocol/graph-cli": "^0.21.1",
-        "@graphprotocol/graph-ts": "^0.20.1"
+        "@graphprotocol/graph-cli": "^0.22.4",
+        "@graphprotocol/graph-ts": "^0.22.1",
+        "matchstick-as": "^0.1.5"
     },
     "devDependencies": {
         "@nomiclabs/hardhat-ethers": "^2.0.2",
         "@types/js-yaml": "^4.0.3",
-        "ethers": "^5.4.6",
-        "hardhat": "^2.6.4",
-        "hardhat-deploy": "^0.9.1",
+        "ethers": "^5.5.1",
+        "hardhat": "^2.6.6",
+        "hardhat-deploy": "^0.9.4",
         "js-yaml": "^4.1.0",
         "prettier": "^2.4.0",
         "rimraf": "^3.0.2",
-        "ts-node": "^10.2.1",
-        "typescript": "^4.4.2"
+        "ts-node": "^10.3.0",
+        "typescript": "^4.4.4"
     }
 }

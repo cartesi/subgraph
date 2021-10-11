@@ -30,5 +30,5 @@ export function loadOrCreate(): Summary {
         summary.save()
     }
 
-    return summary!
+    return summary
 }

@@ -43,7 +43,7 @@ export function loadOrCreate(
         s.save()
     }
 
-    return node!
+    return node
 }
 
 export function handleJobOffer(event: JobOffer): void {

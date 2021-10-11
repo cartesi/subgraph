@@ -39,5 +39,5 @@ export function loadOrCreate(
         s.totalChains++
         s.save()
     }
-    return chain!
+    return chain
 }

@@ -37,7 +37,7 @@ export function loadOrCreate(address: Address): User {
         s.save()
     }
 
-    return user!
+    return user
 }
 
 export function handleStakeCall(call: StakeCall): void {
