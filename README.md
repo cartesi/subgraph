@@ -30,6 +30,14 @@ docker run -i cartesicorp/erd -f png < schema.er > schema.png
 
 For additional options run `docker run cartesicorp/erd --help`.
 
+## Testing
+
+The [matchstick framework](https://github.com/LimeChain/matchstick) can be used to run unit tests of the mapping code with mock data. This is very useful because it avoids the deployment and sync cycle, which can take a lot of time.
+
+Matchstick basically works by running the WASM mapping code with a rust runtime that can inject arbitrary payloads to the mapping handler functions. A set of utility functions is provided by the `matchstick-as` npm library.
+
+This [article](https://limechain.tech/blog/matchstick-what-it-is-and-how-to-use-it/) contains further information about how it works.
+
 ## Contributing
 
 Thank you for your interest in Cartesi! Head over to our [Contributing Guidelines](CONTRIBUTING.md) for instructions on how to sign our Contributors Agreement and get started with
