@@ -18,6 +18,7 @@ type User @entity {
     maturingTimestamp: BigInt!
     releasingBalance: BigInt!
     releasingTimestamp: BigInt!
+    balance: BigInt!
     totalBlocks: Int!
     totalReward: BigInt!
     pool: StakingPool

@@ -1,8 +1,11 @@
 [User]
 *id
 stakedBalance
-totalStaked
-totalUnstaked
+maturingBalance
+maturingTimestamp
+releasingBalance
+releasingTimestamp
+balance
 totalBlocks
 totalReward
 +pool

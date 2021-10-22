@@ -19,8 +19,6 @@ import {
 } from "../generated/StakingImpl/StakingImpl"
 import * as summary from "./summary"
 
-export { runTests } from "./tests/staking.test"
-
 export function loadOrCreate(address: Address): User {
     let user = User.load(address.toHex())
 
@@ -31,6 +29,7 @@ export function loadOrCreate(address: Address): User {
         user.maturingTimestamp = BigInt.fromI32(0)
         user.releasingBalance = BigInt.fromI32(0)
         user.releasingTimestamp = BigInt.fromI32(0)
+        user.balance = BigInt.fromI32(0)
         user.totalBlocks = 0
         user.totalReward = BigInt.fromI32(0)
         user.save()
@@ -68,6 +67,10 @@ export function handleStakeEvent(event: StakeEvent): void {
     // new maturing amount is the one that comes in the event
     user.maturingBalance = event.params.amount
     user.maturingTimestamp = event.params.maturationDate
+
+    // user balance regardless maturation
+    user.balance = user.stakedBalance.plus(user.maturingBalance)
+
     user.save()
 
     // create a Stake
@@ -106,6 +109,10 @@ export function handleUnstakeEvent(event: UnstakeEvent): void {
         )
         user.maturingBalance = BigInt.fromI32(0)
     }
+
+    // user balance regardless maturation
+    user.balance = user.stakedBalance.plus(user.maturingBalance)
+
     user.save()
 
     // update global summary
