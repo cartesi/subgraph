@@ -26,7 +26,8 @@
         "prepare:ropsten": "hardhat --network ropsten subgraph --input-file subgraph.testnet.template.yaml --output-file subgraph.ropsten.yaml",
         "prepare:kovan": "hardhat --network kovan subgraph --input-file subgraph.testnet.template.yaml --output-file subgraph.kovan.yaml",
         "prepare:mainnet": "hardhat --network mainnet subgraph",
-        "prettier": "prettier --check **/*.ts"
+        "prettier": "prettier --check **/*.ts",
+        "test": "graph test"
     },
     "dependencies": {
         "@cartesi/pos": "^1.1.2",

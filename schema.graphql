@@ -14,6 +14,10 @@ type Summary @entity {
 type User @entity {
     id: ID!
     stakedBalance: BigInt!
+    maturingBalance: BigInt!
+    maturingTimestamp: BigInt!
+    releasingBalance: BigInt!
+    releasingTimestamp: BigInt!
     totalBlocks: Int!
     totalReward: BigInt!
     pool: StakingPool
