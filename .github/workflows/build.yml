@@ -24,3 +24,4 @@ jobs:
 
             - run: yarn codegen subgraph.goerli.yaml
             - run: yarn build subgraph.goerli.yaml
+            - run: yarn test staking
