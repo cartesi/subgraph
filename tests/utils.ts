@@ -12,17 +12,47 @@
 
 import { assert, newMockEvent } from "matchstick-as"
 import { Address, BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts"
-import {
-    Stake,
-    Unstake,
-    Withdraw,
-} from "../../generated/StakingImpl/StakingImpl"
+import { Stake, Unstake, Withdraw } from "../generated/StakingImpl/StakingImpl"
+import { StakingPoolFee } from "../generated/schema"
+import { FlatRateChanged } from "../generated/templates/FlatRateCommission/FlatRateCommission"
 
 export const txHash = Bytes.fromHexString(
     "0x0000000000000000000000000000000000000000000000000000000000000001"
 ) as Bytes
 export const txTimestamp = 1630000000
 export const ZERO = BigInt.fromI32(0)
+
+export function buildStakingPoolFee(
+    address: Address,
+    pool: Address,
+    timestamp: BigInt
+): StakingPoolFee {
+    let fee = new StakingPoolFee(address.toHex())
+    fee.created = timestamp
+    fee.lastUpdated = timestamp
+    fee.pool = pool.toHex()
+    return fee
+}
+
+export function createFlateRateChangedEvent(
+    address: Address,
+    newRate: BigInt,
+    newTimestamp: BigInt
+): FlatRateChanged {
+    let event = changetype<FlatRateChanged>(newMockEvent())
+    event.transaction.hash = txHash
+    event.block.timestamp = newTimestamp
+    event.address = address
+    event.parameters = new Array()
+    event.parameters.push(
+        new ethereum.EventParam(
+            "newRate",
+            ethereum.Value.fromUnsignedBigInt(newRate)
+        )
+    )
+
+    return event
+}
 
 export function createStakeEvent(
     user: string,

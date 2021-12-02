@@ -14,7 +14,7 @@ import { clearStore, test } from "matchstick-as"
 import { BigInt } from "@graphprotocol/graph-ts"
 import { handleUnstakeEvent } from "../../src/user"
 import { User } from "../../generated/schema"
-import { assertUser, createUnstakeEvent, txTimestamp, ZERO } from "./utils"
+import { assertUser, createUnstakeEvent, txTimestamp, ZERO } from "../utils"
 
 test("unstake(1000)", () => {
     let address = "0x0000000000000000000000000000000000000000"

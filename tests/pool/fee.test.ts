@@ -16,7 +16,7 @@ import {
     buildStakingPoolFee,
     createFlateRateChangedEvent,
     txTimestamp,
-} from "./utils"
+} from "../utils"
 import { handleFlatRateChanged } from "../../src/fee"
 
 let STAKING_POOL_FEE = "StakingPoolFee"

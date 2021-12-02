@@ -20,7 +20,7 @@ import {
     txHash,
     txTimestamp,
     ZERO,
-} from "./utils"
+} from "../utils"
 
 test("stake(1000)", () => {
     let address = "0x0000000000000000000000000000000000000000"

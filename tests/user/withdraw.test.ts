@@ -14,7 +14,7 @@ import { clearStore, test } from "matchstick-as"
 import { BigInt } from "@graphprotocol/graph-ts"
 import { handleWithdrawEvent } from "../../src/user"
 import { User } from "../../generated/schema"
-import { assertUser, createWithdrawEvent, ZERO } from "./utils"
+import { assertUser, createWithdrawEvent, ZERO } from "../utils"
 
 test("withdraw(1000)", () => {
     let address = "0x0000000000000000000000000000000000000000"
