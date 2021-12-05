@@ -15,15 +15,16 @@ import { FlatRateChanged } from "../generated/templates/FlatRateCommission/FlatR
 import { GasTaxChanged } from "../generated/templates/GasTaxCommission/GasTaxCommission"
 
 export function handleFlatRateChanged(event: FlatRateChanged): void {
-    let fee = new StakingPoolFee(event.address.toHex())
+    let fee = StakingPoolFee.load(event.address.toHex())!
     fee.commission = event.params.newRate.toI32()
     fee.lastUpdated = event.block.timestamp
     fee.save()
 }
 
 export function handleGasTaxChanged(event: GasTaxChanged): void {
-    let fee = new StakingPoolFee(event.address.toHex())
-    fee.gas = event.params.newGas.toI32()
+    let fee = StakingPoolFee.load(event.address.toHex())!
+    let newGas = event.params.newGas
+    fee.gas = newGas.isI32() ? newGas.toI32() : i32.MAX_VALUE
     fee.lastUpdated = event.block.timestamp
     fee.save()
 }
