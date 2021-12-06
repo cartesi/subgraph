@@ -17,8 +17,8 @@ import "@nomiclabs/hardhat-ethers"
 import "hardhat-deploy"
 import "./src/tasks/subgraph"
 
-// read MNEMONIC from env variable
-let mnemonic = process.env.MNEMONIC
+// read MNEMONIC and PROJECT_ID from env variable
+const { MNEMONIC: mnemonic, PROJECT_ID: projectId } = process.env as any
 
 const infuraNetwork = (
     network: string,
@@ -26,7 +26,7 @@ const infuraNetwork = (
     gas?: number
 ): HttpNetworkUserConfig => {
     return {
-        url: `https://${network}.infura.io/v3/${process.env.PROJECT_ID}`,
+        url: `https://${network}.infura.io/v3/${projectId}`,
         chainId,
         gas,
         accounts: mnemonic ? { mnemonic } : undefined,
