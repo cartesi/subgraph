@@ -34,8 +34,8 @@
         "@cartesi/pos-1.0": "npm:@cartesi/pos@1.0.0",
         "@cartesi/staking-pool": "^1.0.0",
         "@cartesi/util": "^1.0.1",
-        "@graphprotocol/graph-cli": "^0.22.4",
-        "@graphprotocol/graph-ts": "^0.22.1",
+        "@graphprotocol/graph-cli": "0.23.2",
+        "@graphprotocol/graph-ts": "0.23.1",
         "matchstick-as": "^0.2.0"
     },
     "devDependencies": {
