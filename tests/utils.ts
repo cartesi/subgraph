@@ -15,6 +15,7 @@ import { Address, BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts"
 import { Stake, Unstake, Withdraw } from "../generated/StakingImpl/StakingImpl"
 import { StakingPoolFee } from "../generated/schema"
 import { FlatRateChanged } from "../generated/templates/FlatRateCommission/FlatRateCommission"
+import { GasTaxChanged } from "../generated/templates/GasTaxCommission/GasTaxCommission"
 
 export const txHash = Bytes.fromHexString(
     "0x0000000000000000000000000000000000000000000000000000000000000001"
@@ -34,7 +35,7 @@ export function buildStakingPoolFee(
     return fee
 }
 
-export function createFlateRateChangedEvent(
+export function createFlatRateChangedEvent(
     address: Address,
     newRate: BigInt,
     newTimestamp: BigInt
@@ -52,6 +53,25 @@ export function createFlateRateChangedEvent(
     )
 
     return event
+}
+
+export function createGasTaxChangedEvent(
+    address: Address,
+    newGas: BigInt,
+    newTimestamp: BigInt
+): GasTaxChanged {
+    let evt = changetype<GasTaxChanged>(newMockEvent())
+    evt.transaction.hash = txHash
+    evt.block.timestamp = newTimestamp
+    evt.address = address
+    evt.parameters = new Array()
+    evt.parameters.push(
+        new ethereum.EventParam(
+            "newGas",
+            ethereum.Value.fromUnsignedBigInt(newGas)
+        )
+    )
+    return evt
 }
 
 export function createStakeEvent(

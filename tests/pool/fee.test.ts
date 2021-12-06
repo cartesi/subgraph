@@ -10,14 +10,15 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-import { assert, clearStore, test } from "matchstick-as"
+import { assert, clearStore, test, log } from "matchstick-as"
 import { Address, BigInt } from "@graphprotocol/graph-ts"
 import {
     buildStakingPoolFee,
-    createFlateRateChangedEvent,
+    createFlatRateChangedEvent,
+    createGasTaxChangedEvent,
     txTimestamp,
 } from "../utils"
-import { handleFlatRateChanged } from "../../src/fee"
+import { handleFlatRateChanged, handleGasTaxChanged } from "../../src/fee"
 
 let STAKING_POOL_FEE = "StakingPoolFee"
 
@@ -80,7 +81,7 @@ test("When handling flat-rate-changed event the updated staking-pool-fee should 
     // then generate an flat-rate-changed-event to the same address
     const newRate = BigInt.fromI32(500)
     const newTimestamp = BigInt.fromI32(txTimestamp + 12000)
-    const event = createFlateRateChangedEvent(address, newRate, newTimestamp)
+    const event = createFlatRateChangedEvent(address, newRate, newTimestamp)
 
     handleFlatRateChanged(event)
 
@@ -103,5 +104,38 @@ test("When handling flat-rate-changed event the updated staking-pool-fee should 
         address.toHex(),
         "created",
         timestamp.toString()
+    )
+})
+
+test("Should cap the gas-tax to the max_value of i32", () => {
+    const address = Address.fromString(
+        "0x0000000000000000000000000000000000000000"
+    )
+    const pool = Address.fromString(
+        "0x0000000000000000000000000000000000000001"
+    )
+    const timestamp = BigInt.fromI32(txTimestamp)
+    const fee = buildStakingPoolFee(address, pool, timestamp)
+    fee.gas = 500000
+    fee.save()
+
+    //Max value for i32 is 2147483647, so lets make it 3B
+    const newGas = BigInt.fromString("3147483647")
+    const newTimestamp = BigInt.fromI32(txTimestamp + 40000)
+    const event = createGasTaxChangedEvent(address, newGas, newTimestamp)
+
+    handleGasTaxChanged(event)
+
+    assert.fieldEquals(
+        STAKING_POOL_FEE,
+        address.toHex(),
+        "gas",
+        i32.MAX_VALUE.toString()
+    )
+    assert.fieldEquals(
+        STAKING_POOL_FEE,
+        address.toHex(),
+        "lastUpdated",
+        newTimestamp.toString()
     )
 })
