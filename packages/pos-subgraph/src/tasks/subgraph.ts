@@ -23,6 +23,7 @@ import {
     ExportResolver,
 } from "./resolver"
 import yaml from "js-yaml"
+import { resolveModulePath } from "toolbox"
 
 /**
  * Default options
@@ -80,8 +81,10 @@ const subgraph = async (
                         JSON.parse(fs.readFileSync(exportFile).toString())
                     )
                 } else if (contractName.endsWith(".json")) {
+                    const [moduleName, file] = contractName.split(";")
+                    const fullPath = resolveModulePath(moduleName, file)
                     const deployment: Deployment = JSON.parse(
-                        fs.readFileSync(contractName).toString()
+                        fs.readFileSync(fullPath).toString()
                     )
                     resolver = new DeploymentResolver(deployment)
                 }
