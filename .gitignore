@@ -1,1 +1,5 @@
+.bin
+.vscode
 node_modules
+build
+generated

@@ -1,0 +1,6 @@
+type Block @entity {
+    id: ID! # number
+    number: BigInt!
+    timestamp: BigInt!
+    hash: Bytes!
+}
