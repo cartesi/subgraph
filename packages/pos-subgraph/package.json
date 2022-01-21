@@ -37,7 +37,7 @@
         "@graphprotocol/graph-cli": "0.23.2",
         "@graphprotocol/graph-ts": "0.23.1",
         "matchstick-as": "^0.2.0",
-        "toolbox": "2.1.0-alpha.1"
+        "toolbox": "2.1.2"
     },
     "devDependencies": {
         "@nomiclabs/hardhat-ethers": "^2.0.2",
@@ -46,7 +46,6 @@
         "hardhat": "^2.6.7",
         "hardhat-deploy": "^0.9.4",
         "js-yaml": "^4.1.0",
-        "prettier": "^2.4.0",
         "rimraf": "^3.0.2",
         "ts-node": "^10.3.1",
         "typescript": "^4.4.4"
