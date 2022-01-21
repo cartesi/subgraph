@@ -9,6 +9,9 @@
             "packages/*"
         ]
     },
+    "scripts": {
+        "prettier": "prettier --check **/*.ts"
+    },
     "devDependencies": {
         "prettier": "^2.5.1"
     }
