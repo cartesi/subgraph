@@ -43,14 +43,12 @@ yargs(process.argv.slice(2))
         (argv): Promise<void> => {
             const options = argv as unknown as EligibilityOptions //@dev how to avoid this workaround?
             if (options.threads === 1) {
-                console.log("processEligibilitySingleThreaded")
                 return processEligibilitySingleThreaded(
                     options.bsc,
                     options.chainid,
                     options.progress
                 )
             } else {
-                console.log("processEligibilityMultiThreaded")
                 return processEligibility(
                     options.bsc,
                     options.chainid,
