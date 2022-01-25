@@ -2,5 +2,13 @@
   "name": "eligibility",
   "version": "2.1.2",
   "main": "index.js",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^14.3.0",
+    "knex": "^1.0.1",
+    "pg": "^8.7.1",
+    "pg-query-stream": "^4.2.1",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.5"
+  }
 }
