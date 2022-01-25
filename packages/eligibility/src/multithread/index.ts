@@ -13,7 +13,7 @@ export async function processEligibility(
     chainId: number,
     saveProgress: number,
     threadsCount: number
-) {
+): Promise<void> {
     const db = await getDb()
     const BLOCKS = new EtherBlocksClass(db)
     const latestBlock = await BLOCKS.latestBlock()

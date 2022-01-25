@@ -16,7 +16,7 @@ export async function processEligibility(
     chainId: number,
     saveProgress: number,
     userList?: User[]
-) {
+): Promise<void> {
     const db = await getDb()
     const BLOCKS = new EtherBlocksClass(db)
     let latestBlock = await BLOCKS.latestBlock()
@@ -102,7 +102,7 @@ export async function processEligibility(
             await Promise.all(users.map((user) => user.save()))
             if (isMainThread) await eProcess.save(lastBlock)
             await db.destroy()
-            resolve(true)
+            resolve()
         }
         BLOCKS.startStream(processRange, onBlock, onEnd)
     })
