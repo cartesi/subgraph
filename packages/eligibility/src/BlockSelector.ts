@@ -36,36 +36,36 @@ export class BlockSelector {
         }
     }
 
-    async canProduceBlock(user: User, blockNumber: number): Promise<boolean> {
+    canProduceBlock(user: User, blockNumber: number): boolean {
         let bsc = this.bscState.getContext(blockNumber)
         // cannot produce if block selector goal hasn't been decided yet
         // goal is defined the block after selection was reset
         if (blockNumber <= bsc.eth_block_checkpoint + 1) {
             return false
         }
-        let weight = await user.getStakedBalance(blockNumber)
+        let weight = user.getStakedBalance(blockNumber)
         if (weight.eq(0)) return false
         let blockDuration = this.getSelectionBlockDuration(bsc, blockNumber)
 
         const size = weight.mul(blockDuration)
         const difficulty = bsc.difficulty.mul(
             DIFFICULTY_BASE_MULTIPLIER -
-                (await this.getLogOfRandomCached(
+                this.getLogOfRandomCached(
                     user.hashedAddress,
                     bsc.eth_block_checkpoint,
                     blockNumber
-                ))
+                )
         )
         return size.gt(difficulty)
     }
 
-    async getLogOfRandomCached(
+    getLogOfRandomCached(
         userHashedAddress: string,
         checkPoint: number,
         blockNumber: number
-    ): Promise<number> {
+    ): number {
         // seed for goal takes a block in the future (+1) so it is harder to manipulate
-        let currentGoal = await this.etherBlocks.getHash(
+        let currentGoal = this.etherBlocks.getHash(
             this.getSeed(checkPoint + 1, blockNumber)
         )
 
@@ -75,7 +75,7 @@ export class BlockSelector {
         )
             return this.lastLogOfRandom.log
 
-        let log = await this.getLogOfRandom(
+        let log = this.getLogOfRandom(
             userHashedAddress,
             checkPoint,
             blockNumber
@@ -87,13 +87,13 @@ export class BlockSelector {
         return log
     }
 
-    async getLogOfRandom(
+    getLogOfRandom(
         userHashedAddress: string,
         checkPoint: number,
         blockNumber: number
-    ): Promise<number> {
+    ): number {
         // seed for goal takes a block in the future (+1) so it is harder to manipulate
-        let currentGoal = await this.etherBlocks.getHash(
+        let currentGoal = this.etherBlocks.getHash(
             this.getSeed(checkPoint + 1, blockNumber)
         )
         // next line is commented out since we get the user address already hashed

@@ -3,8 +3,6 @@ import { BigNumber } from "ethers"
 import { Range } from "../utils/range"
 import stream = require("stream")
 
-import { getEthBlock } from "../utils/rpc"
-
 export interface Block {
     hash: string
     number: number
@@ -18,8 +16,8 @@ export interface BlockRaw {
 }
 
 export interface EtherBlocks {
-    getHash(blockNumber: number): Promise<string>
-    getTimeStamp(blockNumber: number): Promise<number>
+    getHash(blockNumber: number): string
+    getTimeStamp(blockNumber: number): number
     latestBlock(): Promise<number>
     startStream(
         range: Range,
@@ -79,10 +77,10 @@ export class EtherBlocksClass implements EtherBlocks {
         })
     }
 
-    async getHash(blockNumber: number): Promise<string> {
+    getHash(blockNumber: number): string {
         if (!this.blocks.has(blockNumber)) {
             console.warn(`Failed to find hash ${blockNumber}.`)
-            await this._ethNodeFallback(blockNumber)
+            throw new Error(`failed to find hash ${blockNumber}`)
         }
         return this.blocks.get(blockNumber)!.hash
     }
@@ -93,10 +91,10 @@ export class EtherBlocksClass implements EtherBlocks {
         this.blocks = new Map(entries)
     }
 
-    async getTimeStamp(blockNumber: number): Promise<number> {
+    getTimeStamp(blockNumber: number): number {
         if (!this.blocks.has(blockNumber)) {
             console.warn(`Failed to find timestamp ${blockNumber}.`)
-            await this._ethNodeFallback(blockNumber)
+            throw new Error(`failed to find timestamp ${blockNumber}`)
         }
         return this.blocks.get(blockNumber)!.timestamp
     }
@@ -124,10 +122,5 @@ export class EtherBlocksClass implements EtherBlocks {
             .select(this.db.raw("data->'block'->>'timestamp' as timestamp"))
             .whereBetween("number", [range.start - 256, range.end!]) //-256 ensures we always have a past hash
             .orderBy("number", "asc")
-    }
-
-    async _ethNodeFallback(blockNumber: number) {
-        const b = await getEthBlock(blockNumber)
-        this.blocks.set(blockNumber, b)
     }
 }

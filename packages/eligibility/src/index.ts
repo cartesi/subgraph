@@ -75,9 +75,8 @@ export async function processEligibility(
     return new Promise((resolve) => {
         const onBlock = async (block: Block) => {
             // console.log(`Processing Block ${block.number}`)
-            await Promise.all(
-                users.map((user) => user.processBlock(block.number))
-            )
+            users.map((user) => user.processBlock(block.number))
+
             if (
                 block.number % saveProgress === 0 &&
                 block.number !== processRange.start

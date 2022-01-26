@@ -182,13 +182,10 @@ export class User {
         return this.eligibility.load()
     }
 
-    async getStakedBalance(blockNumber: number): Promise<BigNumber> {
+    getStakedBalance(blockNumber: number): BigNumber {
         let state = this.getValidState(blockNumber)
         let staked = state.staked_balance
-        if (
-            state.maturing_timestamp <=
-            (await this.blocks.getTimeStamp(blockNumber))
-        )
+        if (state.maturing_timestamp <= this.blocks.getTimeStamp(blockNumber))
             return staked.add(state.maturing_balance)
         return staked
     }

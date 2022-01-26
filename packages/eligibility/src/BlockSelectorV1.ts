@@ -37,37 +37,37 @@ export class BlockSelector {
         }
     }
 
-    async canProduceBlock(user: User, blockNumber: number): Promise<boolean> {
+    canProduceBlock(user: User, blockNumber: number): boolean {
         let bsc = this.bscState.getContext(blockNumber)
         // cannot produce if block selector goal hasn't been decided yet
         // goal is defined the block after selection was reset
         if (blockNumber <= bsc.eth_block_checkpoint) {
             return false
         }
-        let weight = await user.getStakedBalance(blockNumber)
+        let weight = user.getStakedBalance(blockNumber)
         if (weight.eq(0)) return false
-        let time = await this.getMicrosecondsSinceLastBlock(bsc, blockNumber)
+        let time = this.getMicrosecondsSinceLastBlock(bsc, blockNumber)
 
         const size = weight.mul(time)
 
         const difficulty = bsc.difficulty.mul(
             DIFFICULTY_BASE_MULTIPLIER -
-                (await this.getLogOfRandomCached(
+                this.getLogOfRandomCached(
                     user.hashedAddress,
                     bsc.eth_block_checkpoint,
                     blockNumber
-                ))
+                )
         )
         return size.gt(difficulty)
     }
 
-    async getLogOfRandomCached(
+    getLogOfRandomCached(
         userHashedAddress: string,
         currentGoalBlockNumber: number,
         blockNumber: number
-    ): Promise<number> {
+    ): number {
         // seed for goal takes a block in the future (+1) so it is harder to manipulate
-        let currentGoal = await this.etherBlocks.getHash(
+        let currentGoal = this.etherBlocks.getHash(
             this.getSeed(currentGoalBlockNumber, blockNumber)
         )
 
@@ -77,7 +77,7 @@ export class BlockSelector {
         )
             return this.lastLogOfRandom.log
 
-        let log = await this.getLogOfRandom(
+        let log = this.getLogOfRandom(
             userHashedAddress,
             currentGoalBlockNumber,
             blockNumber
@@ -89,13 +89,13 @@ export class BlockSelector {
         return log
     }
 
-    async getLogOfRandom(
+    getLogOfRandom(
         userHashedAddress: string,
         currentGoalBlockNumber: number,
         blockNumber: number
-    ): Promise<number> {
+    ): number {
         // seed for goal takes a block in the future (+1) so it is harder to manipulate
-        let currentGoal = await this.etherBlocks.getHash(
+        let currentGoal = this.etherBlocks.getHash(
             this.getSeed(currentGoalBlockNumber, blockNumber)
         )
 
@@ -117,11 +117,11 @@ export class BlockSelector {
         return previousTarget + res * C_256
     }
 
-    async getMicrosecondsSinceLastBlock(
+    getMicrosecondsSinceLastBlock(
         bsc: BlockSelectorContext,
         blockNumber: number
-    ): Promise<number> {
-        let blockTimestamp = await this.etherBlocks.getTimeStamp(blockNumber)
+    ): number {
+        let blockTimestamp = this.etherBlocks.getTimeStamp(blockNumber)
         return (blockTimestamp - bsc.last_block_timestamp!) * ONE_MILLION
     }
 }
