@@ -2,6 +2,7 @@ import { KnexDB } from "../db"
 import { BigNumber } from "ethers"
 import { Range } from "../utils/range"
 import stream = require("stream")
+import assert from "assert"
 
 export interface Block {
     hash: string
@@ -41,6 +42,7 @@ export class EtherBlocksClass implements EtherBlocks {
     stream: (stream.PassThrough & AsyncIterable<any>) | null
     blockRange: Range
     db: KnexDB
+    lastLoadedBlock: number | undefined
 
     constructor(db: KnexDB) {
         this.blocks = new Map()
@@ -107,6 +109,16 @@ export class EtherBlocksClass implements EtherBlocks {
         this.stream?.pause()
         const block = fromRaw(b)
         this.blocks.set(block.number, block)
+        if (this.lastLoadedBlock === undefined)
+            this.lastLoadedBlock = block.number
+        else {
+            assert.equal(
+                block.number,
+                this.lastLoadedBlock + 1,
+                `we couldn't ensure continuity of block streaming last:${this.lastLoadedBlock} vs current:${block.number}`
+            )
+            this.lastLoadedBlock = block.number
+        }
         // only call the handler to the actual start of the range, not the 256 buffer
         if (block.number >= this.blockRange.start)
             await this.streamOnData!(block)
