@@ -27,7 +27,7 @@
         "prepare:kovan": "hardhat --network kovan subgraph --input-file subgraph.testnet.template.yaml --output-file subgraph.kovan.yaml",
         "prepare:mainnet": "hardhat --network mainnet subgraph",
         "prettier": "prettier --check **/*.ts",
-        "test": "graph test"
+        "test": "graph test -- --lib ../../node_modules/"
     },
     "dependencies": {
         "@cartesi/pos": "^1.1.2",
