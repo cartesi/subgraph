@@ -3,7 +3,7 @@ import { config } from "dotenv"
 config()
 import { getDb, getDeployment } from "./db"
 import { Range } from "./utils/range"
-import { EtherBlocksClass, Block } from "./model/etherBlocks"
+import { EtherBlocksClass, EtherBlocks, Block } from "./model/etherBlocks"
 import { loadUsersByRange } from "./model/user"
 
 import { BlockSelectorContextState } from "./model/blockSelectorContext"
@@ -15,10 +15,11 @@ export async function processEligibility(
     blockSelectorAddress: string,
     chainId: number,
     saveProgress: number,
-    userList?: User[]
+    userList?: User[],
+    blocks?: EtherBlocks
 ): Promise<void> {
     const db = await getDb()
-    const BLOCKS = new EtherBlocksClass(db)
+    const BLOCKS = blocks || new EtherBlocksClass(db)
     let latestBlock = await BLOCKS.latestBlock()
     let lastBlock = 0
     // chose what type/version of blockselector will be used
@@ -98,7 +99,7 @@ export async function processEligibility(
         const onEnd = async () => {
             console.log(`it took ${(Date.now() - before) / 1000} seconds `)
             // save any left progress
-            await Promise.all(users.map((user) => user.save()))
+            users.map((user) => user.save())
             if (isMainThread) await eProcess.save(lastBlock)
             await db.destroy()
             resolve()

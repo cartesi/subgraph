@@ -80,7 +80,8 @@ export class Worker {
             this.blockSelectorAddress,
             this.chainId,
             this.saveProgress,
-            users
+            users,
+            this.etherBlocks
         )
         console.info(`worker [${threadId}]  is done`)
     }

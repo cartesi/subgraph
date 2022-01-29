@@ -4,6 +4,8 @@ import { Range } from "../utils/range"
 import stream = require("stream")
 import assert from "assert"
 
+import { threadId } from "worker_threads"
+
 export interface Block {
     hash: string
     number: number
@@ -54,7 +56,7 @@ export class EtherBlocksClass implements EtherBlocks {
 
     async latestBlock(): Promise<number> {
         // @dev add 30 blocks safety here for reorgs
-        const res = await this.db("blocks")
+        const res = await this.db("ethereum_block")
             .select("number")
             .orderBy("number", "desc")
             .limit(1)
@@ -81,8 +83,8 @@ export class EtherBlocksClass implements EtherBlocks {
 
     getHash(blockNumber: number): string {
         if (!this.blocks.has(blockNumber)) {
-            console.warn(`Failed to find hash ${blockNumber}.`)
-            throw new Error(`failed to find hash ${blockNumber}`)
+            console.warn(`[${threadId}]Failed to find hash ${blockNumber}.`)
+            throw new Error(`[${threadId}]failed to find hash ${blockNumber}`)
         }
         return this.blocks.get(blockNumber)!.hash
     }
@@ -95,8 +97,12 @@ export class EtherBlocksClass implements EtherBlocks {
 
     getTimeStamp(blockNumber: number): number {
         if (!this.blocks.has(blockNumber)) {
-            console.warn(`Failed to find timestamp ${blockNumber}.`)
-            throw new Error(`failed to find timestamp ${blockNumber}`)
+            console.warn(
+                `[${threadId}]Failed to find timestamp ${blockNumber}.`
+            )
+            throw new Error(
+                `[${threadId}]failed to find timestamp ${blockNumber}`
+            )
         }
         return this.blocks.get(blockNumber)!.timestamp
     }
@@ -128,10 +134,10 @@ export class EtherBlocksClass implements EtherBlocks {
     }
 
     _buildSearch(range: Range) {
-        return this.db("blocks")
+        return this.db("ethereum_block")
             .select(this.db.raw("encode(hash, 'hex') as hash"))
             .select("number")
-            .select(this.db.raw("data->'block'->>'timestamp' as timestamp"))
+            .select("timestamp")
             .whereBetween("number", [range.start - 256, range.end!]) //-256 ensures we always have a past hash
             .orderBy("number", "asc")
     }

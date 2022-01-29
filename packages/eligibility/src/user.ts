@@ -6,7 +6,6 @@ import { BlockSelectorContextState } from "./model/blockSelectorContext"
 
 import { selectBlockSelector } from "./utils"
 import { EtherBlocks } from "./model/etherBlocks"
-import { Range } from "./utils/range"
 
 export class UserProcessor {
     model: User
@@ -28,7 +27,7 @@ export class UserProcessor {
         )
     }
 
-    async processBlock(blockNumber: number) {
+    processBlock(blockNumber: number) {
         if (
             blockNumber <
             Math.max(
@@ -40,9 +39,9 @@ export class UserProcessor {
         }
 
         this.model.eligibility.push(
-            await this.model.getStakedBalance(blockNumber),
+            this.model.getStakedBalance(blockNumber),
             this.bscState.getContext(blockNumber).eth_block_checkpoint, //@dev change to actual blocknumber used
-            await this.selector.canProduceBlock(this.model, blockNumber),
+            this.selector.canProduceBlock(this.model, blockNumber),
             blockNumber
         )
     }
