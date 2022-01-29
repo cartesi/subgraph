@@ -10,10 +10,10 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 import { ethereum } from "@graphprotocol/graph-ts"
-import { Block } from "../generated/schema"
+import { EthereumBlock } from "../generated/schema"
 
 export function handleEthBlock(block: ethereum.Block): void {
-    let newBlock = new Block(`${block.number}`)
+    let newBlock = new EthereumBlock(`${block.number}`)
     newBlock.number = block.number
     newBlock.timestamp = block.timestamp
     newBlock.hash = block.hash

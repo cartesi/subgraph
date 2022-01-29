@@ -1,4 +1,4 @@
-type Block @entity {
+type EthereumBlock @entity {
     id: ID! # number
     number: BigInt!
     timestamp: BigInt!
