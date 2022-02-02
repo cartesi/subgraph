@@ -15,7 +15,6 @@ import {
     dataSource,
 } from "@graphprotocol/graph-ts"
 import { BlockSelectorContext } from "../../generated/schema"
-// import { BlockProduced } from "../../generated/BlockSelector-1.0/BlockSelector"
 
 import * as blockSelectorContext from "../../src/blockSelectorContext-1.0"
 import {
@@ -88,10 +87,14 @@ test("should create a new BlockSelectorContext on exact blocks chain0", () => {
 })
 
 test("should update context correctly", () => {
-    let blockNum = 90
-    let context = BlockSelectorContext.load(id0)!
+    let minDifficulty = BigInt.fromI32(10)
+    let context = utils.zeroedNewBlockSelectorContext()
     context.targetInterval = BigInt.fromI32(100)
+    context.difficulty = BigInt.fromI32(1)
+    context.minDifficulty = minDifficulty
     save(id0, context)
+
+    let blockNum = 90
     blockSelectorContext.update(
         id0,
         BigInt.fromI32(blockNum),
@@ -104,7 +107,7 @@ test("should update context correctly", () => {
         "ethBlockCheckpoint",
         (blockNum + 1).toString()
     )
-    assert.fieldEquals("BlockSelectorContext", id0, "difficulty", "18")
+    assert.fieldEquals("BlockSelectorContext", id0, "difficulty", "10")
     assert.fieldEquals(
         "BlockSelectorContext",
         id0,
