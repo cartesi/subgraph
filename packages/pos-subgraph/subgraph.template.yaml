@@ -159,6 +159,8 @@ dataSources:
         - Summary
         - User
         - Worker
+        - BlockSelectorContext
+        - Eligibility
       abis:
         - name: BlockSelector
           file:

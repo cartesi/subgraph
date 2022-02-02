@@ -10,12 +10,22 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-import { assert, newMockEvent } from "matchstick-as"
+import {
+    assert,
+    newMockEvent,
+    clearStore,
+    logStore,
+    test,
+    log,
+} from "matchstick-as"
 import { Address, BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts"
 import { Stake, Unstake, Withdraw } from "../generated/StakingImpl/StakingImpl"
 import { StakingPoolFee } from "../generated/schema"
 import { FlatRateChanged } from "../generated/templates/FlatRateCommission/FlatRateCommission"
 import { GasTaxChanged } from "../generated/templates/GasTaxCommission/GasTaxCommission"
+import { BlockSelectorContext } from "../generated/schema"
+import { NewChain } from "../generated/PoS/PoS"
+import { BlockProduced } from "../generated/BlockSelector-1.0/BlockSelector"
 
 export const txHash = Bytes.fromHexString(
     "0x0000000000000000000000000000000000000000000000000000000000000001"
@@ -199,4 +209,159 @@ export function assertUser(
         "balance",
         stakedBalance.plus(maturingBalance).toString()
     )
+}
+
+export let HASHZERO = Bytes.fromByteArray(Bytes.fromI32(0)).toHexString()
+
+export function zeroID(): string {
+    return blockSelectorAddress.toHexString() + "-0"
+}
+export let blockSelectorAddress = Address.fromString(
+    "0x0000000000000000000000000000000000000123"
+)
+
+export function createNewBlockProducedV1Event(
+    index: i32,
+    targetInterval: i32,
+    _blockSelectorAddress: string,
+    producerAddress: string,
+    blockNumber: BigInt
+): BlockProduced {
+    let mockEvent = newMockEvent()
+    mockEvent.block.number = blockNumber
+    let blockProducedEvent = new BlockProduced(
+        Address.fromString(_blockSelectorAddress),
+        mockEvent.logIndex,
+        mockEvent.transactionLogIndex,
+        mockEvent.logType,
+        mockEvent.block,
+        mockEvent.transaction,
+        mockEvent.parameters
+    )
+    blockProducedEvent.parameters = new Array()
+
+    blockProducedEvent.parameters.push(
+        new ethereum.EventParam("index", ethereum.Value.fromI32(index))
+    )
+    blockProducedEvent.parameters.push(
+        new ethereum.EventParam(
+            "producer",
+            ethereum.Value.fromAddress(Address.fromString(producerAddress))
+        )
+    )
+
+    blockProducedEvent.parameters.push(
+        new ethereum.EventParam("blockNumber", ethereum.Value.fromI32(0))
+    )
+    blockProducedEvent.parameters.push(
+        new ethereum.EventParam("roundDuration", ethereum.Value.fromI32(0))
+    )
+    blockProducedEvent.parameters.push(
+        new ethereum.EventParam("difficulty", ethereum.Value.fromI32(0))
+    )
+    blockProducedEvent.parameters.push(
+        new ethereum.EventParam(
+            "targetInterval",
+            ethereum.Value.fromUnsignedBigInt(BigInt.fromI32(targetInterval))
+        )
+    )
+    return blockProducedEvent
+}
+
+export function createNewChainEvent(
+    minDifficulty: BigInt,
+    targetInterval: BigInt,
+    difficultyAdjustmentParameter: BigInt,
+    initialDifficulty: BigInt,
+    blockNumber: BigInt
+): NewChain {
+    let mockEvent = newMockEvent()
+
+    const newEvent = new NewChain(
+        mockEvent.address,
+        mockEvent.logIndex,
+        mockEvent.transactionLogIndex,
+        mockEvent.logType,
+        mockEvent.block,
+        mockEvent.transaction,
+        mockEvent.parameters
+    )
+    newEvent.parameters = new Array()
+
+    newEvent.parameters.push(
+        new ethereum.EventParam("index", ethereum.Value.fromI32(0))
+    )
+    newEvent.parameters.push(
+        new ethereum.EventParam(
+            "stakingAddress",
+            ethereum.Value.fromAddress(Address.zero())
+        )
+    )
+    newEvent.parameters.push(
+        new ethereum.EventParam(
+            "blockSelectorAddress",
+            ethereum.Value.fromAddress(blockSelectorAddress)
+        )
+    )
+    newEvent.parameters.push(
+        new ethereum.EventParam(
+            "workerAuthAddress",
+            ethereum.Value.fromAddress(Address.zero())
+        )
+    )
+    newEvent.parameters.push(
+        new ethereum.EventParam(
+            "minimumDifficulty",
+            ethereum.Value.fromUnsignedBigInt(minDifficulty)
+        )
+    )
+    newEvent.parameters.push(
+        new ethereum.EventParam(
+            "initialDifficulty",
+            ethereum.Value.fromUnsignedBigInt(initialDifficulty)
+        )
+    )
+    newEvent.parameters.push(
+        new ethereum.EventParam(
+            "difficultyAdjustmentParameter",
+            ethereum.Value.fromUnsignedBigInt(difficultyAdjustmentParameter)
+        )
+    )
+    newEvent.parameters.push(
+        new ethereum.EventParam(
+            "targetInterval",
+            ethereum.Value.fromUnsignedBigInt(targetInterval)
+        )
+    )
+    newEvent.parameters.push(
+        new ethereum.EventParam(
+            "ctsiAddress",
+            ethereum.Value.fromAddress(Address.zero())
+        )
+    )
+    newEvent.parameters.push(
+        new ethereum.EventParam("maxReward", ethereum.Value.fromI32(0))
+    )
+    newEvent.parameters.push(
+        new ethereum.EventParam("minReward", ethereum.Value.fromI32(0))
+    )
+    newEvent.parameters.push(
+        new ethereum.EventParam("distNumerator", ethereum.Value.fromI32(0))
+    )
+    newEvent.parameters.push(
+        new ethereum.EventParam("distDenominator", ethereum.Value.fromI32(0))
+    )
+
+    newEvent.block.number = blockNumber
+    return newEvent
+}
+
+export function zeroedNewBlockSelectorContext(): BlockSelectorContext {
+    let context = new BlockSelectorContext(zeroID())
+    context.minDifficulty = BigInt.fromI32(0)
+    context.targetInterval = BigInt.fromI32(0)
+    context.difficultyAdjustmentParameter = BigInt.fromI32(0)
+    context.ethBlockCheckpoint = BigInt.fromI32(0)
+    context.difficulty = BigInt.fromI32(0)
+    return context
 }

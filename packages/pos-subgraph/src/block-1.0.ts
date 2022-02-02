@@ -17,6 +17,7 @@ import * as chains from "./chain"
 import * as nodes from "./node"
 import * as summary from "./summary"
 import * as users from "./user"
+import * as blockSelectorContext from "./blockSelectorContext-1.0"
 
 export function handleRewarded(event: Rewarded): void {
     let reward = event.params.userReward.plus(event.params.beneficiaryReward)
@@ -82,4 +83,5 @@ export function handleBlockProduced(event: BlockProduced): void {
     block.number = event.params.blockNumber.toI32()
     block.difficulty = event.params.difficulty
     block.save()
+    blockSelectorContext.handleBlockProduced(event)
 }

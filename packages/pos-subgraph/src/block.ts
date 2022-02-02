@@ -17,6 +17,7 @@ import * as chains from "./chain"
 import * as nodes from "./node"
 import * as summary from "./summary"
 import * as users from "./user"
+import * as blockSelectorContext from "./blockSelectorContext"
 
 export function handleRewarded(event: Rewarded): void {
     let reward = event.params.reward
@@ -80,6 +81,9 @@ export function handleNewChain(event: NewChain): void {
     )
     chain.targetInterval = event.params.targetInterval.toI32()
     chain.save()
+
+    //let's create or update the BlockSelectorContext
+    blockSelectorContext.create(event)
 }
 
 export function handleBlockProduced(event: BlockProduced): void {
@@ -94,4 +98,8 @@ export function handleBlockProduced(event: BlockProduced): void {
     block.number = event.params.blockNumber.toI32()
     block.difficulty = event.params.difficulty
     block.save()
+
+    // save block selected context
+    let id = blockSelectorContext.contextID(event.address, event.params.index)
+    blockSelectorContext.update(id, event.block.number)
 }

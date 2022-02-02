@@ -162,3 +162,25 @@ type Block @entity {
     gasPrice: BigInt!
     gasLimit: BigInt!
 }
+
+type BlockSelectorContext @entity {
+    id: ID!
+    index: Int!
+    # params added when processing NewChain event
+    minDifficulty: BigInt!
+    targetInterval: BigInt!
+    difficultyAdjustmentParameter: BigInt!
+    # params updated at every produceBlock
+    ethBlockCheckpoint: BigInt! # not the actual goal, many times needs the +1
+    difficulty: BigInt! # getDifficulty eth_call
+    lastBlockTimestamp: BigInt!
+}
+
+type Eligibility @entity {
+    id: ID!
+    user: User!
+    stake: BigInt!
+    block: BigInt!
+    blockSelector: BlockSelectorContext!
+    eligible: Boolean
+}
