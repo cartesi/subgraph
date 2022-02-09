@@ -48,5 +48,6 @@ export async function processEligibility(
     console.log(`it took ${(Date.now() - before) / 1000} seconds `)
     // process is finished, save current progress
     await eProcess.save(latestBlock)
+    await Promise.all(workers.map((w) => w.worker.terminate()))
     await db.destroy()
 }

@@ -111,7 +111,7 @@ export class BlockSelectorContextState {
 
         this.states = new ForwardIterator(data.map(fromRaw))
         console.log(
-            `This chain has ${this.getTotalRangeBlocks()} blocks to be processed`
+            `This chain has ${this.getTotalRangeBlocks()} ethereum blocks`
         )
     }
 

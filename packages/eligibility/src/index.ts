@@ -97,11 +97,13 @@ export async function processEligibility(
 
         let before = Date.now()
         const onEnd = async () => {
-            console.log(`it took ${(Date.now() - before) / 1000} seconds `)
+            console.log(
+                `[${threadId}] it took ${(Date.now() - before) / 1000} seconds `
+            )
             // save any left progress
-            users.map((user) => user.save())
+            await Promise.all(users.map((user) => user.save()))
             if (isMainThread) await eProcess.save(lastBlock)
-            await db.destroy()
+            db.destroy()
             resolve()
         }
         BLOCKS.startStream(processRange, onBlock, onEnd)
