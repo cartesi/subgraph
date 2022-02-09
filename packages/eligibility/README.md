@@ -4,5 +4,5 @@ In order to build the image for the eligibility package, we need to be working f
 Then, we can execute a command as such:
 
 ```
-docker build . -t cartesi/eligibility:v1.1.1 -f ./packages/eligibility/Dockerfile
+docker build . -t cartesi/eligibility:1.1.1 -f ./packages/eligibility/Dockerfile
 ```

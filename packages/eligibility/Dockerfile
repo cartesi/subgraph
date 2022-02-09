@@ -12,4 +12,6 @@ FROM node:16-slim
 COPY --from=builder /usr/src/app /usr/src/app
 USER node
 WORKDIR /usr/src/app
-ENTRYPOINT ["yarn", "eligibility"]
+COPY ./packages/eligibility/docker-entrypoint.sh /usr/local/bin
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["eligibility"]
