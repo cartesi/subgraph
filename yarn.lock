@@ -7013,19 +7013,19 @@ match-all@^1.2.6:
   resolved "https://registry.yarnpkg.com/match-all/-/match-all-1.2.6.tgz#66d276ad6b49655551e63d3a6ee53e8be0566f8d"
   integrity sha512-0EESkXiTkWzrQQntBu2uzKvLu6vVkUGz40nGPbSZuegcfE5UuSzNjLaIu76zJWuaT/2I3Z/8M06OlUOZLGwLlQ==
 
-matchstick-as@^0.2.3:
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/matchstick-as/-/matchstick-as-0.2.3.tgz#d2c68f204fdc19f5927cd263ad628864aeeae7b8"
-  integrity sha512-Eg/GFoIGSVj4pNJZJwV7azDOIoiADkOyM3VChQlaEbS0NmjsOnREcNT0za0Qyh2RgFbMH/JBPVo+vbHvm2+thg==
+matchstick-as@0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/matchstick-as/-/matchstick-as-0.3.0.tgz#fb23b9bf7c797363a40c23f098d3101831d088dc"
+  integrity sha512-+nxHlchVHzvcJzcNc8WxCV5FpADVqVJwEBuaq3IvZjp29xVoe/RWpodmTvQw+Pk6bRMAPI5grdmTPjR4hGgrcw==
   dependencies:
     "@graphprotocol/graph-ts" "^0.24.1"
     assemblyscript "^0.19.20"
     wabt "1.0.24"
 
-matchstick-as@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/matchstick-as/-/matchstick-as-0.3.0.tgz#fb23b9bf7c797363a40c23f098d3101831d088dc"
-  integrity sha512-+nxHlchVHzvcJzcNc8WxCV5FpADVqVJwEBuaq3IvZjp29xVoe/RWpodmTvQw+Pk6bRMAPI5grdmTPjR4hGgrcw==
+matchstick-as@^0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/matchstick-as/-/matchstick-as-0.2.3.tgz#d2c68f204fdc19f5927cd263ad628864aeeae7b8"
+  integrity sha512-Eg/GFoIGSVj4pNJZJwV7azDOIoiADkOyM3VChQlaEbS0NmjsOnREcNT0za0Qyh2RgFbMH/JBPVo+vbHvm2+thg==
   dependencies:
     "@graphprotocol/graph-ts" "^0.24.1"
     assemblyscript "^0.19.20"

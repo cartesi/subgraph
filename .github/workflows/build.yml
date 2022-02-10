@@ -25,4 +25,4 @@ jobs:
       - run: mv ./packages/pos-subgraph/subgraph.goerli.yaml ./packages/pos-subgraph/subgraph.yaml
       - run: yarn workspace cartesi-subgraph codegen
       - run: yarn workspace cartesi-subgraph build
-      - run: cd packages/pos-subgraph/; npx graph test -v 0.3.0 || ../../node_modules/binary-install-raw/bin/0.3.0/binary-linux-20  --lib ../../node_modules/
+      - run: yarn workspace cartesi-subgraph test
