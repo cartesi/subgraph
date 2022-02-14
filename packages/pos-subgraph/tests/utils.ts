@@ -23,15 +23,46 @@ import { Stake, Unstake, Withdraw } from "../generated/StakingImpl/StakingImpl"
 import { StakingPoolFee } from "../generated/schema"
 import { FlatRateChanged } from "../generated/templates/FlatRateCommission/FlatRateCommission"
 import { GasTaxChanged } from "../generated/templates/GasTaxCommission/GasTaxCommission"
-import { BlockSelectorContext } from "../generated/schema"
+import { BlockSelectorContext, StakingPool } from "../generated/schema"
 import { NewChain } from "../generated/PoS/PoS"
 import { BlockProduced } from "../generated/BlockSelector-1.0/BlockSelector"
+import {
+    Deposit,
+    Stake as StakePool,
+    Unstake as UnstakePool,
+    Withdraw as WithdrawPool,
+} from "../generated/templates/StakingPoolImpl/StakingPoolImpl"
+import * as user from "../src/user"
 
 export const txHash = Bytes.fromHexString(
     "0x0000000000000000000000000000000000000000000000000000000000000001"
 ) as Bytes
 export const txTimestamp = 1630000000
 export const ZERO = BigInt.fromI32(0)
+
+export function buildStakingPool(
+    address: Address,
+    manager: Address,
+    timestamp: BigInt = BigInt.fromI32(0)
+): StakingPool {
+    let u = user.loadOrCreate(address)
+    // create pool
+    let pool = new StakingPool(address.toHex())
+    pool.manager = manager.toHex()
+    pool.user = u.id
+    pool.amount = BigInt.fromI32(0)
+    pool.shares = BigInt.fromI32(0)
+    pool.totalUsers = 0
+    pool.totalCommission = BigInt.fromI32(0)
+    pool.timestamp = timestamp
+    pool.paused = false
+
+    // circular reference between pool and user
+    u.pool = pool.id
+    u.save()
+
+    return pool
+}
 
 export function buildStakingPoolFee(
     address: Address,
@@ -82,6 +113,114 @@ export function createGasTaxChangedEvent(
         )
     )
     return evt
+}
+
+export function createStakingPoolDepositEvent(
+    user: Address,
+    amount: BigInt,
+    stakeTimestamp: BigInt
+): Deposit {
+    let event = changetype<Deposit>(newMockEvent())
+    event.transaction.hash = txHash
+    event.block.timestamp = BigInt.fromI32(txTimestamp) // Thursday, August 26, 2021 05:46:40 PM
+    event.parameters = new Array()
+    event.parameters.push(
+        new ethereum.EventParam("user", ethereum.Value.fromAddress(user))
+    )
+    event.parameters.push(
+        new ethereum.EventParam(
+            "amount",
+            ethereum.Value.fromUnsignedBigInt(amount)
+        )
+    )
+
+    event.parameters.push(
+        new ethereum.EventParam(
+            "stakeTimestamp",
+            ethereum.Value.fromUnsignedBigInt(stakeTimestamp)
+        )
+    )
+
+    return event
+}
+
+export function createStakingPoolStakeEvent(
+    user: Address,
+    amount: BigInt,
+    shares: BigInt
+): StakePool {
+    let event = changetype<StakePool>(newMockEvent())
+    event.transaction.hash = txHash
+    event.block.timestamp = BigInt.fromI32(txTimestamp) // Thursday, August 26, 2021 05:46:40 PM
+    event.parameters = new Array()
+    event.parameters.push(
+        new ethereum.EventParam("user", ethereum.Value.fromAddress(user))
+    )
+    event.parameters.push(
+        new ethereum.EventParam(
+            "amount",
+            ethereum.Value.fromUnsignedBigInt(amount)
+        )
+    )
+
+    event.parameters.push(
+        new ethereum.EventParam(
+            "shares",
+            ethereum.Value.fromUnsignedBigInt(shares)
+        )
+    )
+
+    return event
+}
+
+export function createStakingPoolUnstakeEvent(
+    user: Address,
+    amount: BigInt,
+    shares: BigInt
+): UnstakePool {
+    let event = changetype<UnstakePool>(newMockEvent())
+    event.transaction.hash = txHash
+    event.block.timestamp = BigInt.fromI32(txTimestamp) // Thursday, August 26, 2021 05:46:40 PM
+    event.parameters = new Array()
+    event.parameters.push(
+        new ethereum.EventParam("user", ethereum.Value.fromAddress(user))
+    )
+    event.parameters.push(
+        new ethereum.EventParam(
+            "amount",
+            ethereum.Value.fromUnsignedBigInt(amount)
+        )
+    )
+
+    event.parameters.push(
+        new ethereum.EventParam(
+            "shares",
+            ethereum.Value.fromUnsignedBigInt(shares)
+        )
+    )
+
+    return event
+}
+
+export function createStakingPoolWithdrawEvent(
+    user: Address,
+    amount: BigInt
+): WithdrawPool {
+    let event = changetype<WithdrawPool>(newMockEvent())
+    event.transaction.hash = txHash
+    event.block.timestamp = BigInt.fromI32(txTimestamp) // Thursday, August 26, 2021 05:46:40 PM
+    event.parameters = new Array()
+    event.parameters.push(
+        new ethereum.EventParam("user", ethereum.Value.fromAddress(user))
+    )
+    event.parameters.push(
+        new ethereum.EventParam(
+            "amount",
+            ethereum.Value.fromUnsignedBigInt(amount)
+        )
+    )
+
+    return event
 }
 
 export function createStakeEvent(
