@@ -10,19 +10,16 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-import { Address, BigDecimal, BigInt } from "@graphprotocol/graph-ts"
+import { Address, BigInt } from "@graphprotocol/graph-ts"
 import {
     Block,
     StakingPool,
     StakingPoolFee,
     PoolBalance,
-    PoolDeposit,
     PoolShareValue,
-    PoolStake,
-    PoolUnstake,
     PoolUser,
-    PoolWithdraw,
     User,
+    PoolActivity,
 } from "../generated/schema"
 import {
     FlatRateCommission,
@@ -45,6 +42,12 @@ import {
     Unpaused,
 } from "../generated/templates/StakingPoolImpl/StakingPoolImpl"
 
+// wasm does not like ts enum definition so old-plain variables will do it.
+export let POOL_ACTIVITY_DEPOSIT = "DEPOSIT"
+export let POOL_ACTIVITY_STAKE = "STAKE"
+export let POOL_ACTIVITY_UNSTAKE = "UNSTAKE"
+export let POOL_ACTIVITY_WITHDRAW = "WITHDRAW"
+
 export function handleNewFlatRateStakingPool(
     event: NewFlatRateCommissionStakingPool
 ): void {
@@ -54,6 +57,7 @@ export function handleNewFlatRateStakingPool(
         event.transaction.from,
         event.block.timestamp
     )
+
     pool.fee = event.params.fee.toHex()
     pool.save()
 
@@ -147,13 +151,14 @@ export function handleDeposit(event: Deposit): void {
     let user = new PoolUser(event.params.user.toHex())
     user.save()
 
-    // save deposit entity
-    let entity = new PoolDeposit(event.transaction.hash.toHex())
-    entity.pool = event.address.toHex()
-    entity.user = event.params.user.toHex()
-    entity.amount = event.params.amount
-    entity.timestamp = event.block.timestamp
-    entity.save()
+    // save new deposit activity
+    let activity = new PoolActivity(event.transaction.hash.toHex())
+    activity.pool = event.address.toHex()
+    activity.user = event.params.user.toHex()
+    activity.amount = event.params.amount
+    activity.timestamp = event.block.timestamp
+    activity.type = POOL_ACTIVITY_DEPOSIT
+    activity.save()
 
     // update balance
     let balance = loadOrCreateBalance(event.address, event.params.user)
@@ -167,14 +172,15 @@ export function handleStake(event: Stake): void {
     let user = new PoolUser(event.params.user.toHex())
     user.save()
 
-    // save stake entity
-    let entity = new PoolStake(event.transaction.hash.toHex())
-    entity.pool = event.address.toHex()
-    entity.user = event.params.user.toHex()
-    entity.amount = event.params.amount
-    entity.shares = event.params.shares
-    entity.timestamp = event.block.timestamp
-    entity.save()
+    // save new stake activity
+    let activity = new PoolActivity(event.transaction.hash.toHex())
+    activity.pool = event.address.toHex()
+    activity.user = event.params.user.toHex()
+    activity.amount = event.params.amount
+    activity.shares = event.params.shares
+    activity.timestamp = event.block.timestamp
+    activity.type = POOL_ACTIVITY_STAKE
+    activity.save()
 
     // update balance
     let balance = loadOrCreateBalance(event.address, event.params.user)
@@ -198,14 +204,15 @@ export function handleStake(event: Stake): void {
 }
 
 export function handleUnstake(event: Unstake): void {
-    // save entity
-    let entity = new PoolUnstake(event.transaction.hash.toHex())
-    entity.pool = event.address.toHex()
-    entity.user = event.params.user.toHex()
-    entity.shares = event.params.shares
-    entity.amount = event.params.amount
-    entity.timestamp = event.block.timestamp
-    entity.save()
+    // save new unstake activity
+    let activity = new PoolActivity(event.transaction.hash.toHex())
+    activity.pool = event.address.toHex()
+    activity.user = event.params.user.toHex()
+    activity.shares = event.params.shares
+    activity.amount = event.params.amount
+    activity.timestamp = event.block.timestamp
+    activity.type = POOL_ACTIVITY_UNSTAKE
+    activity.save()
 
     // update balance
     let balance = loadOrCreateBalance(event.address, event.params.user)
@@ -225,13 +232,14 @@ export function handleUnstake(event: Unstake): void {
 }
 
 export function handleWithdraw(event: Withdraw): void {
-    // save entity
-    let entity = new PoolWithdraw(event.transaction.hash.toHex())
-    entity.pool = event.address.toHex()
-    entity.user = event.params.user.toHex()
-    entity.amount = event.params.amount
-    entity.timestamp = event.block.timestamp
-    entity.save()
+    // save new withdraw activity
+    let activity = new PoolActivity(event.transaction.hash.toHex())
+    activity.pool = event.address.toHex()
+    activity.user = event.params.user.toHex()
+    activity.amount = event.params.amount
+    activity.timestamp = event.block.timestamp
+    activity.type = POOL_ACTIVITY_WITHDRAW
+    activity.save()
 
     // update balance
     let balance = loadOrCreateBalance(event.address, event.params.user)
