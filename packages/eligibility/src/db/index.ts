@@ -39,14 +39,18 @@ async function searchSubgraph(subgraphName: string) {
         .select("ds.network")
         .select("ds.active")
         .select("ds.subgraph")
-        .from("deployment_schemas AS ds")
-        .join(
-            "subgraphs.subgraph_version as sgv",
-            "sgv.deployment",
-            "=",
-            "ds.subgraph"
+        .from("subgraphs.subgraph AS sg")
+        .joinRaw(
+            `join subgraphs.subgraph_version
+                    AS sgv
+                    ON (sgv.subgraph = sg.id AND sgv.id = sg.current_version)`
         )
-        .join("subgraphs.subgraph as sg", "sg.id", "=", "sgv.subgraph")
+        .join(
+            "subgraphs.subgraph_deployment as sd",
+            "sd.deployment",
+            "sgv.deployment"
+        )
+        .join("deployment_schemas as ds", "ds.subgraph", "sd.deployment")
         .where("ds.active", true)
         .andWhere("sg.name", subgraphName)
 }
