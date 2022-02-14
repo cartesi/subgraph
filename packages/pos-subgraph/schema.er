@@ -95,35 +95,14 @@ shares
 balance
 stakeTimestamp
 
-[PoolDeposit] {bgcolor: "#fbfbdb"}
-*id
-+pool
-+user
-amount
-timestamp
-
-[PoolStake] {bgcolor: "#fbfbdb"}
+[PoolActivity] {bgcolor: "#fbfbdb"}
 *id
 +pool
 +user
 amount
 shares
 timestamp
-
-[PoolUnstake] {bgcolor: "#fbfbdb"}
-*id
-+pool
-+user
-amount
-shares
-timestamp
-
-[PoolWithdraw] {bgcolor: "#fbfbdb"}
-*id
-+pool
-+user
-amount
-timestamp
+type
 
 [Summary]
 *id
@@ -152,13 +131,7 @@ User 1--* Stake
 User 1--* Unstake
 User 1--* Withdraw
 StakingPool 1--* PoolBalance
-StakingPool 1--* PoolDeposit
-StakingPool 1--* PoolStake
-StakingPool 1--* PoolUnstake
-StakingPool 1--* PoolWithdraw
+StakingPool 1--* PoolActivity
 StakingPool 1--1 StakingPoolFee
 PoolBalance *--1 PoolUser
-PoolDeposit *--1 PoolUser
-PoolStake *--1 PoolUser
-PoolUnstake *--1 PoolUser
-PoolWithdraw *--1 PoolUser
+PoolActivity *--1 PoolUser
