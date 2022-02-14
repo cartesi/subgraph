@@ -72,38 +72,21 @@ type Withdraw @entity {
     timestamp: BigInt!
 }
 
-type PoolDeposit @entity {
-    id: ID!
-    pool: StakingPool!
-    user: PoolUser!
-    amount: BigInt!
-    timestamp: BigInt!
+enum ActivityType {
+    DEPOSIT
+    STAKE
+    UNSTAKE
+    WITHDRAW
 }
 
-type PoolStake @entity {
+type PoolActivity @entity {
     id: ID!
     pool: StakingPool!
     user: PoolUser!
     amount: BigInt!
-    shares: BigInt!
+    shares: BigInt
     timestamp: BigInt!
-}
-
-type PoolUnstake @entity {
-    id: ID!
-    pool: StakingPool!
-    user: PoolUser!
-    shares: BigInt!
-    amount: BigInt!
-    timestamp: BigInt!
-}
-
-type PoolWithdraw @entity {
-    id: ID!
-    pool: StakingPool!
-    user: PoolUser!
-    amount: BigInt!
-    timestamp: BigInt!
+    type: ActivityType!
 }
 
 type PoolBalance @entity {
