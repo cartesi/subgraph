@@ -1,3 +1,4 @@
+import { isMainThread } from "worker_threads"
 import { KnexDB } from "../db"
 
 export class EligibilityProcess {
@@ -21,11 +22,16 @@ export class EligibilityProcess {
 
     async loadOrCreate() {
         const res = await this.db("eligibility_process")
-            .select("*")
+            .select(
+                this.db.raw(
+                    "pg_try_advisory_lock(hashtext(concat(id, subgraph_deployment))) as lock, *"
+                )
+            )
             .where("id", this.blockSelectorId)
             .andWhere("subgraph_deployment", this.deploymentHash)
 
         if (res && res[0]) {
+            this.checkProcessLock(res[0].lock)
             this.lastBlock = parseInt(res[0].last_blocknumber)
             return
         }
@@ -39,6 +45,7 @@ export class EligibilityProcess {
         console.info(
             `New Process has been added to the db: ${this.blockSelectorId}`
         )
+        await this.loadOrCreate() //@dev ensure that we acquire the lock
     }
 
     async save(blockNumber: number) {
@@ -53,5 +60,14 @@ export class EligibilityProcess {
         console.info(
             `Saved progress for the eligibility process. Last Block ${blockNumber}`
         )
+    }
+
+    checkProcessLock(lock: boolean) {
+        if (lock === true) return
+        if (!isMainThread) return
+        console.warn(
+            `The pair [${this.blockSelectorId}][${this.deploymentHash}] is already being processed by another process. Shutting down.`
+        )
+        process.exit(0)
     }
 }

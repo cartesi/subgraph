@@ -24,6 +24,7 @@ export async function processEligibility(
         deployment.subgraphName,
         db
     )
+    await eProcess.loadOrCreate()
     let before = Date.now()
 
     let users = await findUsers(db)

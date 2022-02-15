@@ -1,3 +1,4 @@
+import { isMainThread } from "worker_threads"
 import { knex, Knex } from "knex"
 import assert from "assert"
 const {
@@ -89,8 +90,26 @@ async function getConnectionInfo() {
         deployment: {
             deploymentHash: deployments[0].subgraph as string,
             subgraphName: subgraphName,
+            network: deployments[0].network,
         },
     }
+    if (isMainThread)
+        console.info(
+            "Starting the process with the configuration:",
+            JSON.stringify(
+                {
+                    DB_HOST,
+                    DB_PORT,
+                    DB_USER,
+                    DB_NAME,
+                    SUBGRAPH_NAME,
+                    NET_SUBGRAPH_NAME,
+                    deployment: connectionInfo.deployment,
+                },
+                null,
+                2
+            )
+        )
     return connectionInfo
 }
 
@@ -99,6 +118,7 @@ export interface KnexDB extends Knex<any, unknown[]> {}
 export interface Deployment {
     deploymentHash: string
     subgraphName: string
+    network: string
 }
 
 export async function getDeployment(): Promise<Deployment> {
