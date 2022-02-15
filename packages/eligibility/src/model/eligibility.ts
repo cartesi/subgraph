@@ -44,7 +44,7 @@ export class EligibilityModel {
             .select("*")
             .where("user", this.user)
             .andWhere("block_selector", this.blockSelector)
-            .orderBy("vid", "desc")
+            .orderByRaw("upper(block_range) desc")
             .limit(1)
         if (last && last[0]) {
             this.last = {
