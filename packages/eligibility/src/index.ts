@@ -101,7 +101,9 @@ export async function processEligibility(
                 `[${threadId}] it took ${(Date.now() - before) / 1000} seconds `
             )
             // save any left progress
-            await Promise.all(users.map((user) => user.save()))
+            // @dev this was not working locally; maybe DB is not strong enough?
+            // await Promise.all(users.map((user) => user.save()))
+            for (let i = 0; i < users.length; i++) await users[i].save()
             if (isMainThread) await eProcess.save(lastBlock)
             db.destroy()
             resolve()
