@@ -9,6 +9,7 @@ const {
     DB_NAME,
     SUBGRAPH_NAME,
     NET_SUBGRAPH_NAME,
+    CONNECTION_POOL_SIZE_PER_THREAD,
 } = process.env
 const subgraphName = SUBGRAPH_NAME || "cartesi/pos"
 const networkSubgraphName = NET_SUBGRAPH_NAME || "cartesi/eth-blocks-mainnet"
@@ -83,7 +84,10 @@ async function getConnectionInfo() {
         ...connOptions,
         searchPath: ["ctsi", deployments[0].name, networks[0].name],
     }
-    options.connection.pool.max = 10
+    options.connection.pool.max = parseInt(
+        CONNECTION_POOL_SIZE_PER_THREAD || "10",
+        10
+    )
     await _db.destroy()
     connectionInfo = {
         knex: knex(options),
@@ -91,24 +95,22 @@ async function getConnectionInfo() {
             deploymentHash: deployments[0].subgraph as string,
             subgraphName: subgraphName,
             network: deployments[0].network,
+            networkSubgraphName,
         },
     }
     if (isMainThread)
         console.info(
             "Starting the process with the configuration:",
-            JSON.stringify(
-                {
-                    DB_HOST,
-                    DB_PORT,
-                    DB_USER,
-                    DB_NAME,
-                    SUBGRAPH_NAME,
-                    NET_SUBGRAPH_NAME,
-                    deployment: connectionInfo.deployment,
-                },
-                null,
-                2
-            )
+            JSON.stringify({
+                DB_HOST,
+                DB_PORT,
+                DB_USER,
+                DB_NAME,
+                SUBGRAPH_NAME,
+                NET_SUBGRAPH_NAME,
+                CONNECTION_POOL_SIZE_PER_THREAD,
+                deployment: connectionInfo.deployment,
+            })
         )
     return connectionInfo
 }
@@ -119,6 +121,7 @@ export interface Deployment {
     deploymentHash: string
     subgraphName: string
     network: string
+    networkSubgraphName: string
 }
 
 export async function getDeployment(): Promise<Deployment> {
