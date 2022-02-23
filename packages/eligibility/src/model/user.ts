@@ -1,3 +1,5 @@
+import { threadId } from "worker_threads"
+
 import { KnexDB } from "../db"
 import { BigNumber, utils } from "ethers"
 import { Range } from "../utils/range"
@@ -53,6 +55,60 @@ export function fromRaw(state: UserStateRaw): UserState {
         block_range: Range.fromRangeString(block_range),
     }
 }
+async function parseUser(
+    dbResults: any,
+    blocks: EtherBlocks,
+    blockSelectorID: string,
+    db: KnexDB,
+    rangeEnd: number
+): Promise<User[]> {
+    let users: User[] = []
+    dbResults.forEach((state: UserStateRaw) => {
+        if (
+            users.length === 0 ||
+            users[users.length - 1].address !== state.id
+        ) {
+            let user = new User(
+                state.id,
+                [fromRaw(state)],
+                blocks,
+                rangeEnd,
+                blockSelectorID,
+                db
+            )
+            users.push(user)
+            return
+        }
+        let user = users[users.length - 1]
+        user.states.data.push(fromRaw(state))
+    })
+    //@dev this is to avoid excessive use of db connections
+    //further improvement would need to have a limiter around all knex cmds
+    for (let i = 0; i < users.length; i++) await users[i].eligibilityLoad()
+    console.info(`Successfully loaded ${users.length} users`)
+    return users
+}
+
+export async function loadUsersByList(
+    list: string[],
+    blocks: EtherBlocks,
+    blockSelectorID: string,
+    db: KnexDB
+): Promise<User[]> {
+    console.info(`[${threadId}]Loading ${list.length} users from list`)
+    let latestBlock = await blocks.latestBlock()
+    const res = await db<UserStateRaw>("user")
+        .select("id")
+        .select("staked_balance")
+        .select("maturing_balance")
+        .select("maturing_timestamp")
+        .select("vid")
+        .select("block_range")
+        .whereIn("id", list)
+        .orderBy("id")
+        .orderBy("vid", "asc")
+    return parseUser(res, blocks, blockSelectorID, db, latestBlock)
+}
 
 export async function loadUsersByRange(
     range: Range,
@@ -75,32 +131,7 @@ export async function loadUsersByRange(
         )
         .orderBy("id")
         .orderBy("vid", "asc")
-    // .limit(10)
-    let users: User[] = []
-    let eligibilityLoad: Promise<void>[] = []
-    res.forEach((state: UserStateRaw) => {
-        if (
-            users.length === 0 ||
-            users[users.length - 1].address !== state.id
-        ) {
-            let user = new User(
-                state.id,
-                [fromRaw(state)],
-                blocks,
-                range.end!,
-                blockSelectorID,
-                db
-            )
-            users.push(user)
-            eligibilityLoad.push(user.eligibilityLoad())
-            return
-        }
-        let user = users[users.length - 1]
-        user.states.data.push(fromRaw(state))
-    })
-    await Promise.all(eligibilityLoad)
-    console.info(`Successfully loaded ${users.length} users`)
-    return users
+    return parseUser(res, blocks, blockSelectorID, db, range.end!)
 }
 
 export async function findUsers(db: KnexDB): Promise<string[]> {

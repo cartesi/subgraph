@@ -2,7 +2,7 @@ import { parentPort, MessagePort, threadId, workerData } from "worker_threads"
 import { BlockSelectorContextState } from "../model/blockSelectorContext"
 import { getDb, KnexDB } from "../db"
 
-import { loadUser, User } from "../model/user"
+import { User, loadUsersByList } from "../model/user"
 import { EtherBlocks, EtherBlocksClass } from "../model/etherBlocks"
 
 import { processEligibility } from "../index"
@@ -59,15 +59,11 @@ export class Worker {
     }
 
     async loadUsers(): Promise<User[]> {
-        const users = await Promise.all(
-            this.userAddresses.map((address) =>
-                loadUser(
-                    address,
-                    this.etherBlocks,
-                    this.blockSelectorState.id,
-                    this.db
-                )
-            )
+        const users = await loadUsersByList(
+            this.userAddresses,
+            this.etherBlocks,
+            this.blockSelectorState.id,
+            this.db
         )
         return users
     }
