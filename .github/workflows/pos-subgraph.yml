@@ -5,6 +5,7 @@ on:
             - "packages/pos-subgraph/**"
             - "packages/toolbox/**"
             - ".github/workflows/pos-subgraph.yml"
+            - ".github/workflows/called-subgraph-build.yml"
 jobs:
     build:
         uses: ./.github/workflows/called-subgraph-build.yml
