@@ -11,63 +11,12 @@
 // under the License.
 
 import { NewChain, Rewarded } from "../generated/PoS/PoS"
-import { BlockProduced } from "../generated/BlockSelector/BlockSelector"
-import { Block } from "../generated/schema"
 import * as chains from "./chain"
-import * as nodes from "./node"
-import * as summary from "./summary"
-import * as users from "./user"
+import { handleRewardedInner, handleBlockProduced } from "./block-common"
 
 export function handleRewarded(event: Rewarded): void {
     let reward = event.params.reward
-
-    // handle user
-    let user = users.loadOrCreate(event.params.user)
-    user.totalBlocks++
-    user.totalReward = user.totalReward.plus(reward)
-    user.save()
-
-    // handle node
-    let node = nodes.loadOrCreate(
-        event.params.user,
-        event.params.worker,
-        event.block.timestamp
-    )
-    node.totalBlocks++
-    node.status = "Authorized"
-    node.totalReward = node.totalReward.plus(reward)
-    node.save()
-
-    // handle chain
-    let posAddress = event.address.toHex()
-    let chain = chains.loadOrCreate(
-        posAddress,
-        event.params.index.toI32(),
-        event.block.timestamp
-    )
-    chain.totalBlocks++
-    chain.totalReward = chain.totalReward.plus(reward)
-    chain.save()
-
-    // Rewarded is always called before BlockProduced, so create Block here
-    let block = Block.load(event.transaction.hash.toHex())
-    if (block == null) {
-        block = new Block(event.transaction.hash.toHex())
-        block.timestamp = event.block.timestamp
-        block.gasPrice = event.transaction.gasPrice
-        block.gasLimit = event.transaction.gasLimit
-    }
-    block.chain = chain.id
-    block.reward = reward
-    block.producer = event.params.user.toHex()
-    block.node = event.params.worker.toHex()
-    block.save()
-
-    // handle global summary
-    let s = summary.loadOrCreate()
-    s.totalBlocks++
-    s.totalReward = s.totalReward.plus(reward)
-    s.save()
+    handleRewardedInner(event, reward)
 }
 
 export function handleNewChain(event: NewChain): void {
@@ -82,16 +31,4 @@ export function handleNewChain(event: NewChain): void {
     chain.save()
 }
 
-export function handleBlockProduced(event: BlockProduced): void {
-    // load Block and fill other properties
-    let block = Block.load(event.transaction.hash.toHex())
-    if (block == null) {
-        block = new Block(event.transaction.hash.toHex())
-        block.timestamp = event.block.timestamp
-        block.gasPrice = event.transaction.gasPrice
-        block.gasLimit = event.transaction.gasLimit
-    }
-    block.number = event.params.blockNumber.toI32()
-    block.difficulty = event.params.difficulty
-    block.save()
-}
+export { handleBlockProduced }
