@@ -1,0 +1,13 @@
+name: PoS Subgraph
+on:
+    push:
+        paths:
+            - "packages/pos-subgraph/**"
+            - "packages/toolbox/**"
+            - ".github/workflows/pos-subgraph.yml"
+jobs:
+    build:
+        uses: ./.github/workflows/called-subgraph-build.yml
+        secrets:
+            NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+            PROJECT_ID: ${{ secrets.PROJECT_ID }}
