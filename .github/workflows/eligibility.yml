@@ -4,6 +4,12 @@ on:
     paths:
       - "packages/eligibility/**"
       - ".github/workflows/eligibility.yml"
+  push:
+    paths:
+      - "packages/eligibility/**"
+      - ".github/workflows/eligibility.yml"
+    tags:
+      - v**
 jobs:
   build:
     runs-on: ubuntu-20.04
