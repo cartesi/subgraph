@@ -10,7 +10,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-import { Address, BigInt } from "@graphprotocol/graph-ts"
+import { Address, BigInt, store } from "@graphprotocol/graph-ts"
 import {
     Block,
     StakingPool,
@@ -244,7 +244,12 @@ export function handleWithdraw(event: Withdraw): void {
     // update balance
     let balance = loadOrCreateBalance(event.address, event.params.user)
     balance.balance = balance.balance.minus(event.params.amount)
-    balance.save()
+
+    if (balance.balance.isZero() && balance.shares.isZero()) {
+        store.remove("PoolBalance", balance.id)
+    } else {
+        balance.save()
+    }
 }
 
 export function handleBlockProduced(event: BlockProduced): void {
