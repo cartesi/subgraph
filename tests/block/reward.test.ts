@@ -6,10 +6,10 @@ import { Summary } from "../../generated/schema"
 
 test("New reward should store expected values", () => {
     const address = "0x0000000000000000000000000000000000000000"
-    const reward = BigInt.fromI32(2900000000000000000000)
-    const gasPrice = BigInt.fromI32(100000000000)
-    const gasUsed = BigInt.fromI32(100000)
-    const gasLimit = BigInt.fromI32(200000)
+    const reward = BigInt.fromString("2900000000000000000000")
+    const gasPrice = BigInt.fromString("100000000000")
+    const gasUsed = BigInt.fromString("100000")
+    const gasLimit = BigInt.fromString("200000")
     const rewardEvent = createRewardedEvent(
         address,
         address,

@@ -1,29 +1,39 @@
-import { BigInt, ethereum } from "@graphprotocol/graph-ts"
+import { Address, BigInt, ethereum } from "@graphprotocol/graph-ts"
 import { Block } from "../generated/schema"
-import { Rewarded } from "../generated/PoS/PoS"
-import { Rewarded as Rewarded_1_0 } from "../generated/PoS-1.0/PoS"
 import * as nodes from "./node"
 import * as chains from "./chain"
 import * as users from "./user"
 import * as summary from "./summary"
 import { BlockProduced } from "../generated/BlockSelector/BlockSelector"
+import { Rewarded } from "../generated/PoS/PoS"
 
 export function createBlock(event: ethereum.Event): Block {
     const block = new Block(event.transaction.hash.toHex())
     block.timestamp = event.block.timestamp
     block.gasPrice = event.transaction.gasPrice
     block.gasLimit = event.transaction.gasLimit
-    if (event.receipt) {
-        block.gasUsed = event.receipt.gasUsed
+    const receipt = event.receipt
+    if (receipt instanceof ethereum.TransactionReceipt) {
+        block.gasUsed = receipt.gasUsed
         block.transactionFee = block.gasUsed.times(block.gasPrice)
     }
     return block
 }
 
-export function handleRewardedInner(
-    event: Rewarded | Rewarded_1_0,
+abstract class RewardedCommonParams {
+    abstract get index(): BigInt
+    abstract get worker(): Address
+    abstract get user(): Address
+}
+
+abstract class RewardedCommon extends ethereum.Event {
+    abstract get params(): RewardedCommonParams
+}
+
+export function handleRewardedInner<T extends RewardedCommon>(
+    event: T,
     reward: BigInt
-) {
+): void {
     // handle node
     let node = nodes.loadOrCreate(
         event.params.user,

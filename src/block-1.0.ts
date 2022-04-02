@@ -15,7 +15,7 @@ import { handleRewardedInner, handleBlockProduced } from "./block-common"
 
 export function handleRewarded(event: Rewarded): void {
     let reward = event.params.userReward.plus(event.params.beneficiaryReward)
-    handleRewardedInner(event, reward)
+    handleRewardedInner<Rewarded>(event, reward)
 }
 
 export { handleBlockProduced }
