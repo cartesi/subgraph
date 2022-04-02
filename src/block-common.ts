@@ -13,9 +13,10 @@ export function createBlock(event: ethereum.Event): Block {
     block.timestamp = event.block.timestamp
     block.gasPrice = event.transaction.gasPrice
     block.gasLimit = event.transaction.gasLimit
-    // TODO waiting for https://github.com/graphprotocol/graph-node/issues/3218
-    block.gasUsed = ""
-    block.transactionFee = block.gasUsed.times(block.gasPrice)
+    if (event.receipt) {
+        block.gasUsed = event.receipt.gasUsed
+        block.transactionFee = block.gasUsed.times(block.gasPrice)
+    }
     return block
 }
 

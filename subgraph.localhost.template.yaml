@@ -90,6 +90,7 @@ dataSources:
                 handler: handleNewChain
               - event: "Rewarded(indexed uint256,indexed address,indexed address,uint256)"
                 handler: handleRewarded
+                receipt: true
           file: ./src/block.ts
     - kind: ethereum/contract
       name: BlockSelector

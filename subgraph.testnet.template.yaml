@@ -88,6 +88,7 @@ dataSources:
           eventHandlers:
               - event: "Rewarded(indexed uint256,indexed address,indexed address,address,uint256,uint256)"
                 handler: handleRewarded
+                receipt: true
           file: ./src/block-1.0.ts
     - kind: ethereum/contract
       name: PoS
@@ -115,6 +116,7 @@ dataSources:
                 handler: handleNewChain
               - event: "Rewarded(indexed uint256,indexed address,indexed address,uint256)"
                 handler: handleRewarded
+                receipt: true
           file: ./src/block.ts
     - kind: ethereum/contract
       name: BlockSelector-1.0
