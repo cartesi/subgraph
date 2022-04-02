@@ -16,6 +16,7 @@ import { Stake, Unstake, Withdraw } from "../generated/StakingImpl/StakingImpl"
 import { StakingPoolFee } from "../generated/schema"
 import { FlatRateChanged } from "../generated/templates/FlatRateCommission/FlatRateCommission"
 import { GasTaxChanged } from "../generated/templates/GasTaxCommission/GasTaxCommission"
+import { Rewarded } from "../generated/PoS/PoS"
 
 export const txHash = Bytes.fromHexString(
     "0x0000000000000000000000000000000000000000000000000000000000000001"
@@ -149,6 +150,60 @@ export function createWithdrawEvent(user: string, amount: BigInt): Withdraw {
         new ethereum.EventParam(
             "amount",
             ethereum.Value.fromUnsignedBigInt(amount)
+        )
+    )
+    return event
+}
+
+export function createRewardedEvent(
+    worker: string,
+    user: string,
+    reward: BigInt,
+    gasPrice: BigInt,
+    gasLimit: BigInt,
+    gasUsed: BigInt
+): Rewarded {
+    const event = changetype<Rewarded>(newMockEvent())
+    event.transaction.hash = txHash
+    event.transaction.gasPrice = gasPrice
+    event.transaction.gasLimit = gasLimit
+    event.block.timestamp = BigInt.fromI32(txTimestamp) // Thursday, August 26, 2021 05:46:40 PM
+
+    // add the transaction receipt (not available in matchstick-as as of now)
+    let defaultAddress = event.address
+    let defaultAddressBytes = event.address as Bytes
+    let defaultBigInt = event.transactionLogIndex
+    event.receipt = new ethereum.TransactionReceipt(
+        defaultAddress,
+        defaultBigInt,
+        defaultAddressBytes,
+        defaultBigInt,
+        defaultBigInt,
+        gasUsed,
+        defaultAddress,
+        [],
+        defaultBigInt,
+        defaultAddressBytes,
+        defaultAddressBytes
+    )
+
+    event.parameters = new Array()
+    event.parameters.push(
+        new ethereum.EventParam(
+            "worker",
+            ethereum.Value.fromAddress(Address.fromString(worker))
+        )
+    )
+    event.parameters.push(
+        new ethereum.EventParam(
+            "user",
+            ethereum.Value.fromAddress(Address.fromString(user))
+        )
+    )
+    event.parameters.push(
+        new ethereum.EventParam(
+            "reward",
+            ethereum.Value.fromUnsignedBigInt(reward)
         )
     )
     return event
