@@ -24,7 +24,7 @@ RUN apt-get update \
     && nvm alias default v${NODE_VERSION} \
     && npm install -g yarn \
     # matchstick
-    && curl -o /bin/matchstick -L https://github.com/LimeChain/matchstick/releases/download/0.4.2/binary-linux-20 \
+    && curl -o /bin/matchstick -L https://github.com/LimeChain/matchstick/releases/download/0.4.4/binary-linux-20 \
     && chmod a+x /bin/matchstick \
     && mkdir matchstick \
     && apt-get remove -y --purge curl \
