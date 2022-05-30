@@ -6,7 +6,7 @@ import * as users from "./user"
 import * as summary from "./summary"
 import { BlockProduced } from "../generated/BlockSelector/BlockSelector"
 
-export function createBlock(event: ethereum.Event): Block {
+function createBlock(event: ethereum.Event): Block {
     const block = new Block(event.transaction.hash.toHex())
     block.timestamp = event.block.timestamp
     block.gasPrice = event.transaction.gasPrice
