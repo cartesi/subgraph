@@ -142,6 +142,7 @@ dataSources:
           eventHandlers:
               - event: "BlockProduced(indexed uint256,indexed address,uint256,uint256,uint256,uint256)"
                 handler: handleBlockProduced
+                receipt: true
           file: ./src/block-1.0.ts
     - kind: ethereum/contract
       name: BlockSelector
@@ -167,6 +168,7 @@ dataSources:
           eventHandlers:
               - event: "BlockProduced(indexed uint256,indexed address,uint32,uint256,uint256)"
                 handler: handleBlockProduced
+                receipt: true
           file: ./src/block.ts
     - kind: ethereum/contract
       name: StakingPoolFactoryImpl
@@ -224,6 +226,7 @@ templates:
                 handler: handleWithdraw
               - event: "BlockProduced(uint256,uint256)"
                 handler: handleBlockProduced
+                receipt: true
               - event: "Paused(address)"
                 handler: handlePaused
               - event: "Unpaused(address)"
