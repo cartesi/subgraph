@@ -5,18 +5,14 @@ import * as chains from "./chain"
 import * as users from "./user"
 import * as summary from "./summary"
 import { BlockProduced } from "../generated/BlockSelector/BlockSelector"
-import { Rewarded } from "../generated/PoS/PoS"
 
 export function createBlock(event: ethereum.Event): Block {
     const block = new Block(event.transaction.hash.toHex())
     block.timestamp = event.block.timestamp
     block.gasPrice = event.transaction.gasPrice
     block.gasLimit = event.transaction.gasLimit
-    const receipt = event.receipt
-    if (receipt instanceof ethereum.TransactionReceipt) {
-        block.gasUsed = receipt.gasUsed
-        block.transactionFee = block.gasUsed.times(block.gasPrice)
-    }
+    block.gasUsed = (event.receipt as ethereum.TransactionReceipt).gasUsed
+    block.transactionFee = block.gasUsed.times(block.gasPrice)
     return block
 }
 

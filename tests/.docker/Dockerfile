@@ -5,6 +5,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 ARG TZ=Etc/UTC
 ARG NVM_VERSION=0.39.1
 ARG NODE_VERSION=16.14.2
+ARG MATCHSTICK_VERSION=0.4.4
 
 ENV NVM_DIR=/root/.nvm
 ENV ARGS=""
@@ -24,7 +25,7 @@ RUN apt-get update \
     && nvm alias default v${NODE_VERSION} \
     && npm install -g yarn \
     # matchstick
-    && curl -o /bin/matchstick -L https://github.com/LimeChain/matchstick/releases/download/0.4.4/binary-linux-20 \
+    && curl -o /bin/matchstick -L https://github.com/LimeChain/matchstick/releases/download/${MATCHSTICK_VERSION}/binary-linux-20 \
     && chmod a+x /bin/matchstick \
     && mkdir matchstick \
     && apt-get remove -y --purge curl \

@@ -168,24 +168,7 @@ export function createRewardedEvent(
     event.transaction.gasPrice = gasPrice
     event.transaction.gasLimit = gasLimit
     event.block.timestamp = BigInt.fromI32(txTimestamp) // Thursday, August 26, 2021 05:46:40 PM
-
-    // add the transaction receipt (not available in matchstick-as as of now)
-    let defaultAddress = event.address
-    let defaultAddressBytes = event.address as Bytes
-    let defaultBigInt = event.transactionLogIndex
-    event.receipt = new ethereum.TransactionReceipt(
-        defaultAddress,
-        defaultBigInt,
-        defaultAddressBytes,
-        defaultBigInt,
-        defaultBigInt,
-        gasUsed,
-        defaultAddress,
-        [],
-        defaultBigInt,
-        defaultAddressBytes,
-        defaultAddressBytes
-    )
+    ;(event.receipt as ethereum.TransactionReceipt).gasUsed = gasUsed
 
     event.parameters = new Array()
     event.parameters.push(
