@@ -8,6 +8,7 @@ releasingTimestamp
 balance
 totalBlocks
 totalReward
+totalTransactionFee
 +pool
 
 [Node]
@@ -52,6 +53,8 @@ reward
 difficulty
 gasPrice
 gasLimit
+gasUsed
+transactionFee
 
 [Chain]
 *id
@@ -134,6 +137,7 @@ totalNodes
 totalStaked
 totalBlocks
 totalReward
+totalTransactionFee
 totalProtocols
 totalChains
 
