@@ -1,4 +1,4 @@
-specVersion: 0.0.2
+specVersion: 0.0.5
 description: Cartesi Explorer
 repository: "https://github.com/cartesi/subgraph"
 schema:
@@ -13,7 +13,7 @@ dataSources:
           startBlock:
       mapping:
           kind: ethereum/events
-          apiVersion: 0.0.5
+          apiVersion: 0.0.7
           language: wasm/assemblyscript
           entities:
               - Stake
@@ -41,7 +41,7 @@ dataSources:
           startBlock:
       mapping:
           kind: ethereum/events
-          apiVersion: 0.0.5
+          apiVersion: 0.0.7
           language: wasm/assemblyscript
           entities:
               - Summary
@@ -73,7 +73,7 @@ dataSources:
           startBlock:
       mapping:
           kind: ethereum/events
-          apiVersion: 0.0.5
+          apiVersion: 0.0.7
           language: wasm/assemblyscript
           entities:
               - Block
@@ -88,6 +88,7 @@ dataSources:
           eventHandlers:
               - event: "Rewarded(indexed uint256,indexed address,indexed address,address,uint256,uint256)"
                 handler: handleRewarded
+                receipt: true
           file: ./src/block-1.0.ts
     - kind: ethereum/contract
       name: PoS
@@ -98,7 +99,7 @@ dataSources:
           startBlock:
       mapping:
           kind: ethereum/events
-          apiVersion: 0.0.5
+          apiVersion: 0.0.7
           language: wasm/assemblyscript
           entities:
               - Block
@@ -115,6 +116,7 @@ dataSources:
                 handler: handleNewChain
               - event: "Rewarded(indexed uint256,indexed address,indexed address,uint256)"
                 handler: handleRewarded
+                receipt: true
           file: ./src/block.ts
     - kind: ethereum/contract
       name: BlockSelector-1.0
@@ -125,7 +127,7 @@ dataSources:
           startBlock:
       mapping:
           kind: ethereum/events
-          apiVersion: 0.0.5
+          apiVersion: 0.0.7
           language: wasm/assemblyscript
           entities:
               - Block
@@ -140,6 +142,7 @@ dataSources:
           eventHandlers:
               - event: "BlockProduced(indexed uint256,indexed address,uint256,uint256,uint256,uint256)"
                 handler: handleBlockProduced
+                receipt: true
           file: ./src/block-1.0.ts
     - kind: ethereum/contract
       name: BlockSelector
@@ -150,7 +153,7 @@ dataSources:
           startBlock:
       mapping:
           kind: ethereum/events
-          apiVersion: 0.0.5
+          apiVersion: 0.0.7
           language: wasm/assemblyscript
           entities:
               - Block
@@ -165,6 +168,7 @@ dataSources:
           eventHandlers:
               - event: "BlockProduced(indexed uint256,indexed address,uint32,uint256,uint256)"
                 handler: handleBlockProduced
+                receipt: true
           file: ./src/block.ts
     - kind: ethereum/contract
       name: StakingPoolFactoryImpl
@@ -175,7 +179,7 @@ dataSources:
           startBlock:
       mapping:
           kind: ethereum/events
-          apiVersion: 0.0.5
+          apiVersion: 0.0.7
           language: wasm/assemblyscript
           entities:
               - StakingPool
@@ -199,7 +203,7 @@ templates:
           abi: StakingPoolImpl
       mapping:
           kind: ethereum/events
-          apiVersion: 0.0.5
+          apiVersion: 0.0.7
           language: wasm/assemblyscript
           entities:
               - PoolBalance
@@ -234,7 +238,7 @@ templates:
           abi: FlatRateCommission
       mapping:
           kind: ethereum/events
-          apiVersion: 0.0.5
+          apiVersion: 0.0.7
           language: wasm/assemblyscript
           entities:
               - StakingPoolFee
@@ -252,7 +256,7 @@ templates:
           abi: GasTaxCommission
       mapping:
           kind: ethereum/events
-          apiVersion: 0.0.5
+          apiVersion: 0.0.7
           language: wasm/assemblyscript
           entities:
               - StakingPoolFee

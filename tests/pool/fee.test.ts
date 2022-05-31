@@ -10,7 +10,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-import { assert, clearStore, test, log } from "matchstick-as"
+import { assert, clearStore, test, log, beforeEach } from "matchstick-as"
 import { Address, BigInt } from "@graphprotocol/graph-ts"
 import {
     buildStakingPoolFee,
@@ -21,6 +21,10 @@ import {
 import { handleFlatRateChanged, handleGasTaxChanged } from "../../src/fee"
 
 let STAKING_POOL_FEE = "StakingPoolFee"
+
+beforeEach(() => {
+    clearStore()
+})
 
 test("New staking-pool-fee should store expected values", () => {
     const address = Address.fromString(
@@ -48,8 +52,6 @@ test("New staking-pool-fee should store expected values", () => {
         timestamp.toString()
     )
     assert.fieldEquals("StakingPoolFee", address.toHex(), "pool", pool.toHex())
-
-    clearStore()
 })
 
 test("When handling flat-rate-changed event the updated staking-pool-fee should have the expected values", () => {

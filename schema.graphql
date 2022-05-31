@@ -7,6 +7,7 @@ type Summary @entity {
     totalStaked: BigInt!
     totalBlocks: Int!
     totalReward: BigInt!
+    totalTransactionFee: BigInt!
     totalProtocols: Int!
     totalChains: Int!
 }
@@ -21,6 +22,7 @@ type User @entity {
     balance: BigInt!
     totalBlocks: Int!
     totalReward: BigInt!
+    totalTransactionFee: BigInt!
     pool: StakingPool
 }
 
@@ -161,4 +163,6 @@ type Block @entity {
     difficulty: BigInt
     gasPrice: BigInt!
     gasLimit: BigInt!
+    gasUsed: BigInt!
+    transactionFee: BigInt!
 }

@@ -1,0 +1,10 @@
+version: '3.4'
+services:
+  matchstick:
+    image: cartesi/subgraph-matchstick:dev
+    build:
+      dockerfile: tests/.docker
+      target: base
+    container_name: cartesi-subgraph-matchstick
+    volumes:
+      - .:/matchstick

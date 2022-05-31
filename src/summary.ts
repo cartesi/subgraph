@@ -25,6 +25,7 @@ export function loadOrCreate(): Summary {
         summary.totalStaked = BigInt.fromI32(0)
         summary.totalBlocks = 0
         summary.totalReward = BigInt.fromI32(0)
+        summary.totalTransactionFee = BigInt.fromI32(0)
         summary.totalProtocols = 0
         summary.totalChains = 0
         summary.save()

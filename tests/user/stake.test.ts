@@ -10,9 +10,9 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-import { assert, clearStore, test } from "matchstick-as"
-import { BigInt } from "@graphprotocol/graph-ts"
-import { handleStakeEvent } from "../../src/user"
+import { assert, beforeEach, clearStore, test } from "matchstick-as"
+import { Address, BigInt } from "@graphprotocol/graph-ts"
+import { handleStakeEvent, loadOrCreate } from "../../src/user"
 import { User } from "../../generated/schema"
 import {
     assertUser,
@@ -21,6 +21,10 @@ import {
     txTimestamp,
     ZERO,
 } from "../utils"
+
+beforeEach(() => {
+    clearStore()
+})
 
 test("stake(1000)", () => {
     let address = "0x0000000000000000000000000000000000000000"
@@ -38,15 +42,13 @@ test("stake(1000)", () => {
         "timestamp",
         txTimestamp.toString()
     )
-
-    clearStore()
 })
 
 test("stake(1000) while maturing", () => {
     let address = "0x0000000000000000000000000000000000000000"
 
     // create a user with 500 maturing
-    let user = new User(address)
+    let user = loadOrCreate(Address.fromString(address))
     user.maturingBalance = BigInt.fromI32(500)
     user.maturingTimestamp = BigInt.fromI32(1630000000 + 10800) // Thursday, August 26, 2021 08:46:40 PM
     user.save()
@@ -64,15 +66,13 @@ test("stake(1000) while maturing", () => {
         ZERO,
         ZERO
     )
-
-    clearStore()
 })
 
 test("stake(1000) while matured", () => {
     let address = "0x0000000000000000000000000000000000000000"
 
     // create a user with 500 matured and 2000 staked
-    let user = new User(address)
+    let user = loadOrCreate(Address.fromString(address))
     user.stakedBalance = BigInt.fromI32(2000)
     user.maturingBalance = BigInt.fromI32(500)
     user.maturingTimestamp = BigInt.fromI32(txTimestamp - 10800) // Thursday, August 26, 2021 02:46:40 PM
@@ -91,15 +91,13 @@ test("stake(1000) while matured", () => {
         ZERO,
         ZERO
     )
-
-    clearStore()
 })
 
 test("stake(1000) while releasing", () => {
     let address = "0x0000000000000000000000000000000000000000"
 
     // create a user with 200 releasing
-    let user = new User(address)
+    let user = loadOrCreate(Address.fromString(address))
     user.releasingBalance = BigInt.fromI32(1200)
     user.save()
 
@@ -116,6 +114,4 @@ test("stake(1000) while releasing", () => {
         BigInt.fromI32(200),
         ZERO
     )
-
-    clearStore()
 })

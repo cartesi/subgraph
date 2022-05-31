@@ -32,6 +32,7 @@ export function loadOrCreate(address: Address): User {
         user.balance = BigInt.fromI32(0)
         user.totalBlocks = 0
         user.totalReward = BigInt.fromI32(0)
+        user.totalTransactionFee = BigInt.fromI32(0)
         user.save()
 
         let s = summary.loadOrCreate()
