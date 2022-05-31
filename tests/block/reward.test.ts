@@ -1,16 +1,23 @@
-import { assert, clearStore, test } from "matchstick-as"
+import { assert, beforeEach, clearStore, log, test } from "matchstick-as"
 import { handleRewarded } from "../../src/block"
 import { createRewardedEvent, txHash, txTimestamp } from "../utils"
 import { BigInt } from "@graphprotocol/graph-ts"
 import { Summary } from "../../generated/schema"
 
+beforeEach(() => {
+    clearStore()
+})
+
 test("New reward should store expected values", () => {
+    const index = BigInt.fromString("1")
     const address = "0x0000000000000000000000000000000000000000"
     const reward = BigInt.fromString("2900000000000000000000")
     const gasPrice = BigInt.fromString("100000000000")
     const gasUsed = BigInt.fromString("100000")
     const gasLimit = BigInt.fromString("200000")
+    const transactionFee = gasUsed.times(gasPrice)
     const rewardEvent = createRewardedEvent(
+        index,
         address,
         address,
         reward,
@@ -22,6 +29,12 @@ test("New reward should store expected values", () => {
 
     // assert User
     assert.fieldEquals("User", address, "id", address)
+    assert.fieldEquals(
+        "User",
+        address,
+        "totalTransactionFee",
+        transactionFee.toString()
+    )
 
     // assert Block
     assert.fieldEquals(
@@ -60,7 +73,7 @@ test("New reward should store expected values", () => {
         "Block",
         txHash.toHexString(),
         "transactionFee",
-        gasUsed.times(gasPrice).toString()
+        transactionFee.toString()
     )
 
     // assert Summary
@@ -71,8 +84,6 @@ test("New reward should store expected values", () => {
         "Summary",
         "1",
         "totalTransactionFee",
-        gasUsed.times(gasPrice).toString()
+        transactionFee.toString()
     )
-
-    clearStore()
 })

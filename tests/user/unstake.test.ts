@@ -10,17 +10,21 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-import { clearStore, test } from "matchstick-as"
-import { BigInt } from "@graphprotocol/graph-ts"
-import { handleUnstakeEvent } from "../../src/user"
+import { clearStore, test, beforeEach } from "matchstick-as"
+import { Address, BigInt } from "@graphprotocol/graph-ts"
+import { handleUnstakeEvent, loadOrCreate } from "../../src/user"
 import { User } from "../../generated/schema"
 import { assertUser, createUnstakeEvent, txTimestamp, ZERO } from "../utils"
+
+beforeEach(() => {
+    clearStore()
+})
 
 test("unstake(1000)", () => {
     let address = "0x0000000000000000000000000000000000000000"
 
     // create a user with 1200 staked
-    let user = new User(address)
+    let user = loadOrCreate(Address.fromString(address))
     user.stakedBalance = BigInt.fromI32(1200)
     user.releasingBalance = BigInt.fromI32(500)
     user.save()
@@ -38,15 +42,13 @@ test("unstake(1000)", () => {
         amount,
         releasingTimestamp
     )
-
-    clearStore()
 })
 
 test("unstake(1000) from maturing", () => {
     let address = "0x0000000000000000000000000000000000000000"
 
     // create a user with 1200 maturing
-    let user = new User(address)
+    let user = loadOrCreate(Address.fromString(address))
     user.maturingBalance = BigInt.fromI32(1200)
     user.save()
 
@@ -63,8 +65,6 @@ test("unstake(1000) from maturing", () => {
         amount,
         releasingTimestamp
     )
-
-    clearStore()
 })
 
 test("unstake(1000) from maturing and staked", () => {
@@ -72,7 +72,7 @@ test("unstake(1000) from maturing and staked", () => {
 
     // create a user with 200 maturing and 1900 staked
     // unstake 1000 must take 200 from maturing and 800 from staked
-    let user = new User(address)
+    let user = loadOrCreate(Address.fromString(address))
     user.maturingBalance = BigInt.fromI32(200)
     user.stakedBalance = BigInt.fromI32(1900)
     user.save()
@@ -90,6 +90,4 @@ test("unstake(1000) from maturing and staked", () => {
         amount,
         releasingTimestamp
     )
-
-    clearStore()
 })

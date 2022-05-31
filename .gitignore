@@ -1,3 +1,4 @@
+# .dockerignore is a symbolic link to .gitignore
 .bin
 .vscode
 build

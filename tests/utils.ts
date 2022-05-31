@@ -156,6 +156,7 @@ export function createWithdrawEvent(user: string, amount: BigInt): Withdraw {
 }
 
 export function createRewardedEvent(
+    index: BigInt,
     worker: string,
     user: string,
     reward: BigInt,
@@ -171,6 +172,12 @@ export function createRewardedEvent(
     ;(event.receipt as ethereum.TransactionReceipt).gasUsed = gasUsed
 
     event.parameters = new Array()
+    event.parameters.push(
+        new ethereum.EventParam(
+            "index",
+            ethereum.Value.fromUnsignedBigInt(index)
+        )
+    )
     event.parameters.push(
         new ethereum.EventParam(
             "worker",

@@ -1,11 +1,11 @@
-FROM ubuntu:20.04
+FROM ubuntu:20.04 as base
 
 ARG BUILDPLATFORM=linux/x86_64
 ARG DEBIAN_FRONTEND=noninteractive
 ARG TZ=Etc/UTC
 ARG NVM_VERSION=0.39.1
 ARG NODE_VERSION=16.14.2
-ARG MATCHSTICK_VERSION=0.4.4
+ARG MATCHSTICK_VERSION=0.5.0
 
 ENV NVM_DIR=/root/.nvm
 ENV ARGS=""
@@ -34,3 +34,17 @@ RUN apt-get update \
 
 WORKDIR /matchstick
 CMD matchstick ${ARGS}
+
+FROM base as libs
+COPY package.json yarn.lock ./
+RUN yarn
+
+FROM libs as code
+ARG PROJECT_ID
+COPY . ./
+RUN yarn prepare:goerli \
+    && mv subgraph.goerli.yaml subgraph.yaml \
+    && yarn codegen subgraph.yaml
+
+FROM code as test
+RUN matchstick ${ARGS}

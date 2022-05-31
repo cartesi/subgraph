@@ -13,6 +13,7 @@
 import { NewChain, Rewarded } from "../generated/PoS/PoS"
 import * as chains from "./chain"
 import { handleRewardedInner, handleBlockProduced } from "./block-common"
+import { log } from "@graphprotocol/graph-ts"
 
 export function handleRewarded(event: Rewarded): void {
     let reward = event.params.reward

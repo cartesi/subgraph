@@ -1,4 +1,4 @@
-import { Address, BigInt, ethereum } from "@graphprotocol/graph-ts"
+import { Address, BigInt, ethereum, log } from "@graphprotocol/graph-ts"
 import { Block } from "../generated/schema"
 import * as nodes from "./node"
 import * as chains from "./chain"
