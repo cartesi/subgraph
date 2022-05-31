@@ -226,7 +226,6 @@ templates:
                 handler: handleWithdraw
               - event: "BlockProduced(uint256,uint256)"
                 handler: handleBlockProduced
-                receipt: true
               - event: "Paused(address)"
                 handler: handlePaused
               - event: "Unpaused(address)"
