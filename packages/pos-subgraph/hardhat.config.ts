@@ -10,16 +10,24 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
+import path from "path"
 import { HardhatUserConfig } from "hardhat/config"
 import { HttpNetworkUserConfig } from "hardhat/types"
 
 import "@nomiclabs/hardhat-ethers"
 import "hardhat-deploy"
 import "./src/tasks/subgraph"
-import { resolveModulePath } from "toolbox"
 
 // read MNEMONIC and PROJECT_ID from env variable
 const { MNEMONIC: mnemonic, PROJECT_ID: projectId } = process.env as any
+
+const resolveModulePath = (
+    moduleName: string,
+    relativePath: string
+): string => {
+    const dir = path.dirname(require.resolve(`${moduleName}/package.json`))
+    return path.join(dir, relativePath)
+}
 
 const infuraNetwork = (
     network: string,
