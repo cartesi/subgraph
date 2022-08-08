@@ -104,6 +104,14 @@ shares
 timestamp
 type
 
+[StakingPoolUserHistory] {bgcolor: "#d3f26b"}
+*id
++pool
++user
+timestamp
+totalUsers
+action
+
 [Summary]
 *id
 totalUsers
@@ -135,3 +143,6 @@ StakingPool 1--* PoolActivity
 StakingPool 1--1 StakingPoolFee
 PoolBalance *--1 PoolUser
 PoolActivity *--1 PoolUser
+StakingPoolUserHistory *--1 PoolUser
+StakingPoolUserHistory *--1 StakingPool
+
