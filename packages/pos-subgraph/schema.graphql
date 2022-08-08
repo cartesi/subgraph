@@ -98,6 +98,20 @@ type PoolBalance @entity {
     stakeTimestamp: BigInt!
 }
 
+enum StakingPoolUserHistoryAction {
+    JOIN
+    LEAVE
+}
+
+type StakingPoolUserHistory @entity {
+    id: ID!
+    timestamp: BigInt!
+    pool: StakingPool!
+    user: PoolUser!
+    totalUsers: Int!
+    action: StakingPoolUserHistoryAction!
+}
+
 type PoolShareValue @entity {
     id: ID!
     pool: StakingPool!
