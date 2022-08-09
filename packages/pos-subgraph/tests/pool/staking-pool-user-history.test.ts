@@ -10,7 +10,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-import { assert, clearStore, test } from "matchstick-as"
+import { assert, clearStore, test, describe, beforeEach } from "matchstick-as"
 import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts"
 import {
     buildStakingPool,
@@ -54,189 +54,234 @@ function getEntryIdFor(txHash: Bytes, pool: Address): string {
     return txHash.toHex() + "-" + pool.toHex()
 }
 
-test("Should create an entry when the user is staking for the first time", () => {
-    // create a pool
-    let stakingPool = buildStakingPool(pool, user)
-    stakingPool.save()
+describe("StakingPoolUserHistory", () => {
+    beforeEach(() => {
+        clearStore()
+    })
 
-    const amount = BigInt.fromI32(500)
-    let shares = BigInt.fromI32(500)
+    test("Should create an entry when the user is staking for the first time", () => {
+        // create a pool
+        let stakingPool = buildStakingPool(pool, user)
+        stakingPool.save()
 
-    generateDepositEvtFor(user, pool, amount, BigInt.fromI32(txTimestamp))
+        const amount = BigInt.fromI32(500)
+        let shares = BigInt.fromI32(500)
 
-    let event = createStakingPoolStakeEvent(user, amount, shares)
-    let blockTimestamp = BigInt.fromI32(txTimestamp + 300) // adding 5 minutes
-    event.block.timestamp = blockTimestamp
-    event.address = pool
-    handleStake(event)
+        generateDepositEvtFor(user, pool, amount, BigInt.fromI32(txTimestamp))
 
-    let entryId = txHash.toHex() + "-" + pool.toHex()
-    assert.fieldEquals(STAKING_POOL_USER_HISTORY, entryId, "user", user.toHex())
+        let event = createStakingPoolStakeEvent(user, amount, shares)
+        let blockTimestamp = BigInt.fromI32(txTimestamp + 300) // adding 5 minutes
+        event.block.timestamp = blockTimestamp
+        event.address = pool
+        handleStake(event)
 
-    assert.fieldEquals(STAKING_POOL_USER_HISTORY, entryId, "pool", pool.toHex())
+        let entryId = txHash.toHex() + "-" + pool.toHex()
+        assert.fieldEquals(
+            STAKING_POOL_USER_HISTORY,
+            entryId,
+            "user",
+            user.toHex()
+        )
 
-    assert.fieldEquals(STAKING_POOL_USER_HISTORY, entryId, "action", JOIN)
+        assert.fieldEquals(
+            STAKING_POOL_USER_HISTORY,
+            entryId,
+            "pool",
+            pool.toHex()
+        )
 
-    assert.fieldEquals(STAKING_POOL_USER_HISTORY, entryId, "totalUsers", "1")
+        assert.fieldEquals(STAKING_POOL_USER_HISTORY, entryId, "action", JOIN)
 
-    assert.fieldEquals(
-        STAKING_POOL_USER_HISTORY,
-        entryId,
-        "timestamp",
-        blockTimestamp.toString()
-    )
+        assert.fieldEquals(
+            STAKING_POOL_USER_HISTORY,
+            entryId,
+            "totalUsers",
+            "1"
+        )
 
-    clearStore()
-})
+        assert.fieldEquals(
+            STAKING_POOL_USER_HISTORY,
+            entryId,
+            "timestamp",
+            blockTimestamp.toString()
+        )
+    })
 
-test("Should not create another entry while user has shares and is doing consecutive stakes", () => {
-    // create a pool
-    let stakingPool = buildStakingPool(pool, user)
-    stakingPool.save()
+    test("Should not create another entry while user has shares and is doing consecutive stakes", () => {
+        // create a pool
+        let stakingPool = buildStakingPool(pool, user)
+        stakingPool.save()
 
-    const amount = BigInt.fromI32(500)
-    let shares = BigInt.fromI32(500)
+        const amount = BigInt.fromI32(500)
+        let shares = BigInt.fromI32(500)
 
-    generateDepositEvtFor(
-        user,
-        pool,
-        BigInt.fromI32(2000),
-        BigInt.fromI32(txTimestamp)
-    )
+        generateDepositEvtFor(
+            user,
+            pool,
+            BigInt.fromI32(2000),
+            BigInt.fromI32(txTimestamp)
+        )
 
-    let firstEvent = createStakingPoolStakeEvent(user, amount, shares)
-    let blockTimestamp = BigInt.fromI32(txTimestamp + 300) // adding 5 minutes
-    firstEvent.block.timestamp = blockTimestamp
-    firstEvent.address = pool
-    handleStake(firstEvent)
+        let firstEvent = createStakingPoolStakeEvent(user, amount, shares)
+        let blockTimestamp = BigInt.fromI32(txTimestamp + 300) // adding 5 minutes
+        firstEvent.block.timestamp = blockTimestamp
+        firstEvent.address = pool
+        handleStake(firstEvent)
 
-    let secondEvt = createStakingPoolStakeEvent(user, amount, shares)
-    let secondBlockTimestamp = blockTimestamp.plus(BigInt.fromI32(300)) // next five minutes
-    let secondTxHash = Bytes.fromHexString(
-        "0x0000000000000000000000000000000000000000000000000000000000000002"
-    ) as Bytes
-
-    secondEvt.transaction.hash = secondTxHash
-    secondEvt.block.timestamp = secondBlockTimestamp
-    secondEvt.address = pool
-    handleStake(secondEvt)
-
-    let entryId = txHash.toHex() + "-" + pool.toHex()
-    assert.assertNotNull(StakingPoolUserHistory.load(entryId))
-
-    let notExpectedEntryId = secondTxHash.toHex() + "-" + pool.toHex()
-
-    assert.assertNull(StakingPoolUserHistory.load(notExpectedEntryId))
-
-    clearStore()
-})
-
-test("Should add an entry when the user is leaving the staking pool i.e. they unstake all the shares", () => {
-    // create a pool
-    let stakingPool = buildStakingPool(pool, user)
-    stakingPool.save()
-    const user2 = Address.fromString(
-        "0x0000000000000000000000000000000000000003"
-    )
-    const user3 = Address.fromString(
-        "0x0000000000000000000000000000000000000004"
-    )
-    let secondTxHash = Bytes.fromHexString(
-        "0x0000000000000000000000000000000000000000000000000000000000000004"
-    ) as Bytes
-    let thirdTxHash = Bytes.fromHexString(
-        "0x0000000000000000000000000000000000000000000000000000000000000005"
-    ) as Bytes
-
-    const bigAmount = BigInt.fromI32(2000)
-    const temp = BigInt.fromI32(txTimestamp)
-    const amount = BigInt.fromI32(500)
-    let shares = BigInt.fromI32(500)
-
-    generateDepositEvtFor(
-        user,
-        pool,
-        bigAmount,
-        temp,
-        Bytes.fromHexString(
-            "0x0000000000000000000000000000000000000000000000000000000000000010"
+        let secondEvt = createStakingPoolStakeEvent(user, amount, shares)
+        let secondBlockTimestamp = blockTimestamp.plus(BigInt.fromI32(300)) // next five minutes
+        let secondTxHash = Bytes.fromHexString(
+            "0x0000000000000000000000000000000000000000000000000000000000000002"
         ) as Bytes
-    )
-    generateDepositEvtFor(
-        user2,
-        pool,
-        bigAmount,
-        temp,
-        Bytes.fromHexString(
-            "0x0000000000000000000000000000000000000000000000000000000000000011"
+
+        secondEvt.transaction.hash = secondTxHash
+        secondEvt.block.timestamp = secondBlockTimestamp
+        secondEvt.address = pool
+        handleStake(secondEvt)
+
+        let entryId = txHash.toHex() + "-" + pool.toHex()
+        assert.assertNotNull(StakingPoolUserHistory.load(entryId))
+
+        let notExpectedEntryId = secondTxHash.toHex() + "-" + pool.toHex()
+
+        assert.assertNull(StakingPoolUserHistory.load(notExpectedEntryId))
+    })
+
+    test("Should add an entry when the user is leaving the staking pool i.e. they unstake all the shares", () => {
+        // create a pool
+        let stakingPool = buildStakingPool(pool, user)
+        stakingPool.save()
+        const user2 = Address.fromString(
+            "0x0000000000000000000000000000000000000003"
+        )
+        const user3 = Address.fromString(
+            "0x0000000000000000000000000000000000000004"
+        )
+        let secondTxHash = Bytes.fromHexString(
+            "0x0000000000000000000000000000000000000000000000000000000000000004"
         ) as Bytes
-    )
-    generateDepositEvtFor(
-        user3,
-        pool,
-        bigAmount,
-        temp,
-        Bytes.fromHexString(
-            "0x0000000000000000000000000000000000000000000000000000000000000012"
+        let thirdTxHash = Bytes.fromHexString(
+            "0x0000000000000000000000000000000000000000000000000000000000000005"
         ) as Bytes
-    )
 
-    //Emulate events. PS: To avoid reference override create the event and sent it before creating "new" ones.
-    let blockTimestamp = BigInt.fromI32(txTimestamp + 300) // adding 5 minutes
-    let oneEvt = createStakingPoolStakeEvent(user, amount, shares)
-    oneEvt.block.timestamp = blockTimestamp
-    oneEvt.address = pool
-    handleStake(oneEvt)
+        const bigAmount = BigInt.fromI32(2000)
+        const temp = BigInt.fromI32(txTimestamp)
+        const amount = BigInt.fromI32(500)
+        let shares = BigInt.fromI32(500)
 
-    let twoEvt = createStakingPoolStakeEvent(user2, amount, shares)
-    twoEvt.transaction.hash = secondTxHash
-    twoEvt.block.timestamp = blockTimestamp
-    twoEvt.address = pool
-    handleStake(twoEvt)
+        generateDepositEvtFor(
+            user,
+            pool,
+            bigAmount,
+            temp,
+            Bytes.fromHexString(
+                "0x0000000000000000000000000000000000000000000000000000000000000010"
+            ) as Bytes
+        )
+        generateDepositEvtFor(
+            user2,
+            pool,
+            bigAmount,
+            temp,
+            Bytes.fromHexString(
+                "0x0000000000000000000000000000000000000000000000000000000000000011"
+            ) as Bytes
+        )
+        generateDepositEvtFor(
+            user3,
+            pool,
+            bigAmount,
+            temp,
+            Bytes.fromHexString(
+                "0x0000000000000000000000000000000000000000000000000000000000000012"
+            ) as Bytes
+        )
 
-    let threeEvt = createStakingPoolStakeEvent(user3, amount, shares)
-    threeEvt.transaction.hash = thirdTxHash
-    threeEvt.block.timestamp = blockTimestamp
-    threeEvt.address = pool
-    handleStake(threeEvt)
+        //Emulate events. PS: To avoid reference override create the event and sent it before creating "new" ones.
+        let blockTimestamp = BigInt.fromI32(txTimestamp + 300) // adding 5 minutes
+        let oneEvt = createStakingPoolStakeEvent(user, amount, shares)
+        oneEvt.block.timestamp = blockTimestamp
+        oneEvt.address = pool
+        handleStake(oneEvt)
 
-    let entryOne = getEntryIdFor(txHash, pool)
-    let entryTwo = getEntryIdFor(secondTxHash, pool)
-    let entryThree = getEntryIdFor(thirdTxHash, pool)
+        let twoEvt = createStakingPoolStakeEvent(user2, amount, shares)
+        twoEvt.transaction.hash = secondTxHash
+        twoEvt.block.timestamp = blockTimestamp
+        twoEvt.address = pool
+        handleStake(twoEvt)
 
-    assert.fieldEquals(STAKING_POOL_USER_HISTORY, entryOne, "totalUsers", "1")
-    assert.fieldEquals(STAKING_POOL_USER_HISTORY, entryOne, "action", JOIN)
+        let threeEvt = createStakingPoolStakeEvent(user3, amount, shares)
+        threeEvt.transaction.hash = thirdTxHash
+        threeEvt.block.timestamp = blockTimestamp
+        threeEvt.address = pool
+        handleStake(threeEvt)
 
-    assert.fieldEquals(STAKING_POOL_USER_HISTORY, entryTwo, "totalUsers", "2")
-    assert.fieldEquals(STAKING_POOL_USER_HISTORY, entryTwo, "action", JOIN)
+        let entryOne = getEntryIdFor(txHash, pool)
+        let entryTwo = getEntryIdFor(secondTxHash, pool)
+        let entryThree = getEntryIdFor(thirdTxHash, pool)
 
-    assert.fieldEquals(STAKING_POOL_USER_HISTORY, entryThree, "totalUsers", "3")
-    assert.fieldEquals(STAKING_POOL_USER_HISTORY, entryThree, "action", JOIN)
+        assert.fieldEquals(
+            STAKING_POOL_USER_HISTORY,
+            entryOne,
+            "totalUsers",
+            "1"
+        )
+        assert.fieldEquals(STAKING_POOL_USER_HISTORY, entryOne, "action", JOIN)
 
-    //Then lets unstake everything for the first user.
-    let unstakeEvt = createStakingPoolUnstakeEvent(user, amount, shares)
-    let newHash = Bytes.fromHexString(
-        "0x0000000000000000000000000000000000000000000000000000000000000008"
-    ) as Bytes
+        assert.fieldEquals(
+            STAKING_POOL_USER_HISTORY,
+            entryTwo,
+            "totalUsers",
+            "2"
+        )
+        assert.fieldEquals(STAKING_POOL_USER_HISTORY, entryTwo, "action", JOIN)
 
-    unstakeEvt.transaction.hash = newHash
-    let nextT = blockTimestamp.plus(BigInt.fromI32(300)) // five minutes after stake happen
-    unstakeEvt.block.timestamp = nextT
-    unstakeEvt.address = pool
-    handleUnstake(unstakeEvt)
+        assert.fieldEquals(
+            STAKING_POOL_USER_HISTORY,
+            entryThree,
+            "totalUsers",
+            "3"
+        )
+        assert.fieldEquals(
+            STAKING_POOL_USER_HISTORY,
+            entryThree,
+            "action",
+            JOIN
+        )
 
-    let nextId = getEntryIdFor(newHash, pool)
+        //Then lets unstake everything for the first user.
+        let unstakeEvt = createStakingPoolUnstakeEvent(user, amount, shares)
+        let newHash = Bytes.fromHexString(
+            "0x0000000000000000000000000000000000000000000000000000000000000008"
+        ) as Bytes
 
-    assert.fieldEquals(STAKING_POOL_USER_HISTORY, nextId, "totalUsers", "2")
-    assert.fieldEquals(STAKING_POOL_USER_HISTORY, nextId, "user", user.toHex())
-    assert.fieldEquals(STAKING_POOL_USER_HISTORY, nextId, "pool", pool.toHex())
-    assert.fieldEquals(
-        STAKING_POOL_USER_HISTORY,
-        nextId,
-        "timestamp",
-        nextT.toString()
-    )
-    assert.fieldEquals(STAKING_POOL_USER_HISTORY, nextId, "action", LEAVE)
+        unstakeEvt.transaction.hash = newHash
+        let nextT = blockTimestamp.plus(BigInt.fromI32(300)) // five minutes after stake happen
+        unstakeEvt.block.timestamp = nextT
+        unstakeEvt.address = pool
+        handleUnstake(unstakeEvt)
 
-    clearStore()
+        let nextId = getEntryIdFor(newHash, pool)
+
+        assert.fieldEquals(STAKING_POOL_USER_HISTORY, nextId, "totalUsers", "2")
+        assert.fieldEquals(
+            STAKING_POOL_USER_HISTORY,
+            nextId,
+            "user",
+            user.toHex()
+        )
+        assert.fieldEquals(
+            STAKING_POOL_USER_HISTORY,
+            nextId,
+            "pool",
+            pool.toHex()
+        )
+        assert.fieldEquals(
+            STAKING_POOL_USER_HISTORY,
+            nextId,
+            "timestamp",
+            nextT.toString()
+        )
+        assert.fieldEquals(STAKING_POOL_USER_HISTORY, nextId, "action", LEAVE)
+    })
 })

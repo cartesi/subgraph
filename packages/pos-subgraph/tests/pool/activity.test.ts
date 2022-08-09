@@ -10,7 +10,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-import { assert, clearStore, test, log } from "matchstick-as"
+import { assert, clearStore, test, describe, beforeEach } from "matchstick-as"
 import { Address, BigInt } from "@graphprotocol/graph-ts"
 import {
     buildStakingPool,
@@ -37,193 +37,191 @@ let POOL_ACTIVITY = "PoolActivity"
 const user = Address.fromString("0x0000000000000000000000000000000000000000")
 const pool = Address.fromString("0x0000000000000000000000000000000000000001")
 
-test("Deposit event handler should create the correct entry on PoolActivity", () => {
-    const amount = BigInt.fromI32(1000)
-    let stakeTimestamp = BigInt.fromI32(txTimestamp + 21600) // Thursday, August 26, 2021 11:46:40 PM
+describe("PoolActivity", () => {
+    beforeEach(() => {
+        clearStore()
+    })
 
-    let event = createStakingPoolDepositEvent(user, amount, stakeTimestamp)
-    event.address = pool
-    handleDeposit(event)
+    test("Deposit event handler should create the correct entry on PoolActivity", () => {
+        const amount = BigInt.fromI32(1000)
+        let stakeTimestamp = BigInt.fromI32(txTimestamp + 21600) // Thursday, August 26, 2021 11:46:40 PM
 
-    assert.fieldEquals(
-        POOL_ACTIVITY,
-        txHash.toHexString(),
-        "user",
-        user.toHex()
-    )
+        let event = createStakingPoolDepositEvent(user, amount, stakeTimestamp)
+        event.address = pool
+        handleDeposit(event)
 
-    assert.fieldEquals(
-        POOL_ACTIVITY,
-        txHash.toHexString(),
-        "pool",
-        pool.toHex()
-    )
+        assert.fieldEquals(
+            POOL_ACTIVITY,
+            txHash.toHexString(),
+            "user",
+            user.toHex()
+        )
 
-    assert.fieldEquals(
-        POOL_ACTIVITY,
-        txHash.toHexString(),
-        "type",
-        POOL_ACTIVITY_DEPOSIT
-    )
+        assert.fieldEquals(
+            POOL_ACTIVITY,
+            txHash.toHexString(),
+            "pool",
+            pool.toHex()
+        )
 
-    assert.fieldEquals(
-        POOL_ACTIVITY,
-        txHash.toHexString(),
-        "amount",
-        amount.toString()
-    )
+        assert.fieldEquals(
+            POOL_ACTIVITY,
+            txHash.toHexString(),
+            "type",
+            POOL_ACTIVITY_DEPOSIT
+        )
 
-    let activity = PoolActivity.load(txHash.toHexString())!
+        assert.fieldEquals(
+            POOL_ACTIVITY,
+            txHash.toHexString(),
+            "amount",
+            amount.toString()
+        )
 
-    assert.assertNull(activity.get("shares"))
+        let activity = PoolActivity.load(txHash.toHexString())!
 
-    clearStore()
-})
+        assert.assertNull(activity.get("shares"))
+    })
 
-test("Stake event handler should create the correct entry on PoolActivity", () => {
-    // create a pool
-    let stakingPool = buildStakingPool(pool, user)
+    test("Stake event handler should create the correct entry on PoolActivity", () => {
+        // create a pool
+        let stakingPool = buildStakingPool(pool, user)
 
-    stakingPool.save()
+        stakingPool.save()
 
-    const amount = BigInt.fromI32(500)
-    let shares = BigInt.fromI32(500)
+        const amount = BigInt.fromI32(500)
+        let shares = BigInt.fromI32(500)
 
-    let event = createStakingPoolStakeEvent(user, amount, shares)
-    event.address = pool
-    handleStake(event)
+        let event = createStakingPoolStakeEvent(user, amount, shares)
+        event.address = pool
+        handleStake(event)
 
-    assert.fieldEquals(
-        POOL_ACTIVITY,
-        txHash.toHexString(),
-        "user",
-        user.toHex()
-    )
+        assert.fieldEquals(
+            POOL_ACTIVITY,
+            txHash.toHexString(),
+            "user",
+            user.toHex()
+        )
 
-    assert.fieldEquals(
-        POOL_ACTIVITY,
-        txHash.toHexString(),
-        "pool",
-        pool.toHex()
-    )
+        assert.fieldEquals(
+            POOL_ACTIVITY,
+            txHash.toHexString(),
+            "pool",
+            pool.toHex()
+        )
 
-    assert.fieldEquals(
-        POOL_ACTIVITY,
-        txHash.toHexString(),
-        "type",
-        POOL_ACTIVITY_STAKE
-    )
+        assert.fieldEquals(
+            POOL_ACTIVITY,
+            txHash.toHexString(),
+            "type",
+            POOL_ACTIVITY_STAKE
+        )
 
-    assert.fieldEquals(
-        POOL_ACTIVITY,
-        txHash.toHexString(),
-        "amount",
-        amount.toString()
-    )
+        assert.fieldEquals(
+            POOL_ACTIVITY,
+            txHash.toHexString(),
+            "amount",
+            amount.toString()
+        )
 
-    assert.fieldEquals(
-        POOL_ACTIVITY,
-        txHash.toHexString(),
-        "shares",
-        shares.toString()
-    )
+        assert.fieldEquals(
+            POOL_ACTIVITY,
+            txHash.toHexString(),
+            "shares",
+            shares.toString()
+        )
+    })
 
-    clearStore()
-})
+    test("Unstake event handler should create the correct entry on PoolActivity", () => {
+        const amount = BigInt.fromI32(500)
+        let shares = BigInt.fromI32(500)
 
-test("Unstake event handler should create the correct entry on PoolActivity", () => {
-    const amount = BigInt.fromI32(500)
-    let shares = BigInt.fromI32(500)
+        // create a pool
+        let stakingPool = buildStakingPool(pool, user)
+        stakingPool.save()
 
-    // create a pool
-    let stakingPool = buildStakingPool(pool, user)
-    stakingPool.save()
+        let event = createStakingPoolStakeEvent(user, amount, shares)
+        event.address = pool
+        // and stake some amount/shares
+        handleStake(event)
 
-    let event = createStakingPoolStakeEvent(user, amount, shares)
-    event.address = pool
-    // and stake some amount/shares
-    handleStake(event)
+        // then let's unstake some
+        let unstakeEvt = createStakingPoolUnstakeEvent(user, amount, shares)
+        unstakeEvt.address = pool
+        handleUnstake(unstakeEvt)
 
-    // then let's unstake some
-    let unstakeEvt = createStakingPoolUnstakeEvent(user, amount, shares)
-    unstakeEvt.address = pool
-    handleUnstake(unstakeEvt)
+        assert.fieldEquals(
+            POOL_ACTIVITY,
+            txHash.toHexString(),
+            "user",
+            user.toHex()
+        )
 
-    assert.fieldEquals(
-        POOL_ACTIVITY,
-        txHash.toHexString(),
-        "user",
-        user.toHex()
-    )
+        assert.fieldEquals(
+            POOL_ACTIVITY,
+            txHash.toHexString(),
+            "pool",
+            pool.toHex()
+        )
 
-    assert.fieldEquals(
-        POOL_ACTIVITY,
-        txHash.toHexString(),
-        "pool",
-        pool.toHex()
-    )
+        assert.fieldEquals(
+            POOL_ACTIVITY,
+            txHash.toHexString(),
+            "type",
+            POOL_ACTIVITY_UNSTAKE
+        )
 
-    assert.fieldEquals(
-        POOL_ACTIVITY,
-        txHash.toHexString(),
-        "type",
-        POOL_ACTIVITY_UNSTAKE
-    )
+        assert.fieldEquals(
+            POOL_ACTIVITY,
+            txHash.toHexString(),
+            "amount",
+            amount.toString()
+        )
 
-    assert.fieldEquals(
-        POOL_ACTIVITY,
-        txHash.toHexString(),
-        "amount",
-        amount.toString()
-    )
+        assert.fieldEquals(
+            POOL_ACTIVITY,
+            txHash.toHexString(),
+            "shares",
+            shares.toString()
+        )
+    })
 
-    assert.fieldEquals(
-        POOL_ACTIVITY,
-        txHash.toHexString(),
-        "shares",
-        shares.toString()
-    )
+    test("Withdraw event handler should create the correct entry on PoolActivity", () => {
+        const amount = BigInt.fromI32(500)
+        let event = createStakingPoolWithdrawEvent(user, amount)
+        event.address = pool
+        // and stake some amount/shares
+        handleWithdraw(event)
 
-    clearStore()
-})
+        assert.fieldEquals(
+            POOL_ACTIVITY,
+            txHash.toHexString(),
+            "user",
+            user.toHex()
+        )
 
-test("Withdraw event handler should create the correct entry on PoolActivity", () => {
-    const amount = BigInt.fromI32(500)
-    let event = createStakingPoolWithdrawEvent(user, amount)
-    event.address = pool
-    // and stake some amount/shares
-    handleWithdraw(event)
+        assert.fieldEquals(
+            POOL_ACTIVITY,
+            txHash.toHexString(),
+            "pool",
+            pool.toHex()
+        )
 
-    assert.fieldEquals(
-        POOL_ACTIVITY,
-        txHash.toHexString(),
-        "user",
-        user.toHex()
-    )
+        assert.fieldEquals(
+            POOL_ACTIVITY,
+            txHash.toHexString(),
+            "type",
+            POOL_ACTIVITY_WITHDRAW
+        )
 
-    assert.fieldEquals(
-        POOL_ACTIVITY,
-        txHash.toHexString(),
-        "pool",
-        pool.toHex()
-    )
+        assert.fieldEquals(
+            POOL_ACTIVITY,
+            txHash.toHexString(),
+            "amount",
+            amount.toString()
+        )
 
-    assert.fieldEquals(
-        POOL_ACTIVITY,
-        txHash.toHexString(),
-        "type",
-        POOL_ACTIVITY_WITHDRAW
-    )
-
-    assert.fieldEquals(
-        POOL_ACTIVITY,
-        txHash.toHexString(),
-        "amount",
-        amount.toString()
-    )
-
-    let activityPool = PoolActivity.load(txHash.toHexString())!
-    assert.assertNull(activityPool.get("shares"))
-
-    clearStore()
+        let activityPool = PoolActivity.load(txHash.toHexString())!
+        assert.assertNull(activityPool.get("shares"))
+    })
 })
