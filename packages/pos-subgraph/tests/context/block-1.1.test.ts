@@ -20,7 +20,7 @@ import {
 import { BigInt, Bytes } from "@graphprotocol/graph-ts"
 import { BlockSelectorContext } from "../../generated/schema"
 
-import * as blockSelectorContext from "../../src/blockSelectorContext"
+import * as blockSelectorContext from "../../src/blockSelectorContext-1.1"
 import * as utils from "../utils"
 
 let ONE = BigInt.fromI32(1)

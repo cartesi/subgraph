@@ -11,9 +11,9 @@ import {
     save,
     contextID,
     ADJUSTMENT_BASE,
-} from "./blockSelectorContext"
+} from "./blockSelectorContext-1.1"
 
-export { contextID } from "./blockSelectorContext"
+export { contextID } from "./blockSelectorContext-1.1"
 
 export let ID0 = "0x742fcf5ba052d9912499acf208d5410ae31d49ac-0"
 export let ID1 = "0x742fcf5ba052d9912499acf208d5410ae31d49ac-1"

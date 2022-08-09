@@ -2,266 +2,266 @@ specVersion: 0.0.2
 description: Cartesi Explorer
 repository: "https://github.com/cartesi/subgraph"
 schema:
-  file: ./schema.graphql
+    file: ./schema.graphql
 dataSources:
-  - kind: ethereum/contract
-    name: StakingImpl
-    network:
-    source:
-      address: StakingImpl
-      abi: StakingImpl
-      startBlock:
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.5
-      language: wasm/assemblyscript
-      entities:
-        - Stake
-        - Summary
-        - Unstake
-        - User
-        - Withdrawn
-      abis:
-        - name: StakingImpl
-          file:
-      eventHandlers:
-        - event: "Stake(indexed address,uint256,uint256)"
-          handler: handleStakeEvent
-        - event: "Unstake(indexed address,uint256,uint256)"
-          handler: handleUnstakeEvent
-        - event: "Withdraw(indexed address,uint256)"
-          handler: handleWithdrawEvent
-      file: ./src/user.ts
-  - kind: ethereum/contract
-    name: WorkerManagerAuthManager
-    network:
-    source:
-      address: WorkerManagerAuthManagerImpl
-      abi: WorkerManagerAuthManagerImpl
-      startBlock:
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.5
-      language: wasm/assemblyscript
-      entities:
-        - Summary
-        - User
-        - Worker
-      abis:
-        - name: WorkerManagerAuthManagerImpl
-          file:
-      eventHandlers:
-        - event: "JobOffer(indexed address,indexed address)"
-          handler: handleJobOffer
-        - event: "JobAccepted(indexed address,indexed address)"
-          handler: handleJobAccepted
-        - event: "JobRejected(indexed address,indexed address)"
-          handler: handleJobRejected
-        - event: "Retired(indexed address,indexed address)"
-          handler: handleRetired
-        - event: "Authorization(indexed address,indexed address,indexed address)"
-          handler: handleAuthorization
-        - event: "Deauthorization(indexed address,indexed address,indexed address)"
-          handler: handleDeauthorization
-      file: ./src/node.ts
-  - kind: ethereum/contract
-    name: PoS-1.0
-    network:
-    source:
-      address: "@cartesi/pos-1.0;deployments/mainnet/PoS.json"
-      abi: PoS
-      startBlock:
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.5
-      language: wasm/assemblyscript
-      entities:
-        - Block
-        - Chain
-        - Protocol
-        - Summary
-        - User
-        - Worker
-      abis:
-        - name: PoS
-          file: abi/v1.0
-      eventHandlers:
-        - event: "Rewarded(indexed uint256,indexed address,indexed address,address,uint256,uint256)"
-          handler: handleRewarded
-      file: ./src/block-1.0.ts
-  - kind: ethereum/contract
-    name: PoS
-    network:
-    source:
-      address: PoS
-      abi: PoS
-      startBlock:
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.5
-      language: wasm/assemblyscript
-      entities:
-        - Block
-        - Chain
-        - Protocol
-        - Summary
-        - User
-        - Worker
-      abis:
-        - name: PoS
-          file:
-      eventHandlers:
-        - event: "NewChain(indexed uint256,address,address,address,uint256,uint256,uint32,uint32,address,uint256,uint256,uint256,uint256)"
-          handler: handleNewChain
-        - event: "Rewarded(indexed uint256,indexed address,indexed address,uint256)"
-          handler: handleRewarded
-      file: ./src/block.ts
-  - kind: ethereum/contract
-    name: BlockSelector-1.0
-    network:
-    source:
-      address: "@cartesi/pos-1.0;deployments/mainnet/BlockSelector.json"
-      abi: BlockSelector
-      startBlock:
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.5
-      language: wasm/assemblyscript
-      entities:
-        - Block
-        - Chain
-        - Protocol
-        - Summary
-        - User
-        - Worker
-      abis:
-        - name: BlockSelector
-          file: abi/v1.0
-      eventHandlers:
-        - event: "BlockProduced(indexed uint256,indexed address,uint256,uint256,uint256,uint256)"
-          handler: handleBlockProduced
-      file: ./src/block-1.0.ts
-  - kind: ethereum/contract
-    name: BlockSelector
-    network:
-    source:
-      address: BlockSelector
-      abi: BlockSelector
-      startBlock:
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.5
-      language: wasm/assemblyscript
-      entities:
-        - Block
-        - Chain
-        - Protocol
-        - Summary
-        - User
-        - Worker
-        - BlockSelectorContext
-        - Eligibility
-      abis:
-        - name: BlockSelector
-          file:
-      eventHandlers:
-        - event: "BlockProduced(indexed uint256,indexed address,uint32,uint256,uint256)"
-          handler: handleBlockProduced
-      file: ./src/block.ts
-  - kind: ethereum/contract
-    name: StakingPoolFactoryImpl
-    network:
-    source:
-      address: StakingPoolFactoryImpl
-      abi: StakingPoolFactoryImpl
-      startBlock:
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.5
-      language: wasm/assemblyscript
-      entities:
-        - StakingPool
-        - StakingPoolFee
-        - Summary
-        - User
-      abis:
-        - name: StakingPoolFactoryImpl
-          file:
-      eventHandlers:
-        - event: "NewFlatRateCommissionStakingPool(indexed address,address)"
-          handler: handleNewFlatRateStakingPool
-        - event: "NewGasTaxCommissionStakingPool(indexed address,address)"
-          handler: handleNewGasTaxStakingPool
-      file: ./src/pool.ts
+    - kind: ethereum/contract
+      name: StakingImpl
+      network:
+      source:
+          address: StakingImpl
+          abi: StakingImpl
+          startBlock:
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.5
+          language: wasm/assemblyscript
+          entities:
+              - Stake
+              - Summary
+              - Unstake
+              - User
+              - Withdrawn
+          abis:
+              - name: StakingImpl
+                file:
+          eventHandlers:
+              - event: "Stake(indexed address,uint256,uint256)"
+                handler: handleStakeEvent
+              - event: "Unstake(indexed address,uint256,uint256)"
+                handler: handleUnstakeEvent
+              - event: "Withdraw(indexed address,uint256)"
+                handler: handleWithdrawEvent
+          file: ./src/user.ts
+    - kind: ethereum/contract
+      name: WorkerManagerAuthManager
+      network:
+      source:
+          address: WorkerManagerAuthManagerImpl
+          abi: WorkerManagerAuthManagerImpl
+          startBlock:
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.5
+          language: wasm/assemblyscript
+          entities:
+              - Summary
+              - User
+              - Worker
+          abis:
+              - name: WorkerManagerAuthManagerImpl
+                file:
+          eventHandlers:
+              - event: "JobOffer(indexed address,indexed address)"
+                handler: handleJobOffer
+              - event: "JobAccepted(indexed address,indexed address)"
+                handler: handleJobAccepted
+              - event: "JobRejected(indexed address,indexed address)"
+                handler: handleJobRejected
+              - event: "Retired(indexed address,indexed address)"
+                handler: handleRetired
+              - event: "Authorization(indexed address,indexed address,indexed address)"
+                handler: handleAuthorization
+              - event: "Deauthorization(indexed address,indexed address,indexed address)"
+                handler: handleDeauthorization
+          file: ./src/node.ts
+    - kind: ethereum/contract
+      name: PoS-1.0
+      network:
+      source:
+          address: "@cartesi/pos-1.0;deployments/mainnet/PoS.json"
+          abi: PoS
+          startBlock:
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.5
+          language: wasm/assemblyscript
+          entities:
+              - Block
+              - Chain
+              - Protocol
+              - Summary
+              - User
+              - Worker
+          abis:
+              - name: PoS
+                file: abi/v1.0
+          eventHandlers:
+              - event: "Rewarded(indexed uint256,indexed address,indexed address,address,uint256,uint256)"
+                handler: handleRewarded
+          file: ./src/block-1.0.ts
+    - kind: ethereum/contract
+      name: PoS
+      network:
+      source:
+          address: PoS
+          abi: PoS
+          startBlock:
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.5
+          language: wasm/assemblyscript
+          entities:
+              - Block
+              - Chain
+              - Protocol
+              - Summary
+              - User
+              - Worker
+          abis:
+              - name: PoS
+                file:
+          eventHandlers:
+              - event: "NewChain(indexed uint256,address,address,address,uint256,uint256,uint32,uint32,address,uint256,uint256,uint256,uint256)"
+                handler: handleNewChain
+              - event: "Rewarded(indexed uint256,indexed address,indexed address,uint256)"
+                handler: handleRewarded
+          file: ./src/block-1.1.ts
+    - kind: ethereum/contract
+      name: BlockSelector-1.0
+      network:
+      source:
+          address: "@cartesi/pos-1.0;deployments/mainnet/BlockSelector.json"
+          abi: BlockSelector
+          startBlock:
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.5
+          language: wasm/assemblyscript
+          entities:
+              - Block
+              - Chain
+              - Protocol
+              - Summary
+              - User
+              - Worker
+          abis:
+              - name: BlockSelector
+                file: abi/v1.0
+          eventHandlers:
+              - event: "BlockProduced(indexed uint256,indexed address,uint256,uint256,uint256,uint256)"
+                handler: handleBlockProduced
+          file: ./src/block-1.0.ts
+    - kind: ethereum/contract
+      name: BlockSelector
+      network:
+      source:
+          address: BlockSelector
+          abi: BlockSelector
+          startBlock:
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.5
+          language: wasm/assemblyscript
+          entities:
+              - Block
+              - Chain
+              - Protocol
+              - Summary
+              - User
+              - Worker
+              - BlockSelectorContext
+              - Eligibility
+          abis:
+              - name: BlockSelector
+                file:
+          eventHandlers:
+              - event: "BlockProduced(indexed uint256,indexed address,uint32,uint256,uint256)"
+                handler: handleBlockProduced
+          file: ./src/block-1.1.ts
+    - kind: ethereum/contract
+      name: StakingPoolFactoryImpl
+      network:
+      source:
+          address: StakingPoolFactoryImpl
+          abi: StakingPoolFactoryImpl
+          startBlock:
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.5
+          language: wasm/assemblyscript
+          entities:
+              - StakingPool
+              - StakingPoolFee
+              - Summary
+              - User
+          abis:
+              - name: StakingPoolFactoryImpl
+                file:
+          eventHandlers:
+              - event: "NewFlatRateCommissionStakingPool(indexed address,address)"
+                handler: handleNewFlatRateStakingPool
+              - event: "NewGasTaxCommissionStakingPool(indexed address,address)"
+                handler: handleNewGasTaxStakingPool
+          file: ./src/pool.ts
 templates:
-  - kind: ethereum/contract
-    name: StakingPoolImpl
-    network:
-    source:
-      abi: StakingPoolImpl
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.5
-      language: wasm/assemblyscript
-      entities:
-        - PoolBalance
-        - PoolStake
-        - PoolUnstake
-        - PoolUser
-        - PoolWithdraw
-        - StakingPool
-      abis:
-        - name: StakingPoolImpl
-          file:
-      eventHandlers:
-        - event: "Deposit(indexed address,uint256,uint256)"
-          handler: handleDeposit
-        - event: "Stake(indexed address,uint256,uint256)"
-          handler: handleStake
-        - event: "Unstake(indexed address,uint256,uint256)"
-          handler: handleUnstake
-        - event: "Withdraw(indexed address,uint256)"
-          handler: handleWithdraw
-        - event: "BlockProduced(uint256,uint256)"
-          handler: handleBlockProduced
-        - event: "Paused(address)"
-          handler: handlePaused
-        - event: "Unpaused(address)"
-          handler: handleUnpaused
-      file: ./src/pool.ts
-  - kind: ethereum/contract
-    name: FlatRateCommission
-    network:
-    source:
-      abi: FlatRateCommission
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.5
-      language: wasm/assemblyscript
-      entities:
-        - StakingPoolFee
-      abis:
-        - name: FlatRateCommission
-          file:
-      eventHandlers:
-        - event: "FlatRateChanged(uint256,uint256)"
-          handler: handleFlatRateChanged
-      file: ./src/fee.ts
-  - kind: ethereum/contract
-    name: GasTaxCommission
-    network:
-    source:
-      abi: GasTaxCommission
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.5
-      language: wasm/assemblyscript
-      entities:
-        - StakingPoolFee
-      abis:
-        - name: GasTaxCommission
-          file:
-      eventHandlers:
-        - event: "GasTaxChanged(uint256,uint256)"
-          handler: handleGasTaxChanged
-      file: ./src/fee.ts
+    - kind: ethereum/contract
+      name: StakingPoolImpl
+      network:
+      source:
+          abi: StakingPoolImpl
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.5
+          language: wasm/assemblyscript
+          entities:
+              - PoolBalance
+              - PoolStake
+              - PoolUnstake
+              - PoolUser
+              - PoolWithdraw
+              - StakingPool
+          abis:
+              - name: StakingPoolImpl
+                file:
+          eventHandlers:
+              - event: "Deposit(indexed address,uint256,uint256)"
+                handler: handleDeposit
+              - event: "Stake(indexed address,uint256,uint256)"
+                handler: handleStake
+              - event: "Unstake(indexed address,uint256,uint256)"
+                handler: handleUnstake
+              - event: "Withdraw(indexed address,uint256)"
+                handler: handleWithdraw
+              - event: "BlockProduced(uint256,uint256)"
+                handler: handleBlockProduced
+              - event: "Paused(address)"
+                handler: handlePaused
+              - event: "Unpaused(address)"
+                handler: handleUnpaused
+          file: ./src/pool.ts
+    - kind: ethereum/contract
+      name: FlatRateCommission
+      network:
+      source:
+          abi: FlatRateCommission
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.5
+          language: wasm/assemblyscript
+          entities:
+              - StakingPoolFee
+          abis:
+              - name: FlatRateCommission
+                file:
+          eventHandlers:
+              - event: "FlatRateChanged(uint256,uint256)"
+                handler: handleFlatRateChanged
+          file: ./src/fee.ts
+    - kind: ethereum/contract
+      name: GasTaxCommission
+      network:
+      source:
+          abi: GasTaxCommission
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.5
+          language: wasm/assemblyscript
+          entities:
+              - StakingPoolFee
+          abis:
+              - name: GasTaxCommission
+                file:
+          eventHandlers:
+              - event: "GasTaxChanged(uint256,uint256)"
+                handler: handleGasTaxChanged
+          file: ./src/fee.ts
