@@ -379,7 +379,8 @@ export function createNewBlockProducedV1Event(
         mockEvent.logType,
         mockEvent.block,
         mockEvent.transaction,
-        mockEvent.parameters
+        mockEvent.parameters,
+        null
     )
     blockProducedEvent.parameters = new Array()
 
@@ -427,7 +428,8 @@ export function createNewChainEvent(
         mockEvent.logType,
         mockEvent.block,
         mockEvent.transaction,
-        mockEvent.parameters
+        mockEvent.parameters,
+        null
     )
     newEvent.parameters = new Array()
 
