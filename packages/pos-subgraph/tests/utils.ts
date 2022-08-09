@@ -37,6 +37,9 @@ import * as user from "../src/user"
 export const txHash = Bytes.fromHexString(
     "0x0000000000000000000000000000000000000000000000000000000000000001"
 ) as Bytes
+/**
+ * represents the UTC datetime Thursday, August 26, 2021 05:46:40 PM
+ */
 export const txTimestamp = 1630000000
 export const ZERO = BigInt.fromI32(0)
 
@@ -122,7 +125,7 @@ export function createStakingPoolDepositEvent(
 ): Deposit {
     let event = changetype<Deposit>(newMockEvent())
     event.transaction.hash = txHash
-    event.block.timestamp = BigInt.fromI32(txTimestamp) // Thursday, August 26, 2021 05:46:40 PM
+    event.block.timestamp = BigInt.fromI32(txTimestamp)
     event.parameters = new Array()
     event.parameters.push(
         new ethereum.EventParam("user", ethereum.Value.fromAddress(user))
@@ -147,11 +150,12 @@ export function createStakingPoolDepositEvent(
 export function createStakingPoolStakeEvent(
     user: Address,
     amount: BigInt,
-    shares: BigInt
+    shares: BigInt,
+    timestamp: BigInt = BigInt.fromI32(txTimestamp) // Thursday, August 26, 2021 05:46:40 PM
 ): StakePool {
     let event = changetype<StakePool>(newMockEvent())
     event.transaction.hash = txHash
-    event.block.timestamp = BigInt.fromI32(txTimestamp) // Thursday, August 26, 2021 05:46:40 PM
+    event.block.timestamp = timestamp
     event.parameters = new Array()
     event.parameters.push(
         new ethereum.EventParam("user", ethereum.Value.fromAddress(user))

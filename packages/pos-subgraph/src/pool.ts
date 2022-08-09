@@ -10,7 +10,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-import { Address, BigInt, store } from "@graphprotocol/graph-ts"
+import { Address, BigInt, Bytes, store } from "@graphprotocol/graph-ts"
 import {
     Block,
     StakingPool,
@@ -20,6 +20,7 @@ import {
     PoolUser,
     User,
     PoolActivity,
+    StakingPoolUserHistory,
 } from "../generated/schema"
 import {
     FlatRateCommission,
@@ -47,6 +48,8 @@ export let POOL_ACTIVITY_DEPOSIT = "DEPOSIT"
 export let POOL_ACTIVITY_STAKE = "STAKE"
 export let POOL_ACTIVITY_UNSTAKE = "UNSTAKE"
 export let POOL_ACTIVITY_WITHDRAW = "WITHDRAW"
+export let STAKING_POOL_USER_HIST_ACTION_JOIN = "JOIN"
+export let STAKING_POOL_USER_HIST_ACTION_LEAVE = "LEAVE"
 
 export function handleNewFlatRateStakingPool(
     event: NewFlatRateCommissionStakingPool
@@ -146,6 +149,37 @@ function createPool(
     return pool
 }
 
+/**
+ *
+ * @param blockHash transaction hash
+ * @param timestamp the block timestamp
+ * @param pool pool address
+ * @param user user address
+ * @param totalUsers total number of users in that instant
+ * @param action user action towards staking (JOIN | LEAVE)
+ * @returns
+ */
+function createStakingPoolUserHistory(
+    txHash: Bytes,
+    timestamp: BigInt,
+    pool: Address,
+    user: Address,
+    totalUsers: i32,
+    action: string
+): StakingPoolUserHistory | null {
+    // history entry id is transaction hash + pool address hexed
+    const id = txHash.toHex() + "-" + pool.toHex()
+    const instance = new StakingPoolUserHistory(id)
+    instance.action = action
+    instance.totalUsers = totalUsers
+    instance.timestamp = timestamp
+    instance.user = user.toHex()
+    instance.pool = pool.toHex()
+    instance.save()
+
+    return instance
+}
+
 export function handleDeposit(event: Deposit): void {
     // save user
     let user = new PoolUser(event.params.user.toHex())
@@ -190,6 +224,15 @@ export function handleStake(event: Stake): void {
         let pool = StakingPool.load(event.address.toHex())!
         pool.totalUsers++
         pool.save()
+        // Adding historical entry for the Staking Pool and User interaction
+        createStakingPoolUserHistory(
+            event.transaction.hash,
+            event.block.timestamp,
+            event.address,
+            event.params.user,
+            pool.totalUsers,
+            STAKING_POOL_USER_HIST_ACTION_JOIN
+        )
     }
 
     balance.shares = balance.shares.plus(event.params.shares)
@@ -225,6 +268,14 @@ export function handleUnstake(event: Unstake): void {
     if (balance.shares.isZero()) {
         // decrement number of users
         pool.totalUsers--
+        createStakingPoolUserHistory(
+            event.transaction.hash,
+            event.block.timestamp,
+            event.address,
+            event.params.user,
+            pool.totalUsers,
+            STAKING_POOL_USER_HIST_ACTION_LEAVE
+        )
     }
     pool.shares = pool.shares.minus(event.params.shares)
     pool.amount = pool.amount.minus(event.params.amount)
