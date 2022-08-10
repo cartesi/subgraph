@@ -40,6 +40,8 @@ export function createFromBlockProduced(event: BlockProduced): void {
 
     context.targetInterval = event.params.targetInterval
     context.ethBlockCheckpoint = event.block.number
+    context.index = event.params.index.isI32() ? event.params.index.toI32() : 0
+    context.lastBlockTimestamp = event.block.timestamp
     save(id, context)
 }
 /// @notice Calculates new difficulty parameter

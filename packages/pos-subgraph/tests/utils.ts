@@ -516,5 +516,7 @@ export function zeroedNewBlockSelectorContext(): BlockSelectorContext {
     context.difficultyAdjustmentParameter = BigInt.fromI32(0)
     context.ethBlockCheckpoint = BigInt.fromI32(0)
     context.difficulty = BigInt.fromI32(0)
+    context.lastBlockTimestamp = BigInt.fromI32(0)
+    context.index = 0
     return context
 }

@@ -23,7 +23,8 @@ export let ADJUSTMENT_BASE = BigInt.fromI32(1000000) // 1M
 export let cachedStore = new Map<string, BlockSelectorContext>()
 
 export function load(id: string): BlockSelectorContext | null {
-    if (cachedStore.has(id)) return cachedStore.get(id)
+    let blockSelectorContext = cachedStore.get(id)
+    if (blockSelectorContext) return blockSelectorContext
 
     let context = BlockSelectorContext.load(id)
     if (context != null) {
@@ -55,6 +56,8 @@ export function create(event: NewChain): BlockSelectorContext {
 
     context.ethBlockCheckpoint = event.block.number
     context.difficulty = event.params.initialDifficulty
+    context.index = event.params.index.isI32() ? event.params.index.toI32() : 0
+    context.lastBlockTimestamp = event.block.timestamp
     save(id, context)
 
     return context
