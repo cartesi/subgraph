@@ -50,16 +50,17 @@ export function handleBlockProduced(event: BlockProduced): void {
     s.save()
 
     // handle chain
+    let pos = PoSV2Impl.bind(event.address)
     let posAddress = event.address.toHex()
     let chain = chains.loadOrCreate(
         posAddress,
-        PoSV2Impl.bind(event.address).factory().toHex(),
+        pos.factory().toHex(),
         event.block.timestamp
     )
     chain.totalBlocks++
     chain.save()
 
-    // create Block and fill other properties
+    // create Block and fill properties
     let block = new Block(event.transaction.hash.toHex())
     block.timestamp = event.block.timestamp
     block.gasPrice = event.transaction.gasPrice
@@ -68,6 +69,9 @@ export function handleBlockProduced(event: BlockProduced): void {
     block.producer = event.params.user.toHex()
     block.node = event.params.worker.toHex()
     block.number = event.params.sidechainBlockNumber.toI32()
+
+    let contextId = blockSelectorContext.contextID(event.address)
+    block.difficulty = blockSelectorContext.getDifficulty(contextId)
     block.save()
 
     // handle user
@@ -101,35 +105,32 @@ export function handleRewarded(event: Rewarded): void {
     s.save()
 
     // handle chain
+    let rewardManager = RewardManagerV2Impl.bind(event.address)
+    let pos = PoSV2Impl.bind(rewardManager.pos())
     let posAddress = event.address.toHex()
     let chain = chains.loadOrCreate(
         posAddress,
-        PoSV2Impl.bind(RewardManagerV2Impl.bind(event.address).pos())
-            .factory()
-            .toHex(),
+        pos.factory().toHex(),
         event.block.timestamp
     )
     chain.totalReward = chain.totalReward.plus(reward)
     chain.save()
 
-    // Rewarded is always emitted after BlockProduced
-    let block = Block.load(event.transaction.hash.toHex())
-    if (block == null) {
-        block = new Block(event.transaction.hash.toHex())
-        block.timestamp = event.block.timestamp
-        block.gasPrice = event.transaction.gasPrice
-        block.gasLimit = event.transaction.gasLimit
-    }
+    // block should be created by BlockProduced event
+    let block = Block.load(event.transaction.hash.toHex())!
+    block.reward = reward
 
     // handle user
-    let user = users.loadOrCreate(Address.fromString(block.producer))
+    // producer should be created by BlockProduced event
+    let user = users.loadOrCreate(Address.fromString(block.producer!))
     user.totalReward = user.totalReward.plus(reward)
     user.save()
 
     // handle node
+    // node should be created by BlockProduced event
     let node = nodes.loadOrCreate(
-        Address.fromString(block.producer),
-        Address.fromString(block.node),
+        Address.fromString(block.producer!),
+        Address.fromString(block.node!),
         event.block.timestamp
     )
     node.status = "Authorized"

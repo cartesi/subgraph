@@ -15,7 +15,7 @@ import { BlockSelectorContext } from "../generated/schema"
 
 import { NewChain } from "../generated/PoS/PoS"
 
-export let HASHZERO = Bytes.fromByteArray(Bytes.fromI32(0)).toHexString()
+export let HASHZERO = Bytes.fromByteArray(Bytes.fromI32(0)).toHex()
 export let C_256 = BigInt.fromI32(256) // 256 blocks
 export let ONE = BigInt.fromI32(1)
 export let ADJUSTMENT_BASE = BigInt.fromI32(1000000) // 1M
@@ -41,7 +41,7 @@ export function contextID(
     blockSelectorAddress: Bytes,
     chainIndex: BigInt
 ): string {
-    return blockSelectorAddress.toHexString() + "-" + chainIndex.toString()
+    return blockSelectorAddress.toHex() + "-" + chainIndex.toString()
 }
 
 export function create(event: NewChain): BlockSelectorContext {

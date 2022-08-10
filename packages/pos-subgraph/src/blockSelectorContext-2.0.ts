@@ -15,7 +15,7 @@ import { BlockSelectorContext } from "../generated/schema"
 
 import { NewChain } from "../generated/PoSV2FactoryImpl/PoSV2FactoryImpl"
 
-export let HASHZERO = Bytes.fromByteArray(Bytes.fromI32(0)).toHexString()
+export let HASHZERO = Bytes.fromByteArray(Bytes.fromI32(0)).toHex()
 export let C_256 = BigInt.fromI32(256) // 256 blocks
 export let ONE = BigInt.fromI32(1)
 export let ADJUSTMENT_BASE = BigInt.fromI32(1000000) // 1M
@@ -38,7 +38,7 @@ export function save(id: string, context: BlockSelectorContext): void {
     context.save()
 }
 export function contextID(blockSelectorAddress: Bytes): string {
-    return blockSelectorAddress.toHexString()
+    return blockSelectorAddress.toHex()
 }
 
 export function create(event: NewChain, index: i32): BlockSelectorContext {
@@ -56,6 +56,12 @@ export function create(event: NewChain, index: i32): BlockSelectorContext {
     save(id, context)
 
     return context
+}
+
+export function getDifficulty(id: string): BigInt {
+    // context should be created by NewChain event
+    let context = load(id)!
+    return context.difficulty
 }
 
 export function update(
