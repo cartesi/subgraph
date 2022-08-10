@@ -43,6 +43,13 @@ export const txHash = Bytes.fromHexString(
 export const txTimestamp = 1630000000
 export const ZERO = BigInt.fromI32(0)
 
+/**
+ * Builds a dummy staking pool with all the required fields filled
+ * @param address
+ * @param manager
+ * @param timestamp
+ * @returns
+ */
 export function buildStakingPool(
     address: Address,
     manager: Address,
@@ -59,6 +66,7 @@ export function buildStakingPool(
     pool.totalCommission = BigInt.fromI32(0)
     pool.timestamp = timestamp
     pool.paused = false
+    pool.fee = "0x0000000000000000000000000000000000000099"
 
     // circular reference between pool and user
     u.pool = pool.id
