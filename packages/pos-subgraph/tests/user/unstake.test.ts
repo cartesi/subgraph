@@ -10,86 +10,92 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-import { clearStore, test } from "matchstick-as"
+import { clearStore, test, describe, beforeEach, assert } from "matchstick-as"
 import { BigInt } from "@graphprotocol/graph-ts"
 import { handleUnstakeEvent } from "../../src/user"
-import { User } from "../../generated/schema"
-import { assertUser, createUnstakeEvent, txTimestamp, ZERO } from "../utils"
+import {
+    assertUser,
+    createUnstakeEvent,
+    txHash,
+    txTimestamp,
+    ZERO,
+} from "../utils"
+import { buildUser } from "./utils"
 
-test("unstake(1000)", () => {
-    let address = "0x0000000000000000000000000000000000000000"
+let address = "0x0000000000000000000000000000000000000000"
 
-    // create a user with 1200 staked
-    let user = new User(address)
-    user.stakedBalance = BigInt.fromI32(1200)
-    user.releasingBalance = BigInt.fromI32(500)
-    user.save()
+describe("User unstake", () => {
+    beforeEach(() => {
+        clearStore()
+    })
 
-    let amount = BigInt.fromI32(1500)
-    let releasingTimestamp = BigInt.fromI32(txTimestamp + 21600) // Thursday, August 26, 2021 11:46:40 PM
-    let event = createUnstakeEvent(address, amount, releasingTimestamp)
-    handleUnstakeEvent(event)
+    test("unstake(1000)", () => {
+        // create a user with 1200 staked
+        //
+        let user = buildUser(address)
+        user.stakedBalance = BigInt.fromI32(1200)
+        user.releasingBalance = BigInt.fromI32(500)
+        user.save()
 
-    assertUser(
-        address,
-        BigInt.fromI32(200),
-        ZERO,
-        ZERO,
-        amount,
-        releasingTimestamp
-    )
+        let amount = BigInt.fromI32(1500)
+        let releasingTimestamp = BigInt.fromI32(txTimestamp + 21600) // Thursday, August 26, 2021 11:46:40 PM
+        let event = createUnstakeEvent(address, amount, releasingTimestamp)
+        handleUnstakeEvent(event)
 
-    clearStore()
-})
+        assertUser(
+            address,
+            BigInt.fromI32(200),
+            ZERO,
+            ZERO,
+            amount,
+            releasingTimestamp
+        )
 
-test("unstake(1000) from maturing", () => {
-    let address = "0x0000000000000000000000000000000000000000"
+        assert.fieldEquals("Unstake", txHash.toHex(), "value", "1000")
+        assert.fieldEquals("Unstake", txHash.toHex(), "user", address)
+    })
 
-    // create a user with 1200 maturing
-    let user = new User(address)
-    user.maturingBalance = BigInt.fromI32(1200)
-    user.save()
+    test("unstake(1000) from maturing", () => {
+        // create a user with 1200 maturing
+        let user = buildUser(address)
+        user.maturingBalance = BigInt.fromI32(1200)
+        user.save()
 
-    let amount = BigInt.fromI32(1000)
-    let releasingTimestamp = BigInt.fromI32(txTimestamp + 21600) // Thursday, August 26, 2021 11:46:40 PM
-    let event = createUnstakeEvent(address, amount, releasingTimestamp)
-    handleUnstakeEvent(event)
+        let amount = BigInt.fromI32(1000)
+        let releasingTimestamp = BigInt.fromI32(txTimestamp + 21600) // Thursday, August 26, 2021 11:46:40 PM
+        let event = createUnstakeEvent(address, amount, releasingTimestamp)
+        handleUnstakeEvent(event)
 
-    assertUser(
-        address,
-        ZERO,
-        BigInt.fromI32(200),
-        ZERO,
-        amount,
-        releasingTimestamp
-    )
+        assertUser(
+            address,
+            ZERO,
+            BigInt.fromI32(200),
+            ZERO,
+            amount,
+            releasingTimestamp
+        )
+    })
 
-    clearStore()
-})
+    test("unstake(1000) from maturing and staked", () => {
+        // create a user with 200 maturing and 1900 staked
+        // unstake 1000 must take 200 from maturing and 800 from staked
+        let user = buildUser(address)
+        user.maturingBalance = BigInt.fromI32(200)
+        user.stakedBalance = BigInt.fromI32(1900)
+        user.save()
 
-test("unstake(1000) from maturing and staked", () => {
-    let address = "0x0000000000000000000000000000000000000000"
+        let amount = BigInt.fromI32(1000)
+        let releasingTimestamp = BigInt.fromI32(txTimestamp + 21600) // Thursday, August 26, 2021 11:46:40 PM
+        let event = createUnstakeEvent(address, amount, releasingTimestamp)
+        handleUnstakeEvent(event)
 
-    // create a user with 200 maturing and 1900 staked
-    // unstake 1000 must take 200 from maturing and 800 from staked
-    let user = new User(address)
-    user.maturingBalance = BigInt.fromI32(200)
-    user.stakedBalance = BigInt.fromI32(1900)
-    user.save()
-
-    let amount = BigInt.fromI32(1000)
-    let releasingTimestamp = BigInt.fromI32(txTimestamp + 21600) // Thursday, August 26, 2021 11:46:40 PM
-    let event = createUnstakeEvent(address, amount, releasingTimestamp)
-    handleUnstakeEvent(event)
-
-    assertUser(
-        address,
-        BigInt.fromI32(1100),
-        BigInt.fromI32(0),
-        ZERO,
-        amount,
-        releasingTimestamp
-    )
-
-    clearStore()
+        assertUser(
+            address,
+            BigInt.fromI32(1100),
+            BigInt.fromI32(0),
+            ZERO,
+            amount,
+            releasingTimestamp
+        )
+    })
 })

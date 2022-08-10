@@ -10,25 +10,29 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-import { clearStore, test } from "matchstick-as"
+import { clearStore, test, describe, beforeEach } from "matchstick-as"
 import { BigInt } from "@graphprotocol/graph-ts"
 import { handleWithdrawEvent } from "../../src/user"
-import { User } from "../../generated/schema"
 import { assertUser, createWithdrawEvent, ZERO } from "../utils"
+import { buildUser } from "./utils"
 
-test("withdraw(1000)", () => {
-    let address = "0x0000000000000000000000000000000000000000"
+describe("User withdraws", () => {
+    beforeEach(() => {
+        clearStore()
+    })
 
-    // create a user with 1200 releasing balance
-    let user = new User(address)
-    user.releasingBalance = BigInt.fromI32(1200)
-    user.save()
+    test("should keep 200 in the releasing-balance when withdrawing 1000", () => {
+        let address = "0x0000000000000000000000000000000000000000"
 
-    let amount = BigInt.fromI32(1000)
-    let event = createWithdrawEvent(address, amount)
-    handleWithdrawEvent(event)
+        // create a user with 1200 releasing balance
+        let user = buildUser(address)
+        user.releasingBalance = BigInt.fromI32(1200)
+        user.save()
 
-    assertUser(address, ZERO, ZERO, ZERO, BigInt.fromI32(200), ZERO)
+        let amount = BigInt.fromI32(1000)
+        let event = createWithdrawEvent(address, amount)
+        handleWithdrawEvent(event)
 
-    clearStore()
+        assertUser(address, ZERO, ZERO, ZERO, BigInt.fromI32(200), ZERO)
+    })
 })

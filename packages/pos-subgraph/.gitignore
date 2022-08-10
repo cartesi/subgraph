@@ -2,3 +2,4 @@ subgraph.yaml
 subgraph.goerli.yaml
 subgraph.ropsten.yaml
 subgraph.localhost.yaml
+tests/.latest.json
