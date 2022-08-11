@@ -106,10 +106,10 @@ export function handleRewarded(event: Rewarded): void {
 
     // handle chain
     let rewardManager = RewardManagerV2Impl.bind(event.address)
-    let pos = PoSV2Impl.bind(rewardManager.pos())
-    let posAddress = event.address.toHex()
+    let posAddress = rewardManager.pos()
+    let pos = PoSV2Impl.bind(posAddress)
     let chain = chains.loadOrCreate(
-        posAddress,
+        posAddress.toHex(),
         pos.factory().toHex(),
         event.block.timestamp
     )
