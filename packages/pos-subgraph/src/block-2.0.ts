@@ -21,6 +21,10 @@ import {
     Rewarded,
     RewardManagerV2Impl,
 } from "../generated/templates/RewardManagerV2Impl/RewardManagerV2Impl"
+import {
+    PoSV2Impl as posTemplate,
+    RewardManagerV2Impl as rewardTemplate,
+} from "../generated/templates"
 import { Block } from "../generated/schema"
 import * as chains from "./chain-2.0"
 import * as nodes from "./node"
@@ -30,17 +34,25 @@ import * as blockSelectorContext from "./blockSelectorContext-2.0"
 
 export function handleNewChain(event: NewChain): void {
     // handle chain
-    let posAddress = event.params.pos.toHex()
+    let posAddress = event.params.pos
     let chain = chains.loadOrCreate(
-        posAddress,
+        posAddress.toHex(),
         event.address.toHex(),
         event.block.timestamp
     )
     chain.targetInterval = event.params.targetInterval.toI32()
     chain.save()
 
-    //let's create or update the BlockSelectorContext
+    //create BlockSelectorContext
     blockSelectorContext.create(event, chain.number)
+
+    // create PoSV2Impl data source
+    posTemplate.create(posAddress)
+
+    // create RewardManagerV2Impl data source
+    let pos = PoSV2Impl.bind(posAddress)
+    let rewardManagerAddress = pos.rewardManager()
+    rewardTemplate.create(rewardManagerAddress)
 }
 
 export function handleBlockProduced(event: BlockProduced): void {
@@ -50,10 +62,10 @@ export function handleBlockProduced(event: BlockProduced): void {
     s.save()
 
     // handle chain
-    let pos = PoSV2Impl.bind(event.address)
-    let posAddress = event.address.toHex()
+    let posAddress = event.address
+    let pos = PoSV2Impl.bind(posAddress)
     let chain = chains.loadOrCreate(
-        posAddress,
+        posAddress.toHex(),
         pos.factory().toHex(),
         event.block.timestamp
     )
@@ -70,7 +82,7 @@ export function handleBlockProduced(event: BlockProduced): void {
     block.node = event.params.worker.toHex()
     block.number = event.params.sidechainBlockNumber.toI32()
 
-    let contextId = blockSelectorContext.contextID(event.address)
+    let contextId = blockSelectorContext.contextID(posAddress)
     block.difficulty = blockSelectorContext.getDifficulty(contextId)
     block.save()
 
