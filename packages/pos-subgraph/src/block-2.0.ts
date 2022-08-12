@@ -105,7 +105,12 @@ export function handleBlockProduced(event: BlockProduced): void {
 export function handleDifficultyUpdated(event: DifficultyUpdated): void {
     // save block selected context
     let id = blockSelectorContext.contextID(event.address)
-    blockSelectorContext.update(id, event.block.number, event.params.difficulty)
+    blockSelectorContext.update(
+        id,
+        event.block.number,
+        event.params.difficulty,
+        event.block.timestamp
+    )
 }
 
 export function handleRewarded(event: Rewarded): void {

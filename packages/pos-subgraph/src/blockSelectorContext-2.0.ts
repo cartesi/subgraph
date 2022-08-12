@@ -53,6 +53,7 @@ export function create(event: NewChain, index: i32): BlockSelectorContext {
 
     context.ethBlockCheckpoint = event.block.number
     context.difficulty = event.params.initialDifficulty
+    context.lastBlockTimestamp = event.block.timestamp
     save(id, context)
 
     return context
@@ -67,11 +68,13 @@ export function getDifficulty(id: string): BigInt {
 export function update(
     id: string,
     blockNumber: BigInt,
-    difficulty: BigInt
+    difficulty: BigInt,
+    timestamp: BigInt
 ): void {
     let context = load(id)
     if (context == null) return // don't run before instantiation of the chain
     context.difficulty = difficulty
     context.ethBlockCheckpoint = blockNumber
+    context.lastBlockTimestamp = timestamp
     save(id, context)
 }
