@@ -25,7 +25,9 @@ import { FlatRateChanged } from "../generated/templates/FlatRateCommission/FlatR
 import { GasTaxChanged } from "../generated/templates/GasTaxCommission/GasTaxCommission"
 import { BlockSelectorContext, StakingPool } from "../generated/schema"
 import { NewChain } from "../generated/PoS/PoS"
+import { NewChain as NewChainV2 } from "../generated/PoSV2FactoryImpl/PoSV2FactoryImpl"
 import { BlockProduced } from "../generated/BlockSelector-1.0/BlockSelector"
+import { BlockProduced as BlockProducedV2 } from "../generated/templates/PoSV2Impl/PoSV2Impl"
 import {
     Deposit,
     Stake as StakePool,
@@ -420,6 +422,48 @@ export function createNewBlockProducedV1Event(
     return blockProducedEvent
 }
 
+export function createNewBlockProducedV2Event(
+    posAddress: string,
+    producerAddress: string,
+    blockNumber: BigInt
+): BlockProducedV2 {
+    let mockEvent = newMockEvent()
+    mockEvent.block.number = blockNumber
+    let blockProducedEvent = new BlockProducedV2(
+        Address.fromString(posAddress),
+        mockEvent.logIndex,
+        mockEvent.transactionLogIndex,
+        mockEvent.logType,
+        mockEvent.block,
+        mockEvent.transaction,
+        mockEvent.parameters
+    )
+    blockProducedEvent.parameters = new Array()
+
+    blockProducedEvent.parameters.push(
+        new ethereum.EventParam(
+            "producer",
+            ethereum.Value.fromAddress(Address.fromString(producerAddress))
+        )
+    )
+    blockProducedEvent.parameters.push(
+        new ethereum.EventParam(
+            "worker",
+            ethereum.Value.fromAddress(Address.fromString(producerAddress))
+        )
+    )
+    blockProducedEvent.parameters.push(
+        new ethereum.EventParam(
+            "sidechainBlockNumber",
+            ethereum.Value.fromI32(0)
+        )
+    )
+    blockProducedEvent.parameters.push(
+        new ethereum.EventParam("data", ethereum.Value.fromBytes(new Bytes(0)))
+    )
+    return blockProducedEvent
+}
+
 export function createNewChainEvent(
     minDifficulty: BigInt,
     targetInterval: BigInt,
@@ -503,6 +547,88 @@ export function createNewChainEvent(
     )
     newEvent.parameters.push(
         new ethereum.EventParam("distDenominator", ethereum.Value.fromI32(0))
+    )
+
+    newEvent.block.number = blockNumber
+    return newEvent
+}
+
+export function createNewChainV2Event(
+    minDifficulty: BigInt,
+    targetInterval: BigInt,
+    difficultyAdjustmentParameter: BigInt,
+    initialDifficulty: BigInt,
+    blockNumber: BigInt
+): NewChainV2 {
+    let mockEvent = newMockEvent()
+
+    const newEvent = new NewChainV2(
+        mockEvent.address,
+        mockEvent.logIndex,
+        mockEvent.transactionLogIndex,
+        mockEvent.logType,
+        mockEvent.block,
+        mockEvent.transaction,
+        mockEvent.parameters
+    )
+    newEvent.parameters = new Array()
+
+    newEvent.parameters.push(
+        new ethereum.EventParam(
+            "pos",
+            ethereum.Value.fromAddress(Address.zero())
+        )
+    )
+    newEvent.parameters.push(
+        new ethereum.EventParam(
+            "ctsiAddress",
+            ethereum.Value.fromAddress(Address.zero())
+        )
+    )
+    newEvent.parameters.push(
+        new ethereum.EventParam(
+            "stakingAddress",
+            ethereum.Value.fromAddress(Address.zero())
+        )
+    )
+    newEvent.parameters.push(
+        new ethereum.EventParam(
+            "workerAuthAddress",
+            ethereum.Value.fromAddress(Address.zero())
+        )
+    )
+    newEvent.parameters.push(
+        new ethereum.EventParam(
+            "minDifficulty",
+            ethereum.Value.fromUnsignedBigInt(minDifficulty)
+        )
+    )
+    newEvent.parameters.push(
+        new ethereum.EventParam(
+            "initialDifficulty",
+            ethereum.Value.fromUnsignedBigInt(initialDifficulty)
+        )
+    )
+    newEvent.parameters.push(
+        new ethereum.EventParam(
+            "difficultyAdjustmentParameter",
+            ethereum.Value.fromUnsignedBigInt(difficultyAdjustmentParameter)
+        )
+    )
+    newEvent.parameters.push(
+        new ethereum.EventParam(
+            "targetInterval",
+            ethereum.Value.fromUnsignedBigInt(targetInterval)
+        )
+    )
+    newEvent.parameters.push(
+        new ethereum.EventParam("rewardValue", ethereum.Value.fromI32(0))
+    )
+    newEvent.parameters.push(
+        new ethereum.EventParam("rewardDelay", ethereum.Value.fromI32(3))
+    )
+    newEvent.parameters.push(
+        new ethereum.EventParam("version", ethereum.Value.fromI32(1))
     )
 
     newEvent.block.number = blockNumber
