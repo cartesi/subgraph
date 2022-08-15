@@ -117,6 +117,28 @@ dataSources:
                 handler: handleRewarded
           file: ./src/block-1.1.ts
     - kind: ethereum/contract
+      name: PoSV2FactoryImpl
+      network:
+      source:
+          address: PoSV2FactoryImpl
+          abi: PoSV2FactoryImpl
+          startBlock:
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.5
+          language: wasm/assemblyscript
+          entities:
+              - Chain
+              - Protocol
+              - Summary
+          abis:
+              - name: PoSV2FactoryImpl
+                file:
+          eventHandlers:
+              - event: "NewChain(indexed address,address,address,address,uint64,uint64,uint32,uint32,uint256,uint32,uint32)"
+                handler: handleNewChain
+          file: ./src/block-2.0.ts
+    - kind: ethereum/contract
       name: BlockSelector-1.0
       network:
       source:
@@ -192,6 +214,53 @@ dataSources:
                 handler: handleNewGasTaxStakingPool
           file: ./src/pool.ts
 templates:
+    - kind: ethereum/contract
+      name: PoSV2Impl
+      network:
+      source:
+          abi: PoSV2Impl
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.5
+          language: wasm/assemblyscript
+          entities:
+              - Block
+              - Chain
+              - Protocol
+              - Summary
+              - User
+              - Worker
+          abis:
+              - name: PoSV2Impl
+                file:
+          eventHandlers:
+              - event: "BlockProduced(indexed address,indexed address,uint32,bytes)"
+                handler: handleBlockProduced
+              - event: "DifficultyUpdated(uint256)"
+                handler: handleDifficultyUpdated
+          file: ./src/block-2.0.ts
+    - kind: ethereum/contract
+      name: RewardManagerV2Impl
+      network:
+      source:
+          abi: RewardManagerV2Impl
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.5
+          language: wasm/assemblyscript
+          entities:
+              - Block
+              - Chain
+              - Summary
+              - User
+              - Worker
+          abis:
+              - name: RewardManagerV2Impl
+                file:
+          eventHandlers:
+              - event: "Rewarded(indexed uint32,uint256)"
+                handler: handleRewarded
+          file: ./src/block-2.0.ts
     - kind: ethereum/contract
       name: StakingPoolImpl
       network:
