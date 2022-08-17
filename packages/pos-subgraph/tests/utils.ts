@@ -36,6 +36,7 @@ import {
 } from "../generated/templates/StakingPoolImpl/StakingPoolImpl"
 import * as user from "../src/user"
 
+export const posV2Address = "0x0000000000000000000000000000000000000123"
 export const txHash = Bytes.fromHexString(
     "0x0000000000000000000000000000000000000000000000000000000000000001"
 ) as Bytes
@@ -436,7 +437,8 @@ export function createNewBlockProducedV2Event(
         mockEvent.logType,
         mockEvent.block,
         mockEvent.transaction,
-        mockEvent.parameters
+        mockEvent.parameters,
+        null
     )
     blockProducedEvent.parameters = new Array()
 
@@ -569,14 +571,15 @@ export function createNewChainV2Event(
         mockEvent.logType,
         mockEvent.block,
         mockEvent.transaction,
-        mockEvent.parameters
+        mockEvent.parameters,
+        null
     )
     newEvent.parameters = new Array()
 
     newEvent.parameters.push(
         new ethereum.EventParam(
             "pos",
-            ethereum.Value.fromAddress(Address.zero())
+            ethereum.Value.fromAddress(Address.fromString(posV2Address))
         )
     )
     newEvent.parameters.push(
