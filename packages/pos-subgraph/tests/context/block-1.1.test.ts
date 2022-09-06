@@ -24,9 +24,6 @@ import * as blockSelectorContext from "../../src/blockSelectorContext-1.1"
 import * as utils from "../utils"
 
 let ONE = BigInt.fromI32(1)
-
-let hash1 = "0xf81b517a242b218999ec8eec0ea6e2ddbef2a367a14e93f4a32a39e260f686ad"
-let hash2 = "0x428c8c24c33c0c48602c97a880cb4bd28ea64299c0384c88fd3839f8325a1729"
 let id0 = utils.zeroID()
 
 describe("BlockSelectorContext", () => {

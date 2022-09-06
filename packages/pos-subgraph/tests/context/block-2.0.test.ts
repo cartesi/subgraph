@@ -1,11 +1,6 @@
-import {
-    clearStore,
-    test,
-    assert,
-    newMockEvent,
-} from "matchstick-as/assembly/index"
+import { test, assert } from "matchstick-as/assembly/index"
 
-import { BigInt, Bytes } from "@graphprotocol/graph-ts"
+import { BigInt } from "@graphprotocol/graph-ts"
 import { BlockSelectorContext } from "../../generated/schema"
 
 import * as blockSelectorContext from "../../src/blockSelectorContext-2.0"
@@ -82,5 +77,10 @@ test("should update context from V2 correctly", () => {
         "ethBlockCheckpoint",
         blockNum.toString()
     )
-    assert.fieldEquals("BlockSelectorContext", utils.posV2Address, "difficulty", "457")
+    assert.fieldEquals(
+        "BlockSelectorContext",
+        utils.posV2Address,
+        "difficulty",
+        "457"
+    )
 })
