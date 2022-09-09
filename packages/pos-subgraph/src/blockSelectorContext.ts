@@ -23,7 +23,7 @@ export let ADJUSTMENT_BASE = BigInt.fromI32(1000000) // 1M
 export let cachedStore = new Map<string, BlockSelectorContext>()
 
 export function load(id: string): BlockSelectorContext | null {
-    if (cachedStore.has(id)) return cachedStore.get(id)!
+    if (cachedStore.has(id) == true) return cachedStore.get(id)
 
     let context = BlockSelectorContext.load(id)
     if (context != null) {
