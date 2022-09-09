@@ -47,6 +47,20 @@ type StakingPoolFee @entity {
     lastUpdated: BigInt!
 }
 
+enum StakingPoolFeeType {
+    GAS_TAX_COMMISSION
+    FLAT_RATE_COMMISSION
+}
+
+type StakingPoolFeeHistory @entity {
+    id: ID!
+    pool: StakingPool!
+    newValue: Int!
+    change: Int!
+    timestamp: BigInt!
+    feeType: StakingPoolFeeType
+}
+
 type PoolUser @entity {
     id: ID!
 }

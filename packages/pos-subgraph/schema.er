@@ -112,6 +112,14 @@ timestamp
 totalUsers
 action
 
+[StakingPoolFeeHistory] {bgcolor: "#d3f26b"}
+*id
++pool
+newValue
+change
+timestamp
+feeType
+
 [Summary]
 *id
 totalUsers
@@ -145,4 +153,5 @@ PoolBalance *--1 PoolUser
 PoolActivity *--1 PoolUser
 StakingPoolUserHistory *--1 PoolUser
 StakingPoolUserHistory *--1 StakingPool
+StakingPoolFeeHistory *--1 StakingPool
 
