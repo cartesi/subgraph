@@ -12,7 +12,7 @@
 
 import { CartesiDAppInput, CartesiDAppRollups } from "../../generated/templates"
 import { ApplicationCreated } from "../../generated/CartesiDAppFactory/CartesiDAppFactory"
-import { DApp } from "../../generated/schema"
+import { DApp, DAppFactory } from "../../generated/schema"
 
 enum Phase {
     InputAccumulation,
@@ -21,14 +21,25 @@ enum Phase {
 }
 
 export function handleApplicationCreated(event: ApplicationCreated): void {
+    // load the factory and update stats
+    let factory = DAppFactory.load(event.address)
+    if (!factory) {
+        factory = new DAppFactory(event.address)
+        factory.dappCount = 0
+        factory.inputCount = 0
+    }
+    factory.dappCount++
+    factory.save()
+
     // create DApp
-    const dapp = new DApp(event.params.application.toHex())
+    const dapp = new DApp(event.params.application)
     dapp.inputDuration = event.params.config.inputDuration.toI32()
     dapp.challengePeriod = event.params.config.challengePeriod.toI32()
     dapp.phase = Phase.InputAccumulation
     dapp.timestamp = event.block.timestamp
     dapp.inputCount = 0
     dapp.currentEpoch = 0
+    dapp.factory = event.address
     dapp.save()
 
     // instantiate templates

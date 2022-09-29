@@ -1,9 +1,17 @@
+type DAppFactory @entity {
+    id: Bytes!
+    dappCount: Int!
+    inputCount: Int!
+    dapps: [DApp!]! @derivedFrom(field: "factory")
+}
+
 type DApp @entity {
-    id: ID!
+    id: Bytes!
     inputDuration: Int!
     challengePeriod: Int!
     phase: Int!
     currentEpoch: Int!
     inputCount: Int!
     timestamp: BigInt!
+    factory: DAppFactory!
 }

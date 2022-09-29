@@ -11,12 +11,17 @@
 // under the License.
 
 import { InputAdded } from "../../generated/templates/CartesiDApp/InputFacet"
-import { DApp } from "../../generated/schema"
+import { DApp, DAppFactory } from "../../generated/schema"
 
 export function handleInput(event: InputAdded): void {
-    const dapp = DApp.load(event.address.toHex())!
+    const dapp = DApp.load(event.address)!
 
     // increment number of inputs
     dapp.inputCount++
     dapp.save()
+
+    // load factory and increment number of inputs
+    const factory = DAppFactory.load(dapp.factory)!
+    factory.inputCount++
+    factory.save()
 }

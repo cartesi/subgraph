@@ -14,7 +14,7 @@ import { PhaseChange } from "../../generated/templates/CartesiDAppRollups/Rollup
 import { DApp } from "../../generated/schema"
 
 export function handlePhaseChange(event: PhaseChange): void {
-    const dapp = DApp.load(event.address.toHex())!
+    const dapp = DApp.load(event.address)!
     dapp.phase = event.params.newPhase
     dapp.save()
 }
