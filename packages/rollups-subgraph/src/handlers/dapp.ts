@@ -36,7 +36,8 @@ export function handleApplicationCreated(event: ApplicationCreated): void {
     dapp.inputDuration = event.params.config.inputDuration.toI32()
     dapp.challengePeriod = event.params.config.challengePeriod.toI32()
     dapp.phase = Phase.InputAccumulation
-    dapp.timestamp = event.block.timestamp
+    dapp.deploymentTimestamp = event.block.timestamp
+    dapp.activityTimestamp = event.block.timestamp
     dapp.inputCount = 0
     dapp.currentEpoch = 0
     dapp.factory = event.address

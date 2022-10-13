@@ -12,6 +12,7 @@ type DApp @entity {
     phase: Int!
     currentEpoch: Int!
     inputCount: Int!
-    timestamp: BigInt!
+    deploymentTimestamp: BigInt!
+    activityTimestamp: BigInt!
     factory: DAppFactory!
 }

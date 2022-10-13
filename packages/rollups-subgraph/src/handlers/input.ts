@@ -18,6 +18,7 @@ export function handleInput(event: InputAdded): void {
 
     // increment number of inputs
     dapp.inputCount++
+    dapp.activityTimestamp = event.block.timestamp
     dapp.save()
 
     // load factory and increment number of inputs
