@@ -21,12 +21,13 @@
         "test": "graph test"
     },
     "dependencies": {
-        "@cartesi/pos": "^1.1.2",
+        "@cartesi/pos": "^2.0.0-alpha.0",
         "@cartesi/pos-1.0": "npm:@cartesi/pos@1.0.0",
         "@cartesi/staking-pool": "^1.0.0",
         "@cartesi/util": "^1.0.1",
         "@graphprotocol/graph-cli": "0.33.1",
         "@graphprotocol/graph-ts": "0.27.0",
+        "prettier": "2.7.1",
         "toolbox": "2.1.2"
     },
     "devDependencies": {
