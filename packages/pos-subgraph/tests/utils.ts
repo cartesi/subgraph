@@ -602,14 +602,14 @@ export function createNewChainV2Event(
     )
     newEvent.parameters.push(
         new ethereum.EventParam(
-            "minDifficulty",
-            ethereum.Value.fromUnsignedBigInt(minDifficulty)
+            "initialDifficulty",
+            ethereum.Value.fromUnsignedBigInt(initialDifficulty)
         )
     )
     newEvent.parameters.push(
         new ethereum.EventParam(
-            "initialDifficulty",
-            ethereum.Value.fromUnsignedBigInt(initialDifficulty)
+            "minDifficulty",
+            ethereum.Value.fromUnsignedBigInt(minDifficulty)
         )
     )
     newEvent.parameters.push(

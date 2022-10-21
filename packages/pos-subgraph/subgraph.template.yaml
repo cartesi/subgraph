@@ -135,7 +135,7 @@ dataSources:
               - name: PoSV2FactoryImpl
                 file:
           eventHandlers:
-              - event: "NewChain(indexed address,address,address,address,uint64,uint64,uint32,uint32,uint256,uint32,uint32)"
+              - event: "NewChain(indexed address,address,address,address,uint128,uint64,uint32,uint32,uint256,uint32,uint32)"
                 handler: handleNewChain
           file: ./src/block-2.0.ts
     - kind: ethereum/contract
