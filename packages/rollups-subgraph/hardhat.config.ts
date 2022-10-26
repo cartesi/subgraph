@@ -51,6 +51,7 @@ const config: HardhatUserConfig = {
         },
         mainnet: infuraNetwork("mainnet", 1, 6283185),
         goerli: infuraNetwork("goerli", 5, 6283185),
+        "arbitrum-goerli": infuraNetwork("arbitrum-goerli", 421613, 6283185),
     },
     solidity: {
         version: "0.8.13",
@@ -84,6 +85,12 @@ const config: HardhatUserConfig = {
             ],
             goerli: [
                 resolveModulePath("@cartesi/rollups", "deployments/goerli"),
+            ],
+            "arbitrum-goerli": [
+                resolveModulePath(
+                    "@cartesi/rollups",
+                    "deployments/arbitrum_goerli"
+                ),
             ],
         },
     },

@@ -1,4 +1,5 @@
 subgraph.yaml
+subgraph.arbitrum-goerli.yaml
 subgraph.goerli.yaml
 subgraph.localhost.yaml
 tests/.latest.json
