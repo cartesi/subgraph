@@ -11,7 +11,8 @@
 // under the License.
 
 import { Address, BigInt } from "@graphprotocol/graph-ts"
-import { Node } from "../generated/schema"
+import { Node, StakingPool } from "../generated/schema"
+import { getProtocolOfPool } from "./pool"
 import * as summary from "./summary"
 import * as users from "./user"
 import {
@@ -98,6 +99,15 @@ export function handleAuthorization(event: Authorization): void {
     )
     node.status = "Authorized"
     node.save()
+
+    // if the worker is a pool, update its protocol field
+    let pool = StakingPool.load(event.params.worker.toHex())
+    if (pool != null) {
+        let protocol = getProtocolOfPool(event.params.worker)
+
+        pool.protocol = protocol.id
+        pool.save()
+    }
 }
 
 export function handleDeauthorization(event: Deauthorization): void {

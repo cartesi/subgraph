@@ -28,6 +28,7 @@ type StakingPool @entity {
     id: ID!
     user: User!
     manager: ID!
+    protocol: Protocol!
     paused: Boolean!
     shares: BigInt!
     amount: BigInt!

@@ -21,11 +21,14 @@ import {
     User,
     PoolActivity,
     StakingPoolUserHistory,
+    Protocol,
 } from "../generated/schema"
+import { PoSV2Impl } from "../generated/templates/PoSV2Impl/PoSV2Impl"
+import { StakingPoolImpl } from "../generated/templates/StakingPoolImpl/StakingPoolImpl"
 import {
-    FlatRateCommission,
-    GasTaxCommission,
-    StakingPoolImpl,
+    FlatRateCommission as flateRateTemplate,
+    GasTaxCommission as gasTaxTemplate,
+    StakingPoolImpl as poolTemplate,
 } from "../generated/templates"
 import {
     Deposit,
@@ -76,8 +79,8 @@ export function handleNewFlatRateStakingPool(
     s.save()
 
     // create templates
-    StakingPoolImpl.create(event.params.pool)
-    FlatRateCommission.create(event.params.fee)
+    poolTemplate.create(event.params.pool)
+    flateRateTemplate.create(event.params.fee)
 }
 
 export function handleNewGasTaxStakingPool(
@@ -104,8 +107,8 @@ export function handleNewGasTaxStakingPool(
     s.save()
 
     // create templates
-    StakingPoolImpl.create(event.params.pool)
-    GasTaxCommission.create(event.params.fee)
+    poolTemplate.create(event.params.pool)
+    gasTaxTemplate.create(event.params.fee)
 }
 
 function loadOrCreateBalance(pool: Address, user: Address): PoolBalance {
@@ -133,7 +136,11 @@ function createPool(
     // create pool
     let pool = new StakingPool(address.toHex())
 
+    // get protocol
+    let protocol = getProtocolOfPool(address)
+
     pool.manager = manager.toHex()
+    pool.protocol = protocol.id
     pool.user = u.id
     pool.amount = BigInt.fromI32(0)
     pool.shares = BigInt.fromI32(0)
@@ -147,6 +154,25 @@ function createPool(
     u.save()
 
     return pool
+}
+
+export function getProtocolOfPool(address: Address): Protocol {
+    // determine protocol from pos, it should be either V1 or V2
+    // V1 pos address is also the protocol id
+    // V2 can get protocol from the factory
+
+    let stakingPool = StakingPoolImpl.bind(address)
+    let pos = stakingPool.pos()
+
+    // attempt V1 first
+    let protocol = Protocol.load(pos.toHex())
+    if (protocol == null) {
+        // attempt V2 if it's not V1
+        let factory = PoSV2Impl.bind(pos).factory()
+        protocol = Protocol.load(factory.toHex())!
+    }
+
+    return protocol
 }
 
 /**
