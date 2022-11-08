@@ -10,20 +10,22 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-import { assert, clearStore, createMockedFunction, test, log } from "matchstick-as"
+import { assert, clearStore, createMockedFunction, test } from "matchstick-as"
 import { Address, BigInt, ethereum } from "@graphprotocol/graph-ts"
 import {
     buildStakingPool,
     createAuthorizationEvent,
     createNewFlatRateCommissionStakingPoolEvent,
     protocol1,
-    protocol2
+    protocol2,
 } from "../utils"
 import { handleAuthorization } from "../../src/node"
 import { handleNewFlatRateStakingPool } from "../../src/pool"
 import * as protocol from "../../src/protocol"
 
-const poolAddress = Address.fromString("0x0000000000000000000000000000000000000121")
+const poolAddress = Address.fromString(
+    "0x0000000000000000000000000000000000000121"
+)
 
 test("New staking-pool should store protocol", () => {
     // add protocol1
@@ -33,7 +35,9 @@ test("New staking-pool should store protocol", () => {
     // create staking pool, protocol is initialized to protocol1
     let newPoolEvent = createNewFlatRateCommissionStakingPoolEvent(poolAddress)
 
-    createMockedFunction(poolAddress, "pos", "pos():(address)").returns([ethereum.Value.fromAddress(Address.fromString(protocol1))])
+    createMockedFunction(poolAddress, "pos", "pos():(address)").returns([
+        ethereum.Value.fromAddress(Address.fromString(protocol1)),
+    ])
     handleNewFlatRateStakingPool(newPoolEvent)
 
     assert.fieldEquals(
@@ -67,8 +71,12 @@ test("Staking-pool should update protocol when reauthorized", () => {
     // create authorization event to update protocol to protocol2
     let authorization = createAuthorizationEvent(poolAddress)
 
-    createMockedFunction(poolAddress, "pos", "pos():(address)").returns([ethereum.Value.fromAddress(pos)])
-    createMockedFunction(pos, "factory", "factory():(address)").returns([ethereum.Value.fromAddress(Address.fromString(protocol2))])
+    createMockedFunction(poolAddress, "pos", "pos():(address)").returns([
+        ethereum.Value.fromAddress(pos),
+    ])
+    createMockedFunction(pos, "factory", "factory():(address)").returns([
+        ethereum.Value.fromAddress(Address.fromString(protocol2)),
+    ])
     handleAuthorization(authorization)
 
     assert.fieldEquals(
