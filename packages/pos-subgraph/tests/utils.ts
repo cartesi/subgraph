@@ -34,8 +34,13 @@ import {
     Unstake as UnstakePool,
     Withdraw as WithdrawPool,
 } from "../generated/templates/StakingPoolImpl/StakingPoolImpl"
+import { Authorization } from "../generated/WorkerManagerAuthManager/WorkerManagerAuthManagerImpl"
+import { NewFlatRateCommissionStakingPool } from "../generated/StakingPoolFactoryImpl/StakingPoolFactoryImpl"
+import * as protocol from "../src/protocol"
 import * as user from "../src/user"
 
+export const protocol1 = "0x0000000000000000000000000000000000000098"
+export const protocol2 = "0x0000000000000000000000000000000000000099"
 export const posV2Address = "0x0000000000000000000000000000000000000123"
 export const txHash = Bytes.fromHexString(
     "0x0000000000000000000000000000000000000000000000000000000000000001"
@@ -69,11 +74,16 @@ export function buildStakingPool(
     pool.totalCommission = BigInt.fromI32(0)
     pool.timestamp = timestamp
     pool.paused = false
+    pool.protocol = protocol1
     pool.fee = "0x0000000000000000000000000000000000000099"
 
     // circular reference between pool and user
     u.pool = pool.id
     u.save()
+
+    // initialize protocol
+    let p = protocol.loadOrCreate(pool.protocol, timestamp)
+    p.save()
 
     return pool
 }
@@ -648,4 +658,68 @@ export function zeroedNewBlockSelectorContext(): BlockSelectorContext {
     context.lastBlockTimestamp = BigInt.fromI32(0)
     context.index = 0
     return context
+}
+
+export function createAuthorizationEvent(pool: Address): Authorization {
+    let mockEvent = newMockEvent()
+
+    const newEvent = new Authorization(
+        mockEvent.address,
+        mockEvent.logIndex,
+        mockEvent.transactionLogIndex,
+        mockEvent.logType,
+        mockEvent.block,
+        mockEvent.transaction,
+        mockEvent.parameters,
+        null
+    )
+    newEvent.parameters = new Array()
+
+    newEvent.parameters.push(
+        new ethereum.EventParam(
+            "user",
+            ethereum.Value.fromAddress(Address.zero())
+        )
+    )
+    newEvent.parameters.push(
+        new ethereum.EventParam("worker", ethereum.Value.fromAddress(pool))
+    )
+    newEvent.parameters.push(
+        new ethereum.EventParam(
+            "dapp",
+            ethereum.Value.fromAddress(Address.zero())
+        )
+    )
+
+    return newEvent
+}
+
+export function createNewFlatRateCommissionStakingPoolEvent(
+    pool: Address
+): NewFlatRateCommissionStakingPool {
+    let mockEvent = newMockEvent()
+
+    const newEvent = new NewFlatRateCommissionStakingPool(
+        mockEvent.address,
+        mockEvent.logIndex,
+        mockEvent.transactionLogIndex,
+        mockEvent.logType,
+        mockEvent.block,
+        mockEvent.transaction,
+        mockEvent.parameters,
+        null
+    )
+    newEvent.parameters = new Array()
+
+    newEvent.parameters.push(
+        new ethereum.EventParam("pool", ethereum.Value.fromAddress(pool))
+    )
+    newEvent.parameters.push(
+        new ethereum.EventParam(
+            "fee",
+            ethereum.Value.fromAddress(Address.zero())
+        )
+    )
+
+    return newEvent
 }
