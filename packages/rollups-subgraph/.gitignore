@@ -1,0 +1,4 @@
+subgraph.yaml
+subgraph.goerli.yaml
+subgraph.localhost.yaml
+tests/.latest.json

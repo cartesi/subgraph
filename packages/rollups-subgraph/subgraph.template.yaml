@@ -1,0 +1,63 @@
+specVersion: 0.0.4
+description: Cartesi Rollups
+repository: "https://github.com/cartesi/subgraph"
+schema:
+    file: ./schema.graphql
+dataSources:
+    - kind: ethereum/contract
+      name: CartesiDAppFactory
+      network:
+      source:
+          address: CartesiDAppFactory
+          abi: CartesiDAppFactory
+          startBlock:
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.6
+          language: wasm/assemblyscript
+          entities:
+              - DApp
+          abis:
+              - name: CartesiDAppFactory
+                file:
+          eventHandlers:
+              - event: "ApplicationCreated(indexed address,(address,bytes32,uint256,uint256,uint256,uint256,address,address[]))"
+                handler: handleApplicationCreated
+          file: ./src/handlers/dapp.ts
+templates:
+    - kind: ethereum/contract
+      name: CartesiDAppInput
+      network:
+      source:
+          abi: InputFacet
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.6
+          language: wasm/assemblyscript
+          entities:
+              - DApp
+          abis:
+              - name: InputFacet
+                file:
+          eventHandlers:
+              - event: "InputAdded(indexed uint256,indexed uint256,address,uint256,bytes)"
+                handler: handleInput
+          file: ./src/handlers/input.ts
+    - kind: ethereum/contract
+      name: CartesiDAppRollups
+      network:
+      source:
+          abi: RollupsFacet
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.6
+          language: wasm/assemblyscript
+          entities:
+              - DApp
+          abis:
+              - name: RollupsFacet
+                file:
+          eventHandlers:
+              - event: "PhaseChange(uint8)"
+                handler: handlePhaseChange
+          file: ./src/handlers/rollups.ts

@@ -1,5 +1,5 @@
 {
-    "name": "Subgraph-Monorepo",
+    "name": "@cartesi/subgraph",
     "repository": "git@github.com:cartesi-corp/subgraph.git",
     "author": "Gabriel Barros <gabriel.barros@cartesi.io>",
     "private": true,

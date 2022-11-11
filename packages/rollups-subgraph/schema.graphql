@@ -1,0 +1,9 @@
+type DApp @entity {
+    id: ID!
+    inputDuration: Int!
+    challengePeriod: Int!
+    phase: Int!
+    currentEpoch: Int!
+    inputCount: Int!
+    timestamp: BigInt!
+}
