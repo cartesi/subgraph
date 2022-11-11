@@ -22,6 +22,7 @@ totalReward
 *id
 +user
 +fee
++protocol
 manager
 paused
 shares
@@ -148,10 +149,10 @@ User 1--* Unstake
 User 1--* Withdraw
 StakingPool 1--* PoolBalance
 StakingPool 1--* PoolActivity
+StakingPool *--1 Protocol
 StakingPool 1--1 StakingPoolFee
 PoolBalance *--1 PoolUser
 PoolActivity *--1 PoolUser
 StakingPoolUserHistory *--1 PoolUser
 StakingPoolUserHistory *--1 StakingPool
 StakingPoolFeeHistory *--1 StakingPool
-
