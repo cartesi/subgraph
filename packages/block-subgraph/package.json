@@ -1,7 +1,7 @@
 {
     "name": "block-subgraph",
     "license": "Apache-2.0",
-    "version": "2.1.2",
+    "version": "4.0.0",
     "scripts": {
         "codegen": "graph codegen",
         "clean": "rimraf build && rimraf generated",
@@ -15,11 +15,11 @@
         "@graphprotocol/graph-ts": "^0.24.1"
     },
     "devDependencies": {
-        "@types/node": "^17.0.9",
+        "@types/node": "^18.11.9",
         "matchstick-as": "^0.2.3",
         "prettier": "^2.5.1",
         "rimraf": "^3.0.2",
         "ts-node": "^10.4.0",
-        "typescript": "^4.5.4"
+        "typescript": "^4.9.3"
     }
 }
