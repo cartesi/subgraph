@@ -48,6 +48,10 @@ dataSources:
               - User
               - Worker
           abis:
+              - name: PoSV2Impl
+                file:
+              - name: StakingPoolImpl
+                file:
               - name: WorkerManagerAuthManagerImpl
                 file:
           eventHandlers:
@@ -205,6 +209,8 @@ dataSources:
               - Summary
               - User
           abis:
+              - name: StakingPoolImpl
+                file:
               - name: StakingPoolFactoryImpl
                 file:
           eventHandlers:
