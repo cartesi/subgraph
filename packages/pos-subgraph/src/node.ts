@@ -104,9 +104,10 @@ export function handleAuthorization(event: Authorization): void {
     let pool = StakingPool.load(event.params.worker.toHex())
     if (pool != null) {
         let protocol = getProtocolOfPool(event.params.worker)
-
-        pool.protocol = protocol.id
-        pool.save()
+        if (protocol != null) {
+            pool.protocol = protocol.id
+            pool.save()
+        }
     }
 }
 

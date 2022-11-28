@@ -140,9 +140,11 @@ function createPool(
 
     // get protocol
     let protocol = getProtocolOfPool(address)
+    if (protocol != null) {
+        pool.protocol = protocol.id
+    }
 
     pool.manager = manager.toHex()
-    pool.protocol = protocol.id
     pool.user = u.id
     pool.amount = BigInt.fromI32(0)
     pool.shares = BigInt.fromI32(0)
@@ -158,7 +160,7 @@ function createPool(
     return pool
 }
 
-export function getProtocolOfPool(address: Address): Protocol {
+export function getProtocolOfPool(address: Address): Protocol | null {
     // determine protocol from pos, it should be either V1 or V2
     // V1 pos address is also the protocol id
     // V2 can get protocol from the factory
@@ -171,7 +173,7 @@ export function getProtocolOfPool(address: Address): Protocol {
     if (protocol == null) {
         // attempt V2 if it's not V1
         let factory = PoSV2Impl.bind(pos).factory()
-        protocol = Protocol.load(factory.toHex())!
+        protocol = Protocol.load(factory.toHex())
     }
 
     return protocol

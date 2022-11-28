@@ -82,7 +82,7 @@ export function buildStakingPool(
     u.save()
 
     // initialize protocol
-    let p = protocol.loadOrCreate(pool.protocol, timestamp)
+    let p = protocol.loadOrCreate(protocol1, timestamp)
     p.save()
 
     return pool
