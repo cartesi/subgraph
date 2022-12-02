@@ -211,6 +211,8 @@ dataSources:
               - Summary
               - User
           abis:
+              - name: PoSV2Impl
+                file:
               - name: StakingPoolImpl
                 file:
               - name: StakingPoolFactoryImpl
