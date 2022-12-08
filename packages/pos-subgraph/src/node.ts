@@ -84,6 +84,7 @@ export function handleRetired(event: Retired): void {
         event.block.timestamp
     )
     node.status = "Retired"
+    node.retirementTimestamp = event.block.timestamp
     node.save()
 
     let s = summary.loadOrCreate()
