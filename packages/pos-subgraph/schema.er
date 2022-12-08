@@ -14,6 +14,7 @@ totalReward
 *id
 +owner
 timestamp
+retirementTimestamp
 status
 totalBlocks
 totalReward

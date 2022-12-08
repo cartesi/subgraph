@@ -138,6 +138,7 @@ type Node @entity {
     id: ID!
     owner: User
     timestamp: BigInt!
+    retirementTimestamp: BigInt
     status: String
     totalBlocks: Int!
     totalReward: BigInt!
