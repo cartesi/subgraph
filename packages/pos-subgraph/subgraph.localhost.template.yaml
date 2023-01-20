@@ -138,6 +138,10 @@ dataSources:
           abis:
               - name: PoSV2FactoryImpl
                 file:
+              - name: PoSV2Impl
+                file:
+              - name: RewardManagerV2Impl
+                file:
           eventHandlers:
               - event: "NewChain(indexed address,address,address,address,uint128,uint64,uint32,uint32,uint256,uint32,uint32)"
                 handler: handleNewChain
@@ -214,6 +218,8 @@ templates:
               - Worker
           abis:
               - name: RewardManagerV2Impl
+                file:
+              - name: PoSV2Impl
                 file:
           eventHandlers:
               - event: "Rewarded(indexed uint32,uint256)"
