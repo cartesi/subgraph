@@ -136,6 +136,7 @@ export function handleRewarded(event: Rewarded): void {
     // block should be created by BlockProduced event
     let block = Block.load(event.transaction.hash.toHex())!
     block.reward = reward
+    block.save()
 
     // handle user
     // producer should be created by BlockProduced event
