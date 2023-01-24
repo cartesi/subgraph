@@ -396,6 +396,7 @@ export function handleBlockProduced(event: BlockProduced): void {
     weeklyPoolPerformance.performance = pool.amount
         .times(BigInt.fromString("1000000000"))
         .divDecimal(pool.shares.toBigDecimal())
+    weeklyPoolPerformance.save()
 }
 
 export function handlePaused(event: Paused): void {
