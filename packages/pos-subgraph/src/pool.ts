@@ -22,6 +22,7 @@ import {
     PoolActivity,
     StakingPoolUserHistory,
     Protocol,
+    WeeklyPoolPerformance,
 } from "../generated/schema"
 import { PoSV2Impl } from "../generated/templates/PoSV2Impl/PoSV2Impl"
 import { StakingPoolImpl } from "../generated/templates/StakingPoolImpl/StakingPoolImpl"
@@ -334,6 +335,7 @@ export function handleWithdraw(event: Withdraw): void {
 }
 
 export function handleBlockProduced(event: BlockProduced): void {
+
     // save block commission
     let block = Block.load(event.transaction.hash.toHex())
     if (block) {
@@ -368,6 +370,32 @@ export function handleBlockProduced(event: BlockProduced): void {
         .times(BigInt.fromString("1000000000"))
         .divDecimal(pool.shares.toBigDecimal())
     shareValue.save()
+
+    // save to weeklyPoolPerformance 
+    let week = event.block.timestamp.toI32() / 604800
+    let weeklyPoolPerformanceId = pool.id + '-' + week.toString()
+    // Collection Address - Week
+    let weeklyPoolPerformance = new WeeklyPoolPerformance(weeklyPoolPerformanceId)
+    
+    if (!weeklyPoolPerformance) {
+        weeklyPoolPerformance = new WeeklyPoolPerformance(weeklyPoolPerformanceId)
+        weeklyPoolPerformance.timestamp = event.block.timestamp
+        weeklyPoolPerformance.pool = pool.id
+        weeklyPoolPerformance.shareValue = pool.amount
+        .times(BigInt.fromString("1000000000"))
+        .divDecimal(pool.shares.toBigDecimal())
+        
+        // Check the previous week shareValue, if there is any value reduce the current week shareValue with the previous week share value. If it is null, then set the current week shareValue as performance
+        let previousWeek = week - 1
+        let previousWeekId = pool.id + '-' + previousWeek.toString()
+        let previousWeekPerformance = new WeeklyPoolPerformance(previousWeekId) 
+        let weeklyPerformance = previousWeekPerformance ? previousWeekPerformance.shareValue : BigInt.fromI32(1).toBigDecimal()
+        weeklyPoolPerformance.performance = weeklyPoolPerformance.shareValue.minus(weeklyPerformance)
+    }
+    // Updating weekly share value
+    weeklyPoolPerformance.performance = pool.amount
+        .times(BigInt.fromString("1000000000"))
+        .divDecimal(pool.shares.toBigDecimal())
 }
 
 export function handlePaused(event: Paused): void {
