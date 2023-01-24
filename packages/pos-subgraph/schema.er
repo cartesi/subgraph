@@ -134,6 +134,13 @@ totalReward
 totalProtocols
 totalChains
 
+[WeeklyPoolPerformance] 
+*id
++pool
+timestamp
+shareValue
+performance
+
 # Cardinality    Syntax
 # 0 or 1         ?
 # exactly 1      1
@@ -157,3 +164,4 @@ PoolActivity *--1 PoolUser
 StakingPoolUserHistory *--1 PoolUser
 StakingPoolUserHistory *--1 StakingPool
 StakingPoolFeeHistory *--1 StakingPool
+WeeklyPoolPerformance *--1 StakingPool

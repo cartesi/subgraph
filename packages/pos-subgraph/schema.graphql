@@ -197,3 +197,16 @@ type Eligibility @entity {
     blockSelector: BlockSelectorContext!
     eligible: Boolean
 }
+
+type WeeklyPoolPerformance @entity {
+    # The pool address - The week
+    id: ID!
+    # Unix Week (Timestamp / 604800 * 604800)
+    timestamp: BigInt!
+    # Staking Pool
+    pool: StakingPool!
+    # stakingPool.amount / stakingPool.shares
+    shareValue: BigDecimal!
+    # Weekly Performance pool shareValue - previous weekly shareValue
+    performance: BigDecimal!
+}
