@@ -375,7 +375,7 @@ export function handleBlockProduced(event: BlockProduced): void {
     let week = event.block.timestamp.toI32() / 604800
     let weeklyPoolPerformanceId = pool.id + '-' + week.toString()
     // Collection Address - Week
-    let weeklyPoolPerformance = new WeeklyPoolPerformance(weeklyPoolPerformanceId)
+    let weeklyPoolPerformance = WeeklyPoolPerformance.load(weeklyPoolPerformanceId)
     
     if (!weeklyPoolPerformance) {
         weeklyPoolPerformance = new WeeklyPoolPerformance(weeklyPoolPerformanceId)
@@ -388,7 +388,7 @@ export function handleBlockProduced(event: BlockProduced): void {
         // Check the previous week shareValue, if there is any value reduce the current week shareValue with the previous week share value. If it is null, then set the current week shareValue as performance
         let previousWeek = week - 1
         let previousWeekId = pool.id + '-' + previousWeek.toString()
-        let previousWeekPerformance = new WeeklyPoolPerformance(previousWeekId) 
+        let previousWeekPerformance = WeeklyPoolPerformance.load(previousWeekId) 
         let weeklyPerformance = previousWeekPerformance ? previousWeekPerformance.shareValue : BigInt.fromI32(1).toBigDecimal()
         weeklyPoolPerformance.performance = weeklyPoolPerformance.shareValue.minus(weeklyPerformance)
     }
