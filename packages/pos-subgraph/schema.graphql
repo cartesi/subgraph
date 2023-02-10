@@ -201,12 +201,25 @@ type Eligibility @entity {
 type WeeklyPoolPerformance @entity {
     # The pool address - The week
     id: ID!
-    # Unix Week (Timestamp / 604800 * 604800)
+    # Unix Week (Timestamp / 604800)
     timestamp: BigInt!
     # Staking Pool
     pool: StakingPool!
     # stakingPool.amount / stakingPool.shares
     shareValue: BigDecimal!
     # Weekly Performance pool shareValue - previous weekly shareValue
+    performance: BigDecimal!
+}
+
+type MonthlyPoolPerformance @entity {
+    # The pool address - The month
+    id: ID!
+    # Unix Month (Timestamp / 2628000)
+    timestamp: BigInt!
+    # Staking Pool
+    pool: StakingPool!
+    # stakingPool.amount / stakingPool.shares
+    shareValue: BigDecimal!
+    # Monthly Performance pool shareValue - previous monthly shareValue
     performance: BigDecimal!
 }

@@ -141,6 +141,13 @@ timestamp
 shareValue
 performance
 
+[MonthlyPoolPerformance] 
+*id
++pool
+timestamp
+shareValue
+performance
+
 # Cardinality    Syntax
 # 0 or 1         ?
 # exactly 1      1
@@ -165,3 +172,4 @@ StakingPoolUserHistory *--1 PoolUser
 StakingPoolUserHistory *--1 StakingPool
 StakingPoolFeeHistory *--1 StakingPool
 WeeklyPoolPerformance *--1 StakingPool
+MonthlyPoolPerformance *--1 StakingPool

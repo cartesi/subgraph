@@ -23,6 +23,7 @@ import {
     StakingPoolUserHistory,
     Protocol,
     WeeklyPoolPerformance,
+    MonthlyPoolPerformance,
 } from "../generated/schema"
 import { PoSV2Impl } from "../generated/templates/PoSV2Impl/PoSV2Impl"
 import { StakingPoolImpl } from "../generated/templates/StakingPoolImpl/StakingPoolImpl"
@@ -397,6 +398,33 @@ export function handleBlockProduced(event: BlockProduced): void {
         .times(BigInt.fromString("1000000000"))
         .divDecimal(pool.shares.toBigDecimal())
     weeklyPoolPerformance.save()
+
+    // save to monthlyPoolPerformance 
+    let month = event.block.timestamp.toI32() / 2628000
+    let monthlyPoolPerformanceId = pool.id + '-' + month.toString()
+    // Collection Address - Month
+    let monthlyPoolPerformance = MonthlyPoolPerformance.load(monthlyPoolPerformanceId)
+    
+    if (!monthlyPoolPerformance) {
+        monthlyPoolPerformance = new MonthlyPoolPerformance(weeklyPoolPerformanceId)
+        monthlyPoolPerformance.timestamp = event.block.timestamp
+        monthlyPoolPerformance.pool = pool.id
+        monthlyPoolPerformance.shareValue = pool.amount
+        .times(BigInt.fromString("1000000000"))
+        .divDecimal(pool.shares.toBigDecimal())
+        
+        // Check the previous month shareValue, if there is any value reduce the current month shareValue with the previous month share value. If it is null, then set the current month shareValue as performance
+        let previousMonth = month - 1
+        let previousMonthId = pool.id + '-' + previousMonth.toString()
+        let previousMonthPerformance = MonthlyPoolPerformance.load(previousMonthId) 
+        let monthlyPerformance = previousMonthPerformance ? previousMonthPerformance.shareValue : BigInt.fromI32(1).toBigDecimal()
+        monthlyPoolPerformance.performance = monthlyPoolPerformance.shareValue.minus(monthlyPerformance)
+    }
+    // Updating monthly share value
+    monthlyPoolPerformance.performance = pool.amount
+        .times(BigInt.fromString("1000000000"))
+        .divDecimal(pool.shares.toBigDecimal())
+    monthlyPoolPerformance.save()
 }
 
 export function handlePaused(event: Paused): void {
