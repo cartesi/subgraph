@@ -27,14 +27,16 @@
     },
     "dependencies": {
         "@cartesi/rollups": "^0.6.0",
+        "@cartesi/rollups-0.8": "npm:@cartesi/rollups@0.8.2",
+        "@cartesi/rollups-0.9": "npm:@cartesi/rollups@0.9.0-alpha.2",
         "@graphprotocol/graph-cli": "^0.34.0",
         "@graphprotocol/graph-ts": "^0.28.0"
     },
     "devDependencies": {
         "@nomiclabs/hardhat-ethers": "^2.1.1",
         "ethers": "^5.7.1",
-        "hardhat": "^2.11.2",
-        "hardhat-deploy": "^0.11.15",
+        "hardhat": "^2.12.2",
+        "hardhat-deploy": "^0.11.20",
         "matchstick-as": "^0.5.0",
         "ts-node": "^10.9.1",
         "typescript": "^4.8.3"
