@@ -10,11 +10,12 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-import { InputAdded } from "../../generated/templates/CartesiDApp/InputFacet"
+import { InputAdded } from "../../generated/templates/CartesiDAppInput/InputFacet"
 import { DApp, DAppFactory } from "../../generated/schema"
+import * as dashboard from "./dashboard"
 
 export function handleInput(event: InputAdded): void {
-    const dapp = DApp.load(event.address)!
+    const dapp = DApp.load(event.address.toHex())!
 
     // increment number of inputs
     dapp.inputCount++
@@ -25,4 +26,9 @@ export function handleInput(event: InputAdded): void {
     const factory = DAppFactory.load(dapp.factory)!
     factory.inputCount++
     factory.save()
+
+    // load dashboard and increment total number of inputs
+    const d = dashboard.loadOrCreate()
+    d.inputCount++
+    d.save()
 }
