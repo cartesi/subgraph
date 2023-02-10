@@ -17,13 +17,37 @@ dataSources:
           language: wasm/assemblyscript
           entities:
               - DApp
+              - DAppFactory
+              - Dashboard
           abis:
               - name: CartesiDAppFactory
                 file:
           eventHandlers:
               - event: "ApplicationCreated(indexed address,(address,bytes32,uint256,uint256,uint256,uint256,address,address[]))"
                 handler: handleApplicationCreated
-          file: ./src/handlers/dapp.ts
+          file: ./src/handlers/v0.6/dapp.ts
+    - kind: ethereum/contract
+      name: CartesiDAppFactory-0.8
+      network:
+      source:
+          address: "@cartesi/rollups-0.8;deployments/{{network}}/CartesiDAppFactory.json"
+          abi: CartesiDAppFactory
+          startBlock:
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.6
+          language: wasm/assemblyscript
+          entities:
+              - DApp
+              - DAppFactory
+              - Dashboard
+          abis:
+              - name: CartesiDAppFactory
+                file: abi/v0.8
+          eventHandlers:
+              - event: "ApplicationCreated(indexed address,(address,bytes32,uint256,uint256,uint256,uint256,address,address[]))"
+                handler: handleApplicationCreated
+          file: ./src/handlers/v0.8/dapp.ts
 templates:
     - kind: ethereum/contract
       name: CartesiDAppInput

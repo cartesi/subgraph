@@ -59,6 +59,8 @@ const subgraph = async (
 
     // load input yaml template file
     console.log(`Loading ${inputFile}`)
+    console.log(`The network is: ${hre.network.name}`)
+
     const template = yaml.load(
         fs.readFileSync(inputFile, "utf-8")
     ) as SubgraphManifest
@@ -69,8 +71,13 @@ const subgraph = async (
             dataSource.network = hre.network.name
 
             if (dataSource.kind == "ethereum/contract") {
-                // assume the `address` is the contract name
-                let contractName = dataSource.source.address
+                // assume the `address` is the contract name.
+                // Also apply a interpolation to replace the {{network}} with the folder name where applicable.
+                let networkFolderName = dataSource.network.replace("-", "_")
+                let contractName = dataSource.source.address?.replace(
+                    "{{network}}",
+                    networkFolderName
+                )
                 let resolver: Resolver = primaryResolver
 
                 if (contractName.indexOf(":") >= 0) {
