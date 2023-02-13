@@ -12,6 +12,7 @@
         "create:localhost": "graph create --node http://localhost:8020/ cartesi/rollups",
         "remove:localhost": "graph remove --node http://localhost:8020/ cartesi/rollups",
         "deploy:arbitrum-goerli": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ cartesi/rollups-arbitrum-goerli subgraph.arbitrum-goerli.yaml",
+        "deploy:arbitrum-goerli-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 cartesi/rollups subgraph.arbitrum-goerli.yaml",
         "deploy:localhost": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 cartesi/rollups subgraph.localhost.yaml",
         "deploy:mainnet": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ cartesi/rollups",
         "deploy:mainnet-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 cartesi/rollups subgraph.yaml",
