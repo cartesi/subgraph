@@ -11,7 +11,7 @@
 // under the License.
 import { ApplicationCreated } from "../../../generated/CartesiDAppFactory-0.8/CartesiDAppFactory"
 import { create } from "../Application"
-import { Application, Phase } from "../Application/definitions"
+import { Application } from "../Application/definitions"
 
 // Factory version
 const ZERO_EIGHT = "0.8"
@@ -23,7 +23,6 @@ export function handleApplicationCreated(event: ApplicationCreated): void {
         event.params.application.toHex(),
         event.params.config.inputDuration.toI32(),
         event.params.config.challengePeriod.toI32(),
-        Phase.InputAccumulation,
         event.block.timestamp,
         event.block.timestamp,
         0,

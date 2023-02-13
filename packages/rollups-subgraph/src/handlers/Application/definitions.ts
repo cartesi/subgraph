@@ -12,12 +12,6 @@
 
 import { BigInt } from "@graphprotocol/graph-ts"
 
-export enum Phase {
-    InputAccumulation,
-    AwaitingConsensus,
-    AwaitingDispute,
-}
-
 export class Application {
     constructor(
         public readonly factoryVersion: string,
@@ -25,7 +19,6 @@ export class Application {
         public readonly applicationAddress: string,
         public readonly inputDuration: i32,
         public readonly challengePeriod: i32,
-        public readonly phase: Phase,
         public readonly deploymentTimestamp: BigInt,
         public readonly activityTimestamp: BigInt,
         public readonly inputCount: i32,

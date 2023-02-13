@@ -11,7 +11,7 @@
 // under the License.
 
 import { ApplicationCreated } from "../../../generated/CartesiDAppFactory/CartesiDAppFactory"
-import { Application, Phase } from "../Application/definitions"
+import { Application } from "../Application/definitions"
 import { create } from "../Application"
 
 // Factory version
@@ -24,7 +24,6 @@ export function handleApplicationCreated(event: ApplicationCreated): void {
         event.params.application.toHex(),
         event.params.config.inputDuration.toI32(),
         event.params.config.challengePeriod.toI32(),
-        Phase.InputAccumulation,
         event.block.timestamp,
         event.block.timestamp,
         0,

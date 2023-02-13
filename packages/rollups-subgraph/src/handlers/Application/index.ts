@@ -10,10 +10,7 @@
 // // License for the specific language governing permissions and limitations
 // // under the License.
 
-import {
-    CartesiDAppInput,
-    CartesiDAppRollups,
-} from "../../../generated/templates"
+import { CartesiDAppInput } from "../../../generated/templates"
 import { DApp, DAppFactory } from "../../../generated/schema"
 import { Address } from "@graphprotocol/graph-ts"
 import * as dashboard from "../dashboard"
@@ -44,7 +41,6 @@ export function create(app: Application): void {
     const dapp = new DApp(app.applicationAddress)
     dapp.inputDuration = app.inputDuration
     dapp.challengePeriod = app.challengePeriod
-    dapp.phase = app.phase
     dapp.deploymentTimestamp = app.deploymentTimestamp
     dapp.activityTimestamp = app.activityTimestamp
     dapp.inputCount = app.inputCount
@@ -60,7 +56,6 @@ function createTemplates(address: string): void {
     let application = Address.fromString(address)
     // instantiate templates
     CartesiDAppInput.create(application)
-    CartesiDAppRollups.create(application)
 }
 
 function loadOrCreateDAppFactory(
