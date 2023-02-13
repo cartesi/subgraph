@@ -48,6 +48,48 @@ dataSources:
               - event: "ApplicationCreated(indexed address,(address,bytes32,uint256,uint256,uint256,uint256,address,address[]))"
                 handler: handleApplicationCreated
           file: ./src/handlers/v0.8/dapp.ts
+    - kind: ethereum/contract
+      name: CartesiDAppFactory-0.9
+      network:
+      source:
+          address: "@cartesi/rollups-0.9;deployments/{{network}}/CartesiDAppFactory.json"
+          abi: CartesiDAppFactory
+          startBlock:
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.6
+          language: wasm/assemblyscript
+          entities:
+              - DApp
+              - DAppFactory
+              - Dashboard
+          abis:
+              - name: CartesiDAppFactory
+                file: abi/v0.9
+          eventHandlers:
+              - event: "ApplicationCreated(indexed address,address,bytes32,address)"
+                handler: handleApplicationCreated
+          file: ./src/handlers/v0.9/dapp.ts
+    - kind: ethereum/contract
+      name: InputBox
+      network:
+      source:
+          address: "@cartesi/rollups-0.9;deployments/{{network}}/InputBox.json"
+          abi: InputBox
+          startBlock:
+      mapping:
+          kind: ethereum/events
+          apiVersion: 0.0.6
+          language: wasm/assemblyscript
+          entities:
+              - DApp
+          abis:
+              - name: InputBox
+                file: abi/v0.9
+          eventHandlers:
+              - event: "InputAdded(indexed address,indexed uint256,address,bytes)"
+                handler: handleInputAdded
+          file: ./src/handlers/v0.9/input.ts
 templates:
     - kind: ethereum/contract
       name: CartesiDAppInput
