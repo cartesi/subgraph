@@ -20,28 +20,10 @@ import {
     createApplicationCreatedEventV06,
     createApplicationCreatedEventV08,
     createInputAddedEvent,
+    nextDappAddress,
+    nextFactoryAddress,
     txTimestamp,
 } from "./utils"
-
-let factoryNumber = 100
-let dappNumber = 200
-
-function nextDappAddress(): Address {
-    const address = Address.fromString(
-        "0x0000000000000000000000000000000000000" + dappNumber.toString()
-    )
-    dappNumber++
-    return address
-}
-
-function nextFactoryAddress(): Address {
-    const address = Address.fromString(
-        "0x0000000000000000000000000000000000000" + factoryNumber.toString()
-    )
-
-    factoryNumber++
-    return address
-}
 
 const DASH_E = "Dashboard"
 const DASH_ID = "1"

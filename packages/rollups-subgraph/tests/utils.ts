@@ -65,6 +65,28 @@ export function createInputAddedEvent(
     return event
 }
 
+// UTILITIES
+
+let factoryNumber = 100
+let dappNumber = 200
+
+export function nextDappAddress(): Address {
+    const address = Address.fromString(
+        "0x0000000000000000000000000000000000000" + dappNumber.toString()
+    )
+    dappNumber++
+    return address
+}
+
+export function nextFactoryAddress(): Address {
+    const address = Address.fromString(
+        "0x0000000000000000000000000000000000000" + factoryNumber.toString()
+    )
+
+    factoryNumber++
+    return address
+}
+
 function buildEvent<T extends ethereum.Event>(
     newTimestamp: BigInt,
     factoryAddress: Address,
