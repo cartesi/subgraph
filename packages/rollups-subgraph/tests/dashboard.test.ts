@@ -10,7 +10,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-import { Address, BigInt } from "@graphprotocol/graph-ts"
+import { BigInt } from "@graphprotocol/graph-ts"
 import { describe, test, assert, clearStore, beforeEach } from "matchstick-as"
 import { DApp, DAppFactory } from "../generated/schema"
 import { handleInput } from "../src/handlers/input"
