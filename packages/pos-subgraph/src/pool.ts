@@ -391,13 +391,13 @@ export function handleBlockProduced(event: BlockProduced): void {
         let previousWeek = week - 1
         let previousWeekId = pool.id + "-" + previousWeek.toString()
         let previousWeekPerformance = WeeklyPoolPerformance.load(previousWeekId)
-        let weekly
-        if (!previousWeekPerformance) {
-            weekly = previousWeekPerformance.shareValue
+        if (previousWeekPerformance) {
+            currentWeek.performance = currentWeek.shareValue.minus(
+                previousWeekPerformance.shareValue
+            )
         } else {
-            BIGINT_ONE.toBigDecimal
+            currentWeek.performance = currentWeek.shareValue
         }
-        currentWeek.performance = currentWeek.shareValue.minus(weekly)
         currentWeek.save()
     } else {
         // Updating weekly share value
@@ -424,13 +424,13 @@ export function handleBlockProduced(event: BlockProduced): void {
         let previousMonth = month - 1
         let previousMonthId = pool.id + "-" + previousMonth.toString()
         let pMonthPerformance = MonthlyPoolPerformance.load(previousMonthId)
-        let monthly
-        if (!pMonthPerformance) {
-            monthly = pMonthPerformance.shareValue
+        if (pMonthPerformance) {
+            currentMonth.performance = currentMonth.shareValue.minus(
+                pMonthPerformance.shareValue
+            )
         } else {
-            monthly = BIGINT_ONE.toBigDecimal
+            currentMonth.performance = currentWeek.shareValue
         }
-        currentMonth.performance = currentMonth.shareValue.minus(monthly)
         currentMonth.save()
     } else {
         // Updating monthly share value
