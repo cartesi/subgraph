@@ -1,0 +1,31 @@
+[Dashboard]
+*id 
+factoryCount
+dappCount
+inputCount
+
+[DAppFactory] {bgcolor: "#fbfbdb"}
+*id
+dappCount
+inputCount
+version
++dashboard {label: "id 1"}
+
+[DApp]
+*id
+inputDuration
+challengePeriod
+currentEpoch
+inputCount
+deploymentTimestamp
+activityTimestamp
++dappFactory
+
+# Cardinality    Syntax
+# 0 or 1         ?
+# exactly 1      1
+# 0 or more      *
+# 1 or more      +
+
+Dashboard 1--+ DAppFactory {label: "factories"}
+DAppFactory 1--* DApp {label: "dapps"}
