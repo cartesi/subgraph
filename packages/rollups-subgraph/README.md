@@ -1,4 +1,4 @@
-# Rollups Subgraph 
+# Rollups Subgraph
 
 # Running Instruction
 
