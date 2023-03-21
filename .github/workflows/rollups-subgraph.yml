@@ -3,7 +3,7 @@ on:
 	push: 
 		paths: 
 			- "packages/rollups-subgraph/**"
-			- ".github.workflows/rollups-subgraph.yml"
+			- ".github/workflows/rollups-subgraph.yml"
 			- ".github/workflows/called-rollups-subgraph-build.yml"
 
 jobs:
