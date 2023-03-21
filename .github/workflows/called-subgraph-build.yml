@@ -1,6 +1,11 @@
 name: Subgraph Build Workflow
 on:
     workflow_call:
+        inputs: 
+            PACKAGE_NAME: 
+                required: true
+            PACKAGE_DIR: 
+                required: true
         secrets:
             NPM_TOKEN:
                 required: true
@@ -24,11 +29,11 @@ jobs:
             - name: Code format check
               run: yarn prettier
 
-            - run: yarn workspace cartesi-subgraph prepare:goerli
+            - run: yarn workspace ${{ inputs.PACKAGE_NAME }} prepare:goerli
               env:
                   PROJECT_ID: ${{ secrets.PROJECT_ID }}
 
-            - run: mv ./packages/pos-subgraph/subgraph.goerli.yaml ./packages/pos-subgraph/subgraph.yaml
-            - run: yarn workspace cartesi-subgraph codegen
-            - run: yarn workspace cartesi-subgraph build
-            - run: yarn workspace cartesi-subgraph test
+            - run: mv ./${{ inputs.PACKAGE_DIR }}/subgraph.goerli.yaml ./${{ inputs.PACKAGE_DIR }}/subgraph.yaml
+            - run: yarn workspace ${{ inputs.PACKAGE_NAME }} codegen
+            - run: yarn workspace ${{ inputs.PACKAGE_NAME }} build
+            - run: yarn workspace ${{ inputs.PACKAGE_NAME }} test

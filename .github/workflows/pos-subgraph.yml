@@ -6,9 +6,18 @@ on:
             - "packages/toolbox/**"
             - ".github/workflows/pos-subgraph.yml"
             - ".github/workflows/called-subgraph-build.yml"
+    workflow_dispatch:
+        inputs: 
+            PACKAGE_NAME: 
+                required: true
+            PACKAGE_DIR: 
+                required: true
 jobs:
     build:
         uses: ./.github/workflows/called-subgraph-build.yml
+        with: 
+            PACKAGE_NAME: cartesi-subgraph
+            PACKAGE_DIR: ./packages/pos-subgraph
         secrets:
             NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
             PROJECT_ID: ${{ secrets.PROJECT_ID }}
