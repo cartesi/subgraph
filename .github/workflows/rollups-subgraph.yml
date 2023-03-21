@@ -1,16 +1,14 @@
----
-name: Rollups Subgraph
-on:
-    push:
-        paths:
-            - packages/rollups-subgraph/**
-            - .github/workflows/called-subgraph-build.yml
+name: Rollups Subgraph 
+on: 
+	push: 
+		paths: 
+			- "packages/rollups-subgraph/**"
+			- ".github.workflows/rollups-subgraph.yml"
+			- ".github/workflows/called-rollups-subgraph-build.yml"
+
 jobs:
-    build:
-        uses: ./.github/workflows/called-subgraph-build.yml
-        with:
-            PACKAGE_NAME: "@cartesi/subgraph-rollups"
-            PACKAGE_DIR: ./packages/rollups-subgraph
-        secrets:
+	build:
+		uses: ./.github/workflows/called-rollups-subgraph-build.yml
+		secrets:
             NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
             PROJECT_ID: ${{ secrets.PROJECT_ID }}

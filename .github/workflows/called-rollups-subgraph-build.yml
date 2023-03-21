@@ -1,0 +1,34 @@
+name: Rollups Subgraph Build Workflow
+on:
+    workflow_call:
+        secrets:
+            NPM_TOKEN:
+                required: true
+            PROJECT_ID:
+                required: true
+jobs:
+    build:
+        runs-on: ubuntu-20.04
+        steps:
+            - uses: actions/checkout@v2
+            - uses: actions/setup-node@v2
+              with:
+                  node-version: "16"
+
+            - run: |
+                  echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
+                  yarn install
+              env:
+                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            - name: Code format check
+              run: yarn prettier
+
+            - run: yarn workspace @cartesi/subgraph-rollups prepare:goerli
+              env:
+                  PROJECT_ID: ${{ secrets.PROJECT_ID }}
+
+            - run: mv ./packages/rollups-subgraph/subgraph.goerli.yaml ./packages/rollups-subgraph/subgraph.yaml
+            - run: yarn workspace @cartesi/subgraph-rollups codegen
+            - run: yarn workspace @cartesi/subgraph-rollups build
+            - run: yarn workspace @cartesi/subgraph-rollups test
