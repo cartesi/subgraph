@@ -11,6 +11,7 @@ on:
                 required: true
             PROJECT_ID:
                 required: true
+        type: 'workflow_call'
 jobs:
     build:
         runs-on: ubuntu-20.04
