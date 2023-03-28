@@ -4,7 +4,6 @@ on:
     push:
         paths:
             - packages/rollups-subgraph/**
-            - .github/workflows/rollups-subgraph.yml
             - .github/workflows/called-subgraph-build.yml
 jobs:
     build:
