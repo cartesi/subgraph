@@ -1,11 +1,10 @@
-name: Rollups Subgraph 
-on: 
-	push: 
-		paths: 
-			- "packages/rollups-subgraph/**"
-			- ".github/workflows/rollups-subgraph.yml"
-			- ".github/workflows/called-rollups-subgraph-build.yml"
-
+---
+name: Rollups Subgraph
+on:
+  push:
+    paths:
+      - packages/rollups-subgraph/**
+      - .github/workflows/called-subgraph-build.yml
 jobs:
 	build:
 		uses: ./.github/workflows/called-rollups-subgraph-build.yml
