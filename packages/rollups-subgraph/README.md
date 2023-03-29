@@ -1,4 +1,4 @@
-# Rollups Subgraph
+# Rollups Subgraph 
 
 # Running Instruction
 
@@ -42,7 +42,7 @@ Please note we have a [Code of Conduct](CODE_OF_CONDUCT.md), please follow it in
 ## Authors
 
 -   _Danilo Tuler_
--   _Bruno Menezes_
+-   _Alexander Bai_
 
 ## License
 
