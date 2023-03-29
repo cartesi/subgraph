@@ -3,15 +3,13 @@
 factoryCount
 dappCount
 inputCount
-+DAppFactory
 
 [DAppFactory] {bgcolor: "#fbfbdb"}
 *id
 dappCount
 inputCount
 version
-+DApp
-+Dashboard
++dashboard {label: "id 1"}
 
 [DApp]
 *id
@@ -21,7 +19,7 @@ currentEpoch
 inputCount
 deploymentTimestamp
 activityTimestamp
-+DAppFactory
++dappFactory
 
 # Cardinality    Syntax
 # 0 or 1         ?
@@ -29,6 +27,5 @@ activityTimestamp
 # 0 or more      *
 # 1 or more      +
 
-Dashboard 1--+ DAppFactory
-DAppFactory 1--1 DApp
-DAppFactory 1--* Dashboard
+Dashboard 1--+ DAppFactory {label: "factories"}
+DAppFactory 1--* DApp {label: "dapps"}

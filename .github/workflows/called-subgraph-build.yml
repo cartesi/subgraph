@@ -1,17 +1,18 @@
 name: Subgraph Build Workflow
 on:
     workflow_call:
-        inputs: 
-            PACKAGE_NAME: 
+        inputs:
+            PACKAGE_NAME:
                 required: true
-            PACKAGE_DIR: 
+                type: string
+            PACKAGE_DIR:
                 required: true
+                type: string
         secrets:
             NPM_TOKEN:
                 required: true
             PROJECT_ID:
                 required: true
-        type: 'workflow_call'
 jobs:
     build:
         runs-on: ubuntu-20.04
@@ -20,20 +21,16 @@ jobs:
             - uses: actions/setup-node@v2
               with:
                   node-version: "16"
-
             - run: |
                   echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > .npmrc
                   yarn install
               env:
                   NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
             - name: Code format check
               run: yarn prettier
-
             - run: yarn workspace ${{ inputs.PACKAGE_NAME }} prepare:goerli
               env:
                   PROJECT_ID: ${{ secrets.PROJECT_ID }}
-
             - run: mv ./${{ inputs.PACKAGE_DIR }}/subgraph.goerli.yaml ./${{ inputs.PACKAGE_DIR }}/subgraph.yaml
             - run: yarn workspace ${{ inputs.PACKAGE_NAME }} codegen
             - run: yarn workspace ${{ inputs.PACKAGE_NAME }} build

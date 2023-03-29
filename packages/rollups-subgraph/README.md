@@ -42,7 +42,7 @@ Please note we have a [Code of Conduct](CODE_OF_CONDUCT.md), please follow it in
 ## Authors
 
 -   _Danilo Tuler_
--   _Alexander Bai_
+-   _Bruno Menezes_
 
 ## License
 
