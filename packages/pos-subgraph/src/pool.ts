@@ -377,6 +377,11 @@ export function handleBlockProduced(event: BlockProduced): void {
     let week = event.block.timestamp.toI32() / 604800
     let weeklyPoolPerformanceId = pool.id + "-" + week.toString()
 
+    // Check the previous week shareValue, if there is any value reduce the current week shareValue with the previous week share value. If it is null, then set the current week shareValue as performance
+    let previousWeek = week - 1
+    let previousWeekId = pool.id + "-" + previousWeek.toString()
+    let previousWeekPerformance = WeeklyPoolPerformance.load(previousWeekId)
+
     // Collection Address - Week
     let currentWeek = WeeklyPoolPerformance.load(weeklyPoolPerformanceId)
     if (!currentWeek) {
@@ -386,30 +391,38 @@ export function handleBlockProduced(event: BlockProduced): void {
         currentWeek.shareValue = pool.amount
             .times(BigInt.fromString("1000000000"))
             .divDecimal(pool.shares.toBigDecimal())
-
-        // Check the previous week shareValue, if there is any value reduce the current week shareValue with the previous week share value. If it is null, then set the current week shareValue as performance
-        let previousWeek = week - 1
-        let previousWeekId = pool.id + "-" + previousWeek.toString()
-        let previousWeekPerformance = WeeklyPoolPerformance.load(previousWeekId)
         if (previousWeekPerformance) {
             currentWeek.performance = currentWeek.shareValue.minus(
                 previousWeekPerformance.shareValue
             )
         } else {
-            currentWeek.performance = currentWeek.shareValue
+            currentWeek.performance = BIGINT_ZERO.toBigDecimal()
         }
         currentWeek.save()
     } else {
         // Updating weekly share value
-        currentWeek.performance = pool.amount
+        currentWeek.shareValue = pool.amount
             .times(BigInt.fromString("1000000000"))
             .divDecimal(pool.shares.toBigDecimal())
+        if (previousWeekPerformance) {
+            currentWeek.performance = currentWeek.shareValue.minus(
+                previousWeekPerformance.shareValue
+            )
+        } else {
+            currentWeek.performance = BIGINT_ZERO.toBigDecimal()
+        }
         currentWeek.save()
     }
 
     // save monthly performance
     let month = event.block.timestamp.toI32() / 2628000
     let monthlyPoolPerformanceId = pool.id + "-" + month.toString()
+
+    // Check the previous week shareValue, if there is any value reduce the current week shareValue with the previous week share value. If it is null, then set the current week shareValue as performance
+    let previousMonth = month - 1
+    let previousMonthId = pool.id + "-" + previousMonth.toString()
+    let pMonthPerformance = MonthlyPoolPerformance.load(previousMonthId)
+
     // Collection Address - Month
     let currentMonth = MonthlyPoolPerformance.load(monthlyPoolPerformanceId)
     if (!currentMonth) {
@@ -420,23 +433,26 @@ export function handleBlockProduced(event: BlockProduced): void {
             .times(BigInt.fromString("1000000000"))
             .divDecimal(pool.shares.toBigDecimal())
 
-        // Check the previous week shareValue, if there is any value reduce the current week shareValue with the previous week share value. If it is null, then set the current week shareValue as performance
-        let previousMonth = month - 1
-        let previousMonthId = pool.id + "-" + previousMonth.toString()
-        let pMonthPerformance = MonthlyPoolPerformance.load(previousMonthId)
         if (pMonthPerformance) {
             currentMonth.performance = currentMonth.shareValue.minus(
                 pMonthPerformance.shareValue
             )
         } else {
-            currentMonth.performance = currentWeek.shareValue
+            currentMonth.performance = BIGINT_ZERO.toBigDecimal()
         }
         currentMonth.save()
     } else {
         // Updating monthly share value
-        currentMonth.performance = pool.amount
+        currentMonth.shareValue = pool.amount
             .times(BigInt.fromString("1000000000"))
             .divDecimal(pool.shares.toBigDecimal())
+        if (pMonthPerformance) {
+            currentMonth.performance = currentMonth.shareValue.minus(
+                pMonthPerformance.shareValue
+            )
+        } else {
+            currentMonth.performance = BIGINT_ZERO.toBigDecimal()
+        }
         currentMonth.save()
     }
 }
