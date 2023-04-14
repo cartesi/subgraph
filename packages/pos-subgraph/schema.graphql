@@ -37,6 +37,8 @@ type StakingPool @entity {
     totalCommission: BigInt!
     commissionPercentage: BigDecimal
     timestamp: BigInt!
+    monthlyPerformance: [MonthlyPoolPerformance!]! @derivedFrom(field: "pool")
+    weeklyPerformance: [WeeklyPoolPerformance!]! @derivedFrom(field: "pool")
 }
 
 type StakingPoolFee @entity {
