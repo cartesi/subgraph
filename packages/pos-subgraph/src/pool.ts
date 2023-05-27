@@ -10,7 +10,13 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-import { Address, BigInt, Bytes, store } from "@graphprotocol/graph-ts"
+import {
+    Address,
+    BigDecimal,
+    BigInt,
+    Bytes,
+    store,
+} from "@graphprotocol/graph-ts"
 import {
     Block,
     StakingPool,
@@ -337,6 +343,42 @@ export function handleWithdraw(event: Withdraw): void {
     }
 }
 
+function getPreviousWeeklyPerf(
+    weekId: string,
+    shareValue: BigDecimal,
+    event: BlockProduced
+): WeeklyPoolPerformance {
+    let wpp = WeeklyPoolPerformance.load(weekId)
+    if (wpp == null) {
+        wpp = new WeeklyPoolPerformance(weekId)
+        wpp.timestamp = event.block.timestamp.minus(BigInt.fromI32(604800))
+        wpp.performance = BigDecimal.zero()
+        wpp.pool = event.address.toHex()
+        wpp.shareValue = shareValue
+        wpp.save()
+    }
+
+    return wpp
+}
+
+function getPreviousMonthlyPerf(
+    performanceId: string,
+    shareValue: BigDecimal,
+    event: BlockProduced
+): MonthlyPoolPerformance {
+    let mpp = MonthlyPoolPerformance.load(performanceId)
+    if (mpp == null) {
+        mpp = new MonthlyPoolPerformance(performanceId)
+        mpp.timestamp = event.block.timestamp.minus(BigInt.fromI32(2628000))
+        mpp.performance = BigDecimal.zero()
+        mpp.pool = event.address.toHex()
+        mpp.shareValue = shareValue
+        mpp.save()
+    }
+
+    return mpp
+}
+
 export function handleBlockProduced(event: BlockProduced): void {
     // save block commission
     let block = Block.load(event.transaction.hash.toHex())
@@ -358,6 +400,9 @@ export function handleBlockProduced(event: BlockProduced): void {
         totalReward.toBigDecimal()
     )
     pool.commissionPercentage = commissionPercentage
+    let prevShareValue = pool.amount
+        .times(BigInt.fromString("1000000000"))
+        .divDecimal(pool.shares.toBigDecimal())
 
     // increment the pool amount
     let remainingReward = event.params.reward.minus(event.params.commission)
@@ -377,10 +422,13 @@ export function handleBlockProduced(event: BlockProduced): void {
     let week = event.block.timestamp.toI32() / 604800
     let weeklyPoolPerformanceId = pool.id + "-" + week.toString()
 
-    // Check the previous week shareValue, if there is any value reduce the current week shareValue with the previous week share value. If it is null, then set the current week shareValue as performance
     let previousWeek = week - 1
     let previousWeekId = pool.id + "-" + previousWeek.toString()
-    let previousWeekPerformance = WeeklyPoolPerformance.load(previousWeekId)
+    let previousWeekPerformance = getPreviousWeeklyPerf(
+        previousWeekId,
+        prevShareValue,
+        event
+    )
 
     // Collection Address - Week
     let currentWeek = WeeklyPoolPerformance.load(weeklyPoolPerformanceId)
@@ -388,40 +436,27 @@ export function handleBlockProduced(event: BlockProduced): void {
         currentWeek = new WeeklyPoolPerformance(weeklyPoolPerformanceId)
         currentWeek.timestamp = event.block.timestamp
         currentWeek.pool = pool.id
-        currentWeek.shareValue = pool.amount
-            .times(BigInt.fromString("1000000000"))
-            .divDecimal(pool.shares.toBigDecimal())
-        if (previousWeekPerformance) {
-            currentWeek.performance = currentWeek.shareValue.minus(
-                previousWeekPerformance.shareValue
-            )
-        } else {
-            currentWeek.performance = BIGINT_ZERO.toBigDecimal()
-        }
-        currentWeek.save()
-    } else {
-        // Updating weekly share value
-        currentWeek.shareValue = pool.amount
-            .times(BigInt.fromString("1000000000"))
-            .divDecimal(pool.shares.toBigDecimal())
-        if (previousWeekPerformance) {
-            currentWeek.performance = currentWeek.shareValue.minus(
-                previousWeekPerformance.shareValue
-            )
-        } else {
-            currentWeek.performance = BIGINT_ZERO.toBigDecimal()
-        }
-        currentWeek.save()
     }
+
+    currentWeek.shareValue = pool.amount
+        .times(BigInt.fromString("1000000000"))
+        .divDecimal(pool.shares.toBigDecimal())
+    currentWeek.performance = currentWeek.shareValue.minus(
+        previousWeekPerformance.shareValue
+    )
+    currentWeek.save()
 
     // save monthly performance
     let month = event.block.timestamp.toI32() / 2628000
     let monthlyPoolPerformanceId = pool.id + "-" + month.toString()
 
-    // Check the previous week shareValue, if there is any value reduce the current week shareValue with the previous week share value. If it is null, then set the current week shareValue as performance
     let previousMonth = month - 1
     let previousMonthId = pool.id + "-" + previousMonth.toString()
-    let pMonthPerformance = MonthlyPoolPerformance.load(previousMonthId)
+    let pMonthPerformance = getPreviousMonthlyPerf(
+        previousMonthId,
+        prevShareValue,
+        event
+    )
 
     // Collection Address - Month
     let currentMonth = MonthlyPoolPerformance.load(monthlyPoolPerformanceId)
@@ -429,32 +464,15 @@ export function handleBlockProduced(event: BlockProduced): void {
         currentMonth = new MonthlyPoolPerformance(monthlyPoolPerformanceId)
         currentMonth.timestamp = event.block.timestamp
         currentMonth.pool = pool.id
-        currentMonth.shareValue = pool.amount
-            .times(BigInt.fromString("1000000000"))
-            .divDecimal(pool.shares.toBigDecimal())
-
-        if (pMonthPerformance) {
-            currentMonth.performance = currentMonth.shareValue.minus(
-                pMonthPerformance.shareValue
-            )
-        } else {
-            currentMonth.performance = BIGINT_ZERO.toBigDecimal()
-        }
-        currentMonth.save()
-    } else {
-        // Updating monthly share value
-        currentMonth.shareValue = pool.amount
-            .times(BigInt.fromString("1000000000"))
-            .divDecimal(pool.shares.toBigDecimal())
-        if (pMonthPerformance) {
-            currentMonth.performance = currentMonth.shareValue.minus(
-                pMonthPerformance.shareValue
-            )
-        } else {
-            currentMonth.performance = BIGINT_ZERO.toBigDecimal()
-        }
-        currentMonth.save()
     }
+    currentMonth.shareValue = pool.amount
+        .times(BigInt.fromString("1000000000"))
+        .divDecimal(pool.shares.toBigDecimal())
+
+    currentMonth.performance = currentMonth.shareValue.minus(
+        pMonthPerformance.shareValue
+    )
+    currentMonth.save()
 }
 
 export function handlePaused(event: Paused): void {
