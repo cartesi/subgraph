@@ -18,11 +18,22 @@ import {
     test,
     log,
 } from "matchstick-as"
-import { Address, BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts"
+import {
+    Address,
+    BigDecimal,
+    BigInt,
+    Bytes,
+    ethereum,
+} from "@graphprotocol/graph-ts"
 import { Stake, Unstake, Withdraw } from "../generated/StakingImpl/StakingImpl"
-import { StakingPoolFee } from "../generated/schema"
+import {
+    MonthlyPoolPerformance,
+    StakingPoolFee,
+    WeeklyPoolPerformance,
+} from "../generated/schema"
 import { FlatRateChanged } from "../generated/templates/FlatRateCommission/FlatRateCommission"
 import { GasTaxChanged } from "../generated/templates/GasTaxCommission/GasTaxCommission"
+import { BlockProduced as BlockProducedCommision } from "../generated/templates/StakingPoolImpl/StakingPoolImpl"
 import { BlockSelectorContext, StakingPool } from "../generated/schema"
 import { NewChain } from "../generated/PoS/PoS"
 import { NewChain as NewChainV2 } from "../generated/PoSV2FactoryImpl/PoSV2FactoryImpl"
@@ -50,6 +61,48 @@ export const txHash = Bytes.fromHexString(
  */
 export const txTimestamp = 1630000000
 export const ZERO = BigInt.fromI32(0)
+
+/**
+ * Builds a dummy weekly pool performance with all the required fields filled
+ * @param id
+ * @param pool
+ * @param timestamp
+ * @param shareValue
+ * @param performance
+ * @returns
+ */
+export function buildWeeklyPoolPerformance(
+    id: string,
+    pool: Address,
+    timestamp: BigInt = BigInt.fromI32(0)
+): WeeklyPoolPerformance {
+    let weeklyPool = new WeeklyPoolPerformance(id)
+    weeklyPool.timestamp = timestamp
+    weeklyPool.pool = pool.toHex()
+    weeklyPool.shareValue = BigDecimal.zero()
+    weeklyPool.performance = BigDecimal.zero()
+    return weeklyPool
+}
+
+/**
+ * Builds a dummy monthly pool performance with all the required fields filled
+ * @param id
+ * @param pool
+ * @param timestamp
+ * @returns
+ */
+export function buildMonthlyPoolPerformance(
+    id: string,
+    pool: Address,
+    timestamp: BigInt = BigInt.fromI32(0)
+): MonthlyPoolPerformance {
+    let monthlyPool = new MonthlyPoolPerformance(id)
+    monthlyPool.timestamp = timestamp
+    monthlyPool.pool = pool.toHex()
+    monthlyPool.shareValue = BigDecimal.zero()
+    monthlyPool.performance = BigDecimal.zero()
+    return monthlyPool
+}
 
 /**
  * Builds a dummy staking pool with all the required fields filled
@@ -117,6 +170,31 @@ export function createFlatRateChangedEvent(
         )
     )
 
+    return event
+}
+
+export function createBlockProduced(
+    address: Address,
+    newTimestamp: BigInt,
+    amount: BigInt
+): BlockProducedCommision {
+    let event = changetype<BlockProducedCommision>(newMockEvent())
+    event.address = address
+    event.transaction.hash = txHash
+    event.block.timestamp = newTimestamp
+    event.parameters = new Array()
+    event.parameters.push(
+        new ethereum.EventParam(
+            "reward",
+            ethereum.Value.fromUnsignedBigInt(amount)
+        )
+    )
+    event.parameters.push(
+        new ethereum.EventParam(
+            "comission",
+            ethereum.Value.fromUnsignedBigInt(amount)
+        )
+    )
     return event
 }
 
@@ -233,7 +311,9 @@ export function createStakingPoolWithdrawEvent(
 ): WithdrawPool {
     let event = changetype<WithdrawPool>(newMockEvent())
     event.transaction.hash = txHash
+    log.success("Address :", ["Hola"])
     event.block.timestamp = BigInt.fromI32(txTimestamp) // Thursday, August 26, 2021 05:46:40 PM
+    log.info("Address :", [event.block.timestamp.toHex()])
     event.parameters = new Array()
     event.parameters.push(
         new ethereum.EventParam("user", ethereum.Value.fromAddress(user))
