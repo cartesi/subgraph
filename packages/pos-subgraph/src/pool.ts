@@ -55,6 +55,7 @@ import {
     Paused,
     Unpaused,
 } from "../generated/templates/StakingPoolImpl/StakingPoolImpl"
+import { log } from "matchstick-as"
 
 // wasm does not like ts enum definition so old-plain variables will do it.
 export let POOL_ACTIVITY_DEPOSIT = "DEPOSIT"
@@ -224,7 +225,6 @@ export function handleDeposit(event: Deposit): void {
     // save user
     let user = new PoolUser(event.params.user.toHex())
     user.save()
-
     // save new deposit activity
     let activity = new PoolActivity(event.transaction.hash.toHex())
     activity.pool = event.address.toHex()
@@ -343,7 +343,7 @@ export function handleWithdraw(event: Withdraw): void {
     }
 }
 
-function getPreviousWeeklyPerf(
+export function getPreviousWeeklyPerf(
     weekId: string,
     shareValue: BigDecimal,
     event: BlockProduced
@@ -361,7 +361,7 @@ function getPreviousWeeklyPerf(
     return wpp
 }
 
-function getPreviousMonthlyPerf(
+export function getPreviousMonthlyPerf(
     performanceId: string,
     shareValue: BigDecimal,
     event: BlockProduced
@@ -379,6 +379,77 @@ function getPreviousMonthlyPerf(
     return mpp
 }
 
+export function calculateWeeklyPerformance(
+    pool: StakingPool,
+    event: BlockProduced
+): void {
+    let prevShareValue = pool.amount
+        .times(BigInt.fromString("1000000000"))
+        .divDecimal(pool.shares.toBigDecimal())
+    // save weekly performance
+    let week = event.block.timestamp.toI32() / 604800
+    let weeklyPoolPerformanceId = pool.id + "-" + week.toString()
+
+    let previousWeek = week - 1
+    let previousWeekId = pool.id + "-" + previousWeek.toString()
+    let previousWeekPerformance = getPreviousWeeklyPerf(
+        previousWeekId,
+        prevShareValue,
+        event
+    )
+
+    // Collection Address - Week
+    let currentWeek = WeeklyPoolPerformance.load(weeklyPoolPerformanceId)
+    if (!currentWeek) {
+        currentWeek = new WeeklyPoolPerformance(weeklyPoolPerformanceId)
+        currentWeek.timestamp = event.block.timestamp
+        currentWeek.pool = pool.id
+    }
+    currentWeek.shareValue = pool.amount
+        .times(BigInt.fromString("1000000000"))
+        .divDecimal(pool.shares.toBigDecimal())
+    currentWeek.performance = currentWeek.shareValue.minus(
+        previousWeekPerformance.shareValue
+    )
+    currentWeek.save()
+}
+
+export function calculateMonthlyPerformance(
+    pool: StakingPool,
+    event: BlockProduced
+): void {
+    let prevShareValue = pool.amount
+        .times(BigInt.fromString("1000000000"))
+        .divDecimal(pool.shares.toBigDecimal())
+    // save monthly performance
+    let month = event.block.timestamp.toI32() / 2628000
+    let monthlyPoolPerformanceId = pool.id + "-" + month.toString()
+
+    let previousMonth = month - 1
+    let previousMonthId = pool.id + "-" + previousMonth.toString()
+    let pMonthPerformance = getPreviousMonthlyPerf(
+        previousMonthId,
+        prevShareValue,
+        event
+    )
+
+    // Collection Address - Month
+    let currentMonth = MonthlyPoolPerformance.load(monthlyPoolPerformanceId)
+    if (!currentMonth) {
+        currentMonth = new MonthlyPoolPerformance(monthlyPoolPerformanceId)
+        currentMonth.timestamp = event.block.timestamp
+        currentMonth.pool = pool.id
+    }
+    currentMonth.shareValue = pool.amount
+        .times(BigInt.fromString("1000000000"))
+        .divDecimal(pool.shares.toBigDecimal())
+
+    currentMonth.performance = currentMonth.shareValue.minus(
+        pMonthPerformance.shareValue
+    )
+    currentMonth.save()
+}
+
 export function handleBlockProduced(event: BlockProduced): void {
     // save block commission
     let block = Block.load(event.transaction.hash.toHex())
@@ -388,6 +459,7 @@ export function handleBlockProduced(event: BlockProduced): void {
     }
 
     let pool = StakingPool.load(event.address.toHex())!
+
     let user = User.load(event.address.toHex())!
     let totalReward = user.totalReward
 
@@ -419,60 +491,9 @@ export function handleBlockProduced(event: BlockProduced): void {
     shareValue.save()
 
     // save weekly performance
-    let week = event.block.timestamp.toI32() / 604800
-    let weeklyPoolPerformanceId = pool.id + "-" + week.toString()
-
-    let previousWeek = week - 1
-    let previousWeekId = pool.id + "-" + previousWeek.toString()
-    let previousWeekPerformance = getPreviousWeeklyPerf(
-        previousWeekId,
-        prevShareValue,
-        event
-    )
-
-    // Collection Address - Week
-    let currentWeek = WeeklyPoolPerformance.load(weeklyPoolPerformanceId)
-    if (!currentWeek) {
-        currentWeek = new WeeklyPoolPerformance(weeklyPoolPerformanceId)
-        currentWeek.timestamp = event.block.timestamp
-        currentWeek.pool = pool.id
-    }
-
-    currentWeek.shareValue = pool.amount
-        .times(BigInt.fromString("1000000000"))
-        .divDecimal(pool.shares.toBigDecimal())
-    currentWeek.performance = currentWeek.shareValue.minus(
-        previousWeekPerformance.shareValue
-    )
-    currentWeek.save()
-
+    calculateWeeklyPerformance(pool, event)
     // save monthly performance
-    let month = event.block.timestamp.toI32() / 2628000
-    let monthlyPoolPerformanceId = pool.id + "-" + month.toString()
-
-    let previousMonth = month - 1
-    let previousMonthId = pool.id + "-" + previousMonth.toString()
-    let pMonthPerformance = getPreviousMonthlyPerf(
-        previousMonthId,
-        prevShareValue,
-        event
-    )
-
-    // Collection Address - Month
-    let currentMonth = MonthlyPoolPerformance.load(monthlyPoolPerformanceId)
-    if (!currentMonth) {
-        currentMonth = new MonthlyPoolPerformance(monthlyPoolPerformanceId)
-        currentMonth.timestamp = event.block.timestamp
-        currentMonth.pool = pool.id
-    }
-    currentMonth.shareValue = pool.amount
-        .times(BigInt.fromString("1000000000"))
-        .divDecimal(pool.shares.toBigDecimal())
-
-    currentMonth.performance = currentMonth.shareValue.minus(
-        pMonthPerformance.shareValue
-    )
-    currentMonth.save()
+    calculateMonthlyPerformance(pool, event)
 }
 
 export function handlePaused(event: Paused): void {
