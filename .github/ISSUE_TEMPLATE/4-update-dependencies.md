@@ -1,9 +1,9 @@
 ---
 name: ⬆️ Update Dependencies
 about: Template for updating dependencies
-title: ''
+title: ""
 labels: type:chore
-assignees: ''
+assignees: ""
 ---
 
 ## 📄 Context
@@ -15,7 +15,7 @@ Why is that update relevant?
 
 ## 📈 Subtasks
 
--   [ ] Update the package.json to the new fixed version ( i.e. no ^ or ~ )
--   [ ] If an update requires major work, create the corresponding issue.
--   [ ] Make sure dependencies are updated in the lock file (yarn.lock).
--   [ ] Verify whether everything is working as expected.
+- [ ] Update the package.json to the new fixed version ( i.e. no ^ or ~ )
+- [ ] If an update requires major work, create the corresponding issue.
+- [ ] Make sure dependencies are updated in the lock file (yarn.lock).
+- [ ] Verify whether everything is working as expected.
