@@ -64,10 +64,10 @@
     "@cartesi/util" "^5.0.1"
     "@openzeppelin/contracts" "^4.7.1"
 
-"@cartesi/rollups-0.9@npm:@cartesi/rollups@0.9.0-alpha.2":
-  version "0.9.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/@cartesi/rollups/-/rollups-0.9.0-alpha.2.tgz#cb6267a098121f730f693e9fd61dc263de33b483"
-  integrity sha512-ngLeH/xQjkNAuT2DyNQ1UjT4Mbt0/CkyfdO7PiG7nyhPDNzqvslrn5iu+dOrt6EbfnHqOnvZ0UiDxeUTgiiP4w==
+"@cartesi/rollups-0.9@npm:@cartesi/rollups@0.9.0":
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/@cartesi/rollups/-/rollups-0.9.0.tgz#a0344a5d8a75b8c6f7f398739b6072e9395b8f18"
+  integrity sha512-ilmyHTJFyiIHopzJbmaTGRW+oPkbUnxkCZyAsxIAnUOjPzvlXRmukXubfL92lB/JvCqaSkCz8Gm/GXy1kw7AVQ==
   dependencies:
     "@cartesi/util" "^5.0.2"
     "@openzeppelin/contracts" "4.8.0"
