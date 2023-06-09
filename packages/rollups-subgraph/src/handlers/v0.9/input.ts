@@ -12,21 +12,38 @@
 
 import { InputAdded } from "../../../generated/InputBox/InputBox"
 import { DApp, DAppFactory } from "../../../generated/schema"
+import { DAppStatus } from "../DAppStatus"
 import * as dashboard from "../dashboard"
 
 export function handleInputAdded(event: InputAdded): void {
-    const dapp = DApp.load(event.params.dapp.toHex())!
+    let dapp = DApp.load(event.params.dapp.toHex())
 
-    dapp.inputCount++
-    dapp.activityTimestamp = event.block.timestamp
+    if (!dapp) {
+        dapp = new DApp(event.params.dapp.toHex())
+        dapp.inputDuration = 0
+        dapp.challengePeriod = 0
+        dapp.deploymentTimestamp = event.block.timestamp
+        dapp.activityTimestamp = event.block.timestamp
+        dapp.inputCount = 1
+        dapp.currentEpoch = 0
+        dapp.status = DAppStatus.CREATED_BY_INPUT_EVT
+        // just a placeholder for that situation where the input
+        // is for a DApp that does not exist yet.
+        dapp.factory = "virtual_factory"
+    } else {
+        dapp.inputCount++
+        dapp.activityTimestamp = event.block.timestamp
+    }
+
     dapp.save()
 
-    const factory = DAppFactory.load(dapp.factory)!
-    factory.inputCount++
-    factory.save()
-
-    // load dashboard and increment total number of inputs
-    const d = dashboard.loadOrCreate()
-    d.inputCount++
-    d.save()
+    if (dapp.status == DAppStatus.CREATED_BY_FACTORY) {
+        let factory = DAppFactory.load(dapp.factory)!
+        factory.inputCount++
+        factory.save()
+        // load dashboard and increment total number of inputs
+        const d = dashboard.loadOrCreate()
+        d.inputCount++
+        d.save()
+    }
 }

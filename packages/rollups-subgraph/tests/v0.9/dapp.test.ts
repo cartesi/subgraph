@@ -13,11 +13,15 @@
 import { BigInt } from "@graphprotocol/graph-ts"
 import { assert, beforeEach, describe, test, clearStore } from "matchstick-as"
 import { handleApplicationCreated } from "../../src/handlers/v0.9/dapp"
+import { handleInputAdded } from "../../src/handlers/v0.9/input"
 import { nextDappAddress, nextFactoryAddress, txTimestamp } from "../utils"
-import { createApplicationCreatedEvent } from "./utils"
+import { createApplicationCreatedEvent, createInputAddedEvent } from "./utils"
+import { DAppStatus } from "../../src/handlers/DAppStatus"
 
 const DAPP_E = "DApp"
 const FACTORY_E = "DAppFactory"
+const DASH_E = "Dashboard"
+const DASH_ID = "1"
 
 describe("Dapp v0.9", () => {
     beforeEach(() => {
@@ -91,6 +95,79 @@ describe("Dapp v0.9", () => {
                 "dappCount",
                 "3"
             )
+        })
+
+        test("it should have the correct status when creating a new DApp", () => {
+            let timestamp = BigInt.fromI32(txTimestamp)
+            let d1 = nextDappAddress()
+            let factory = nextFactoryAddress()
+
+            handleApplicationCreated(
+                createApplicationCreatedEvent(timestamp, factory, d1)
+            )
+
+            const DASH = "Dashboard"
+            const DASH_ID = "1"
+
+            assert.fieldEquals(DASH, DASH_ID, "factoryCount", "1")
+            assert.fieldEquals(DASH, DASH_ID, "dappCount", "1")
+
+            assert.fieldEquals(
+                DAPP_E,
+                d1.toHexString(),
+                "status",
+                DAppStatus.CREATED_BY_FACTORY
+            )
+        })
+
+        test("it should update DApp status, factory and overall counters when a posterior creation happens", () => {
+            let dapp = nextDappAddress()
+            let timestamp = BigInt.fromI32(txTimestamp)
+
+            // InputAdded for a DApp that does not exist yet.
+            handleInputAdded(createInputAddedEvent(timestamp, dapp))
+
+            assert.fieldEquals(
+                DAPP_E,
+                dapp.toHex(),
+                "status",
+                DAppStatus.CREATED_BY_INPUT_EVT
+            )
+
+            assert.fieldEquals(
+                DAPP_E,
+                dapp.toHex(),
+                "factory",
+                "virtual_factory"
+            )
+
+            assert.fieldEquals(DAPP_E, dapp.toHex(), "inputCount", "1")
+
+            let factory = nextFactoryAddress()
+
+            // Then the creation event is handled
+            handleApplicationCreated(
+                createApplicationCreatedEvent(
+                    BigInt.fromI32(txTimestamp + 21600),
+                    factory,
+                    dapp
+                )
+            )
+
+            assert.fieldEquals(
+                DAPP_E,
+                dapp.toHex(),
+                "status",
+                DAppStatus.CREATED_BY_FACTORY
+            )
+
+            assert.fieldEquals(DAPP_E, dapp.toHex(), "factory", factory.toHex())
+
+            assert.fieldEquals(FACTORY_E, factory.toHex(), "inputCount", "1")
+            assert.fieldEquals(FACTORY_E, factory.toHex(), "dappCount", "1")
+
+            assert.fieldEquals(DASH_E, DASH_ID, "inputCount", "1")
+            assert.fieldEquals(DASH_E, DASH_ID, "dappCount", "1")
         })
     })
 })
