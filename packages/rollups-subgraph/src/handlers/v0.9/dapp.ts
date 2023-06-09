@@ -12,6 +12,7 @@
 
 import { ApplicationCreated } from "../../../generated/CartesiDAppFactory-0.9/CartesiDAppFactory"
 import { DApp, DAppFactory } from "../../../generated/schema"
+import { DAppStatus } from "../DAppStatus"
 import * as dashboard from "../dashboard"
 
 const ZERO_NINE = "0.9"
@@ -29,22 +30,39 @@ export function handleApplicationCreated(event: ApplicationCreated): void {
 
     // increase overall number of dapps created
     d.dappCount++
-    d.save()
 
     factory.dappCount++
-    factory.save()
 
-    // Create and save a new Dapp
-    let applicationAddress = event.params.application.toHex()
-    const dapp = new DApp(applicationAddress)
-    dapp.inputDuration = 0
-    dapp.challengePeriod = 0
-    dapp.deploymentTimestamp = event.block.timestamp
-    dapp.activityTimestamp = event.block.timestamp
-    dapp.inputCount = 0
-    dapp.currentEpoch = 0
-    dapp.factory = event.address.toHex()
+    let dapp = loadOrCreateDApp(event)
+
+    if (dapp.status == DAppStatus.CREATED_BY_INPUT_EVT) {
+        dapp.factory = event.address.toHex()
+        dapp.status = DAppStatus.CREATED_BY_FACTORY
+        d.inputCount = d.inputCount + dapp.inputCount
+        factory.inputCount = factory.inputCount + dapp.inputCount
+    }
+
+    d.save()
+    factory.save()
     dapp.save()
+}
+
+function loadOrCreateDApp(evt: ApplicationCreated): DApp {
+    const id = evt.params.application.toHex()
+    let dapp = DApp.load(id)
+    if (!dapp) {
+        dapp = new DApp(id)
+        dapp.inputDuration = 0
+        dapp.challengePeriod = 0
+        dapp.deploymentTimestamp = evt.block.timestamp
+        dapp.activityTimestamp = evt.block.timestamp
+        dapp.inputCount = 0
+        dapp.currentEpoch = 0
+        dapp.factory = evt.address.toHex()
+        dapp.status = DAppStatus.CREATED_BY_FACTORY
+    }
+
+    return dapp
 }
 
 function loadOrCreateDAppFactory(

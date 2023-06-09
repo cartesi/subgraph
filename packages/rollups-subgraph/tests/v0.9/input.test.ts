@@ -26,6 +26,7 @@ import {
     createInputAddedEvent as createClassicInputAddedEvent,
 } from "../utils"
 import { createApplicationCreatedEvent, createInputAddedEvent } from "./utils"
+import { DAppStatus } from "../../src/handlers/DAppStatus"
 
 const timestamp = BigInt.fromI32(txTimestamp + 21600) // Thursday, August 26, 2021 11:46:40 PM
 const FACTORY_E = "DAppFactory"
@@ -139,6 +140,39 @@ describe("Input v0.9", () => {
             assert.fieldEquals(FACTORY_E, f3.toHexString(), "inputCount", "4")
 
             assert.fieldEquals(DASH_E, "1", "inputCount", "11")
+        })
+
+        describe("input-added for non-existing DApps", () => {
+            test("it should create the DApp and not increase any counts for dashboard nor factories", () => {
+                let dapp1 = nextDappAddress()
+                let factory = nextFactoryAddress()
+
+                // creating one just to bootstrap things.
+                handleApplicationCreated(
+                    createApplicationCreatedEvent(timestamp, factory, dapp1)
+                )
+
+                assert.fieldEquals(DASH_E, "1", "inputCount", "0")
+                assert.fieldEquals(DASH_E, "1", "dappCount", "1")
+
+                let dapp2 = nextDappAddress()
+
+                // Targeting non-existing DApp address
+                handleInputAdded(createInputAddedEvent(timestamp, dapp2))
+                handleInputAdded(createInputAddedEvent(timestamp, dapp2))
+
+                assert.fieldEquals(
+                    DAPP_E,
+                    dapp2.toHex(),
+                    "status",
+                    DAppStatus.CREATED_BY_INPUT_EVT
+                )
+
+                assert.fieldEquals(DAPP_E, dapp2.toHex(), "inputCount", "2")
+
+                assert.fieldEquals(DASH_E, "1", "dappCount", "1")
+                assert.fieldEquals(DASH_E, "1", "inputCount", "0")
+            })
         })
     })
 })
