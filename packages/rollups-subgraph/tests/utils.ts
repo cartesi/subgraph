@@ -59,7 +59,8 @@ export function createInputAddedEvent(
     dappAddress: Address
 ): InputAdded {
     let event = changetype<InputAdded>(newMockEvent)
-    ;(event.transaction.hash = txHash), (event.block.timestamp = timestamp)
+    event.transaction.hash = txHash
+    event.block.timestamp = timestamp
     event.address = dappAddress
 
     return event
