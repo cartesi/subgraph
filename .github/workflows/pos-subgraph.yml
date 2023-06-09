@@ -13,5 +13,4 @@ jobs:
             PACKAGE_NAME: cartesi-subgraph
             PACKAGE_DIR: ./packages/pos-subgraph
         secrets:
-            NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
             PROJECT_ID: ${{ secrets.PROJECT_ID }}
