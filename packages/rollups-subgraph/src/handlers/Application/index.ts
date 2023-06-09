@@ -15,6 +15,7 @@ import { DApp, DAppFactory } from "../../../generated/schema"
 import { Address } from "@graphprotocol/graph-ts"
 import * as dashboard from "../dashboard"
 import { Application } from "./definitions"
+import { DAppStatus } from "../DAppStatus"
 
 export function create(app: Application): void {
     let factory = loadOrCreateDAppFactory(
@@ -46,6 +47,7 @@ export function create(app: Application): void {
     dapp.inputCount = app.inputCount
     dapp.currentEpoch = app.currentEpoch
     dapp.factory = app.factoryAddress
+    dapp.status = DAppStatus.CREATED_BY_FACTORY
     dapp.save()
 
     // Create the CartesiDAppInput and CartesiDAppRollups templates
