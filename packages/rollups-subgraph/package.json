@@ -27,9 +27,7 @@
         "test": "graph test"
     },
     "dependencies": {
-        "@cartesi/rollups": "^0.6.0",
-        "@cartesi/rollups-0.8": "npm:@cartesi/rollups@0.8.2",
-        "@cartesi/rollups-0.9": "npm:@cartesi/rollups@0.9.0",
+        "@cartesi/rollups": "^0.9.0",
         "@graphprotocol/graph-cli": "^0.34.0",
         "@graphprotocol/graph-ts": "^0.28.0"
     },

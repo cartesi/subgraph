@@ -14,17 +14,7 @@ import { BigInt } from "@graphprotocol/graph-ts"
 import { assert, beforeEach, describe, test, clearStore } from "matchstick-as"
 import { handleInputAdded } from "../../src/handlers/v0.9/input"
 import { handleApplicationCreated } from "../../src/handlers/v0.9/dapp"
-import { handleApplicationCreated as handleApplicationCreated6 } from "../../src/handlers/v0.6/dapp"
-import { handleApplicationCreated as handleApplicationCreated8 } from "../../src/handlers/v0.8/dapp"
-import { handleInput } from "../../src/handlers/input"
-import {
-    createApplicationCreatedEventV06,
-    createApplicationCreatedEventV08,
-    nextDappAddress,
-    nextFactoryAddress,
-    txTimestamp,
-    createInputAddedEvent as createClassicInputAddedEvent,
-} from "../utils"
+import { nextDappAddress, nextFactoryAddress, txTimestamp } from "../utils"
 import { createApplicationCreatedEvent, createInputAddedEvent } from "./utils"
 import { DAppStatus } from "../../src/handlers/DAppStatus"
 
@@ -89,35 +79,32 @@ describe("Input v0.9", () => {
             let f3 = nextFactoryAddress()
             let d4 = nextDappAddress()
 
-            handleApplicationCreated6(
-                createApplicationCreatedEventV06(timestamp, factory, dapp)
+            handleApplicationCreated(
+                createApplicationCreatedEvent(timestamp, factoryTwo, dapp)
             )
 
-            handleApplicationCreated8(
-                createApplicationCreatedEventV08(timestamp, factoryTwo, dappTwo)
+            handleApplicationCreated(
+                createApplicationCreatedEvent(timestamp, factory, dappTwo)
             )
 
-            handleApplicationCreated8(
-                createApplicationCreatedEventV08(
-                    timestamp,
-                    factoryTwo,
-                    dappThree
-                )
+            handleApplicationCreated(
+                createApplicationCreatedEvent(timestamp, factory, dappThree)
             )
 
             handleApplicationCreated(
                 createApplicationCreatedEvent(timestamp, f3, d4)
             )
 
-            // when a few classic v0.6 ~ v0.8 InputAdded goes through
-            handleInput(createClassicInputAddedEvent(timestamp, dapp))
-            handleInput(createClassicInputAddedEvent(timestamp, dapp))
-            handleInput(createClassicInputAddedEvent(timestamp, dappTwo))
-            handleInput(createClassicInputAddedEvent(timestamp, dappTwo))
-            handleInput(createClassicInputAddedEvent(timestamp, dappTwo))
-            handleInput(createClassicInputAddedEvent(timestamp, dappTwo))
-            handleInput(createClassicInputAddedEvent(timestamp, dappThree))
-            // v0.9 input handler
+            //f1 dapp input handler
+            handleInputAdded(createInputAddedEvent(timestamp, dappTwo))
+            handleInputAdded(createInputAddedEvent(timestamp, dappThree))
+            //f2 dapp input handler
+            handleInputAdded(createInputAddedEvent(timestamp, dapp))
+            handleInputAdded(createInputAddedEvent(timestamp, dapp))
+            handleInputAdded(createInputAddedEvent(timestamp, dapp))
+            handleInputAdded(createInputAddedEvent(timestamp, dapp))
+            handleInputAdded(createInputAddedEvent(timestamp, dapp))
+            //f3 dapp input handler
             handleInputAdded(createInputAddedEvent(timestamp, d4))
             handleInputAdded(createInputAddedEvent(timestamp, d4))
             handleInputAdded(createInputAddedEvent(timestamp, d4))

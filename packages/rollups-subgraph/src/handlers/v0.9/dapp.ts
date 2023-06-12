@@ -10,7 +10,7 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-import { ApplicationCreated } from "../../../generated/CartesiDAppFactory-0.9/CartesiDAppFactory"
+import { ApplicationCreated } from "../../../generated/CartesiDAppFactory/CartesiDAppFactory"
 import { DApp, DAppFactory } from "../../../generated/schema"
 import { DAppStatus } from "../DAppStatus"
 import * as dashboard from "../dashboard"
