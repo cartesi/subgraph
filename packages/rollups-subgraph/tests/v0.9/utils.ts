@@ -13,7 +13,7 @@
 import { Address, BigInt, Bytes, ethereum } from "@graphprotocol/graph-ts"
 import { newMockEvent } from "matchstick-as"
 import { InputAdded } from "../../generated/InputBox/InputBox"
-import { ApplicationCreated } from "../../generated/CartesiDAppFactory-0.9/CartesiDAppFactory"
+import { ApplicationCreated } from "../../generated/CartesiDAppFactory/CartesiDAppFactory"
 import { dummyAddress, txHash, ZERO } from "../utils"
 
 export function createInputAddedEvent(

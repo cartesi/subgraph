@@ -13,17 +13,13 @@
 import { BigInt } from "@graphprotocol/graph-ts"
 import { describe, test, assert, clearStore, beforeEach } from "matchstick-as"
 import { DApp, DAppFactory } from "../generated/schema"
-import { handleInput } from "../src/handlers/input"
-import { handleApplicationCreated } from "../src/handlers/v0.6/dapp"
-import { handleApplicationCreated as handleApplicationCreated8 } from "../src/handlers/v0.8/dapp"
+import { nextDappAddress, nextFactoryAddress, txTimestamp } from "./utils"
 import {
-    createApplicationCreatedEventV06,
-    createApplicationCreatedEventV08,
+    createApplicationCreatedEvent,
     createInputAddedEvent,
-    nextDappAddress,
-    nextFactoryAddress,
-    txTimestamp,
-} from "./utils"
+} from "./v0.9/utils"
+import { handleApplicationCreated } from "../src/handlers/v0.9/dapp"
+import { handleInputAdded } from "../src/handlers/v0.9/input"
 
 const DASH_E = "Dashboard"
 const DASH_ID = "1"
@@ -42,10 +38,10 @@ describe("Dashboard", () => {
             const factoryTwo = nextFactoryAddress()
 
             handleApplicationCreated(
-                createApplicationCreatedEventV06(timestamp, factoryOne, dappOne)
+                createApplicationCreatedEvent(timestamp, factoryOne, dappOne)
             )
-            handleApplicationCreated8(
-                createApplicationCreatedEventV08(timestamp, factoryTwo, dappTwo)
+            handleApplicationCreated(
+                createApplicationCreatedEvent(timestamp, factoryTwo, dappTwo)
             )
 
             assert.fieldEquals(DASH_E, DASH_ID, "factoryCount", "2")
@@ -68,16 +64,16 @@ describe("Dashboard", () => {
             const factoryTwo = nextFactoryAddress()
 
             handleApplicationCreated(
-                createApplicationCreatedEventV06(timestamp, factory, dapp)
+                createApplicationCreatedEvent(timestamp, factory, dapp)
             )
 
-            handleApplicationCreated8(
-                createApplicationCreatedEventV08(timestamp, factoryTwo, dappTwo)
+            handleApplicationCreated(
+                createApplicationCreatedEvent(timestamp, factoryTwo, dappTwo)
             )
 
-            handleInput(createInputAddedEvent(timestamp, dapp))
-            handleInput(createInputAddedEvent(timestamp, dapp))
-            handleInput(createInputAddedEvent(timestamp, dappTwo))
+            handleInputAdded(createInputAddedEvent(timestamp, dapp))
+            handleInputAdded(createInputAddedEvent(timestamp, dapp))
+            handleInputAdded(createInputAddedEvent(timestamp, dappTwo))
 
             assert.fieldEquals(DASH_E, DASH_ID, "inputCount", "3")
         })
