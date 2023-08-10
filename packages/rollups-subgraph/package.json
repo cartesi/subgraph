@@ -2,8 +2,6 @@
     "name": "@cartesi/subgraph-rollups",
     "version": "0.1.0",
     "description": "Cartesi Rollups Subgraph",
-    "main": "index.js",
-    "author": "Danilo Tuler <danilo.tuler@cartesi.io>",
     "license": "Apache-2.0",
     "scripts": {
         "codegen": "graph codegen",
