@@ -15,17 +15,17 @@
         "deploy:mainnet": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ cartesi/rollups",
         "deploy:mainnet-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 cartesi/rollups subgraph.yaml",
         "deploy:mainnet-staging": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ cartesi/rollups-staging",
-        "deploy:goerli": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ cartesi/rollups-goerli subgraph.goerli.yaml",
-        "deploy:goerli-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 cartesi/rollups subgraph.goerli.yaml",
+        "deploy:sepolia": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ cartesi/rollups-sepolia subgraph.sepolia.yaml",
+        "deploy:sepolia-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 cartesi/rollups subgraph.sepolia.yaml",
         "prepare:arbitrum-goerli": "hardhat --network arbitrum-goerli subgraph --input-file subgraph.template.yaml --output-file subgraph.arbitrum-goerli.yaml",
         "prepare:localhost": "hardhat --network localhost subgraph --input-file subgraph.template.yaml --output-file subgraph.localhost.yaml",
-        "prepare:goerli": "hardhat --network goerli subgraph --input-file subgraph.template.yaml --output-file subgraph.goerli.yaml",
+        "prepare:sepolia": "hardhat --network sepolia subgraph --input-file subgraph.template.yaml --output-file subgraph.sepolia.yaml",
         "prepare:mainnet": "hardhat --network mainnet subgraph",
         "prettier": "prettier --check **/*.ts",
         "test": "graph test"
     },
     "dependencies": {
-        "@cartesi/rollups": "^0.9.1",
+        "@cartesi/rollups": "^1.0.0",
         "@graphprotocol/graph-cli": "0.56.0",
         "@graphprotocol/graph-ts": "0.31.0"
     },
