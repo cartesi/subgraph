@@ -11,8 +11,8 @@
         "remove:mainnet-local": "graph remove --node http://localhost:8020/ cartesi/eth-blocks-mainnet"
     },
     "dependencies": {
-        "@graphprotocol/graph-cli": "^0.25.3",
-        "@graphprotocol/graph-ts": "^0.24.1"
+        "@graphprotocol/graph-cli": "0.56.0",
+        "@graphprotocol/graph-ts": "0.31.0"
     },
     "devDependencies": {
         "@types/node": "^18.11.9",
