@@ -12,8 +12,8 @@
 
 import { BigInt } from "@graphprotocol/graph-ts"
 import { assert, beforeEach, describe, test, clearStore } from "matchstick-as"
-import { handleApplicationCreated } from "../../src/handlers/v0.9/dapp"
-import { handleInputAdded } from "../../src/handlers/v0.9/input"
+import { handleApplicationCreated } from "../../src/handlers/dapp"
+import { handleInputAdded } from "../../src/handlers/input"
 import { nextDappAddress, nextFactoryAddress, txTimestamp } from "../utils"
 import { createApplicationCreatedEvent, createInputAddedEvent } from "./utils"
 import { DAppStatus } from "../../src/handlers/DAppStatus"
@@ -23,7 +23,7 @@ const FACTORY_E = "DAppFactory"
 const DASH_E = "Dashboard"
 const DASH_ID = "1"
 
-describe("Dapp v0.9", () => {
+describe("Dapp v1.0", () => {
     beforeEach(() => {
         clearStore()
     })
@@ -41,7 +41,7 @@ describe("Dapp v0.9", () => {
             const factoryId = factory.toHexString()
             const dappId = dapp.toHexString()
 
-            assert.fieldEquals(FACTORY_E, factoryId, "version", "0.9")
+            assert.fieldEquals(FACTORY_E, factoryId, "version", "1.0")
 
             assert.fieldEquals(FACTORY_E, factoryId, "dappCount", "1")
 

@@ -10,15 +10,15 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-import { ApplicationCreated } from "../../../generated/CartesiDAppFactory/CartesiDAppFactory"
-import { DApp, DAppFactory } from "../../../generated/schema"
-import { DAppStatus } from "../DAppStatus"
-import * as dashboard from "../dashboard"
+import { ApplicationCreated } from "../../generated/CartesiDAppFactory/CartesiDAppFactory"
+import { DApp, DAppFactory } from "../../generated/schema"
+import { DAppStatus } from "./DAppStatus"
+import * as dashboard from "./dashboard"
 
-const ZERO_NINE = "0.9"
+const VERSION = "1.0"
 
 export function handleApplicationCreated(event: ApplicationCreated): void {
-    let factory = loadOrCreateDAppFactory(event.address.toHex(), ZERO_NINE)
+    let factory = loadOrCreateDAppFactory(event.address.toHex(), VERSION)
 
     let d = dashboard.loadOrCreate()
 

@@ -10,10 +10,10 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-import { InputAdded } from "../../../generated/InputBox/InputBox"
-import { DApp, DAppFactory } from "../../../generated/schema"
-import { DAppStatus } from "../DAppStatus"
-import * as dashboard from "../dashboard"
+import { InputAdded } from "../../generated/InputBox/InputBox"
+import { DApp, DAppFactory } from "../../generated/schema"
+import { DAppStatus } from "./DAppStatus"
+import * as dashboard from "./dashboard"
 
 export function handleInputAdded(event: InputAdded): void {
     let dapp = DApp.load(event.params.dapp.toHex())
