@@ -15,11 +15,14 @@ jobs:
     build:
         runs-on: ubuntu-20.04
         steps:
-            - uses: actions/checkout@v2
-            - uses: actions/setup-node@v3
+            - name: Checkout Code
+              uses: actions/checkout@v3
+            - name: Setup Node.js environment
+              uses: actions/setup-node@v3
               with:
                   node-version: "18"
-            - run: yarn install
+                  cache: "yarn"
+            - run: yarn install --frozen-lockfile
             - name: Code format check
               run: yarn prettier
             - run: yarn workspace ${{ inputs.PACKAGE_NAME }} prepare:goerli
