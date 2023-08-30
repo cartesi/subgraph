@@ -50,7 +50,7 @@ const config: HardhatUserConfig = {
             accounts: mnemonic ? { mnemonic } : undefined,
         },
         mainnet: infuraNetwork("mainnet", 1, 6283185),
-        goerli: infuraNetwork("goerli", 5, 6283185),
+        sepolia: infuraNetwork("sepolia", 11155111, 6283185),
         "arbitrum-goerli": infuraNetwork("arbitrum-goerli", 421613, 6283185),
     },
     solidity: {
@@ -83,8 +83,8 @@ const config: HardhatUserConfig = {
             mainnet: [
                 resolveModulePath("@cartesi/rollups", "deployments/mainnet"),
             ],
-            goerli: [
-                resolveModulePath("@cartesi/rollups", "deployments/goerli"),
+            sepolia: [
+                resolveModulePath("@cartesi/rollups", "deployments/sepolia"),
             ],
             "arbitrum-goerli": [
                 resolveModulePath(
