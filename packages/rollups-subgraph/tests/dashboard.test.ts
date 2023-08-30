@@ -17,9 +17,9 @@ import { nextDappAddress, nextFactoryAddress, txTimestamp } from "./utils"
 import {
     createApplicationCreatedEvent,
     createInputAddedEvent,
-} from "./v0.9/utils"
-import { handleApplicationCreated } from "../src/handlers/v0.9/dapp"
-import { handleInputAdded } from "../src/handlers/v0.9/input"
+} from "./v1.0/utils"
+import { handleApplicationCreated } from "../src/handlers/dapp"
+import { handleInputAdded } from "../src/handlers/input"
 
 const DASH_E = "Dashboard"
 const DASH_ID = "1"

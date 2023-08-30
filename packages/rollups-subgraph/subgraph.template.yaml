@@ -21,11 +21,11 @@ dataSources:
               - Dashboard
           abis:
               - name: CartesiDAppFactory
-                file: abi/v0.9
+                file: abi
           eventHandlers:
               - event: "ApplicationCreated(indexed address,address,bytes32,address)"
                 handler: handleApplicationCreated
-          file: ./src/handlers/v0.9/dapp.ts
+          file: ./src/handlers/dapp.ts
     - kind: ethereum/contract
       name: InputBox
       network:
@@ -41,8 +41,8 @@ dataSources:
               - DApp
           abis:
               - name: InputBox
-                file: abi/v0.9
+                file: abi
           eventHandlers:
               - event: "InputAdded(indexed address,indexed uint256,address,bytes)"
                 handler: handleInputAdded
-          file: ./src/handlers/v0.9/input.ts
+          file: ./src/handlers/input.ts
