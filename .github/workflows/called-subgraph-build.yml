@@ -8,6 +8,10 @@ on:
             PACKAGE_DIR:
                 required: true
                 type: string
+            NETWORK:
+                required: false
+                type: "string"
+                default: "goerli"
         secrets:
             PROJECT_ID:
                 required: true
@@ -25,10 +29,10 @@ jobs:
             - run: yarn install --frozen-lockfile
             - name: Code format check
               run: yarn prettier
-            - run: yarn workspace ${{ inputs.PACKAGE_NAME }} prepare:goerli
+            - run: yarn workspace ${{ inputs.PACKAGE_NAME }} prepare:${{inputs.NETWORK}}
               env:
                   PROJECT_ID: ${{ secrets.PROJECT_ID }}
-            - run: mv ./${{ inputs.PACKAGE_DIR }}/subgraph.goerli.yaml ./${{ inputs.PACKAGE_DIR }}/subgraph.yaml
+            - run: mv ./${{ inputs.PACKAGE_DIR }}/subgraph.${{inputs.NETWORK}}.yaml ./${{ inputs.PACKAGE_DIR }}/subgraph.yaml
             - run: yarn workspace ${{ inputs.PACKAGE_NAME }} codegen
             - run: yarn workspace ${{ inputs.PACKAGE_NAME }} build
             - run: yarn workspace ${{ inputs.PACKAGE_NAME }} test
