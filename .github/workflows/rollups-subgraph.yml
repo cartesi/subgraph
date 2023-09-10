@@ -13,5 +13,6 @@ jobs:
         with:
             PACKAGE_NAME: "@cartesi/subgraph-rollups"
             PACKAGE_DIR: ./packages/rollups-subgraph
+            NETWORK: "sepolia"
         secrets:
             PROJECT_ID: ${{ secrets.PROJECT_ID }}
