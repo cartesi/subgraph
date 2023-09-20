@@ -35,7 +35,6 @@ import { PoSV2Impl } from "../generated/templates/PoSV2Impl/PoSV2Impl"
 import { StakingPoolImpl } from "../generated/templates/StakingPoolImpl/StakingPoolImpl"
 import {
     FlatRateCommission as flateRateTemplate,
-    GasTaxCommission as gasTaxTemplate,
     StakingPoolImpl as poolTemplate,
 } from "../generated/templates"
 import {
@@ -46,7 +45,6 @@ import {
 } from "../generated/templates/StakingPoolImpl/StakingPoolImpl"
 import {
     NewFlatRateCommissionStakingPool,
-    NewGasTaxCommissionStakingPool,
 } from "../generated/StakingPoolFactoryImpl/StakingPoolFactoryImpl"
 import * as user from "./user"
 import * as summary from "./summary"
@@ -94,34 +92,6 @@ export function handleNewFlatRateStakingPool(
     // create templates
     poolTemplate.create(event.params.pool)
     flateRateTemplate.create(event.params.fee)
-}
-
-export function handleNewGasTaxStakingPool(
-    event: NewGasTaxCommissionStakingPool
-): void {
-    // create pool
-    let pool = createPool(
-        event.params.pool,
-        event.transaction.from,
-        event.block.timestamp
-    )
-    pool.fee = event.params.fee.toHex()
-    pool.save()
-
-    // create fee
-    let fee = new StakingPoolFee(event.params.fee.toHex())
-    fee.created = event.block.timestamp
-    fee.lastUpdated = event.block.timestamp
-    fee.pool = event.params.pool.toHex()
-    fee.save()
-
-    let s = summary.loadOrCreate()
-    s.totalPools++
-    s.save()
-
-    // create templates
-    poolTemplate.create(event.params.pool)
-    gasTaxTemplate.create(event.params.fee)
 }
 
 function loadOrCreateBalance(pool: Address, user: Address): PoolBalance {
