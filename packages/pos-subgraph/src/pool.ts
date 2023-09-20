@@ -43,9 +43,7 @@ import {
     Unstake,
     Withdraw,
 } from "../generated/templates/StakingPoolImpl/StakingPoolImpl"
-import {
-    NewFlatRateCommissionStakingPool,
-} from "../generated/StakingPoolFactoryImpl/StakingPoolFactoryImpl"
+import { NewFlatRateCommissionStakingPool } from "../generated/StakingPoolFactoryImpl/StakingPoolFactoryImpl"
 import * as user from "./user"
 import * as summary from "./summary"
 import {
