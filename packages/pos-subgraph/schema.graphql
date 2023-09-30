@@ -51,7 +51,6 @@ type StakingPoolFee @entity {
 }
 
 enum StakingPoolFeeType {
-    GAS_TAX_COMMISSION
     FLAT_RATE_COMMISSION
 }
 
