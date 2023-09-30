@@ -15,10 +15,9 @@ import { Address, BigInt } from "@graphprotocol/graph-ts"
 import {
     buildStakingPoolFee,
     createFlatRateChangedEvent,
-    createGasTaxChangedEvent,
     txTimestamp,
 } from "../utils"
-import { handleFlatRateChanged, handleGasTaxChanged } from "../../src/fee"
+import { handleFlatRateChanged } from "../../src/fee"
 
 let STAKING_POOL_FEE = "StakingPoolFee"
 
@@ -104,38 +103,5 @@ test("When handling flat-rate-changed event the updated staking-pool-fee should 
         address.toHex(),
         "created",
         timestamp.toString()
-    )
-})
-
-test("Should cap the gas-tax to the max_value of i32", () => {
-    const address = Address.fromString(
-        "0x0000000000000000000000000000000000000000"
-    )
-    const pool = Address.fromString(
-        "0x0000000000000000000000000000000000000001"
-    )
-    const timestamp = BigInt.fromI32(txTimestamp)
-    const fee = buildStakingPoolFee(address, pool, timestamp)
-    fee.gas = 500000
-    fee.save()
-
-    //Max value for i32 is 2147483647, so lets make it 3B
-    const newGas = BigInt.fromString("3147483647")
-    const newTimestamp = BigInt.fromI32(txTimestamp + 40000)
-    const event = createGasTaxChangedEvent(address, newGas, newTimestamp)
-
-    handleGasTaxChanged(event)
-
-    assert.fieldEquals(
-        STAKING_POOL_FEE,
-        address.toHex(),
-        "gas",
-        i32.MAX_VALUE.toString()
-    )
-    assert.fieldEquals(
-        STAKING_POOL_FEE,
-        address.toHex(),
-        "lastUpdated",
-        newTimestamp.toString()
     )
 })
