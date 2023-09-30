@@ -32,7 +32,6 @@ import {
     WeeklyPoolPerformance,
 } from "../generated/schema"
 import { FlatRateChanged } from "../generated/templates/FlatRateCommission/FlatRateCommission"
-import { GasTaxChanged } from "../generated/templates/GasTaxCommission/GasTaxCommission"
 import { BlockProduced as BlockProducedCommision } from "../generated/templates/StakingPoolImpl/StakingPoolImpl"
 import { BlockSelectorContext, StakingPool } from "../generated/schema"
 import { NewChain } from "../generated/PoS/PoS"
@@ -196,25 +195,6 @@ export function createBlockProduced(
         )
     )
     return event
-}
-
-export function createGasTaxChangedEvent(
-    address: Address,
-    newGas: BigInt,
-    newTimestamp: BigInt
-): GasTaxChanged {
-    let evt = changetype<GasTaxChanged>(newMockEvent())
-    evt.transaction.hash = txHash
-    evt.block.timestamp = newTimestamp
-    evt.address = address
-    evt.parameters = new Array()
-    evt.parameters.push(
-        new ethereum.EventParam(
-            "newGas",
-            ethereum.Value.fromUnsignedBigInt(newGas)
-        )
-    )
-    return evt
 }
 
 export function createStakingPoolDepositEvent(
