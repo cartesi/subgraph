@@ -12,7 +12,6 @@
 
 import { StakingPoolFee } from "../generated/schema"
 import { FlatRateChanged } from "../generated/templates/FlatRateCommission/FlatRateCommission"
-import { GasTaxChanged } from "../generated/templates/GasTaxCommission/GasTaxCommission"
 import { StakingPoolFeeHistoryStore } from "./StakingPoolFeeHistory"
 
 export function handleFlatRateChanged(event: FlatRateChanged): void {
@@ -21,15 +20,6 @@ export function handleFlatRateChanged(event: FlatRateChanged): void {
     StakingPoolFeeHistoryStore.newflatRateChange(fee, event)
 
     fee.commission = event.params.newRate.toI32()
-    fee.lastUpdated = event.block.timestamp
-    fee.save()
-}
-
-export function handleGasTaxChanged(event: GasTaxChanged): void {
-    let fee = StakingPoolFee.load(event.address.toHex())!
-    StakingPoolFeeHistoryStore.newGasTaxCommission(fee, event)
-    let newGas = event.params.newGas
-    fee.gas = newGas.isI32() ? newGas.toI32() : i32.MAX_VALUE
     fee.lastUpdated = event.block.timestamp
     fee.save()
 }
