@@ -14,11 +14,10 @@ import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts"
 import { assert, clearStore, describe, afterEach, test } from "matchstick-as"
 import { generateId, StakingPoolFeeType } from "../../src/StakingPoolFeeHistory"
 import { StakingPoolFee } from "../../generated/schema"
-import { handleFlatRateChanged, handleGasTaxChanged } from "../../src/fee"
+import { handleFlatRateChanged } from "../../src/fee"
 import {
     buildStakingPoolFee,
     createFlatRateChangedEvent,
-    createGasTaxChangedEvent,
     txTimestamp,
 } from "../utils"
 
@@ -114,80 +113,6 @@ describe("Staking pool fee historic data", () => {
                 "FLAT_RATE_COMMISSION"
             )
             assert.fieldEquals(ENTITY_NAME, latestId, "pool", pool.toHex())
-        })
-    })
-
-    describe("For Gas Tax Commission", () => {
-        test("should have all the expected field filled for the first change event", () => {
-            // create a StakingPoolFee Entry
-            createStakingPoolFee()
-
-            // then generate an gas-tax-changed-event to the same address
-            const newGas = BigInt.fromString("20000000")
-            const newTimestamp = BigInt.fromI32(txTimestamp + 300)
-            const event = createGasTaxChangedEvent(fee, newGas, newTimestamp)
-
-            handleGasTaxChanged(event)
-
-            const entryId = generateId(event.transaction.hash, fee)
-
-            assert.fieldEquals(ENTITY_NAME, entryId, "newValue", "20000000")
-
-            assert.fieldEquals(ENTITY_NAME, entryId, "change", "0")
-
-            assert.fieldEquals(ENTITY_NAME, entryId, "pool", pool.toHex())
-
-            assert.fieldEquals(
-                ENTITY_NAME,
-                entryId,
-                "feeType",
-                StakingPoolFeeType.GAS_TAX_COMMISSION
-            )
-        })
-
-        test("should have all the expected field filled for the first change event", () => {
-            // create a StakingPoolFee Entry
-            createStakingPoolFee()
-
-            const newGas = BigInt.fromString("2000000")
-            const newTimestamp = BigInt.fromI32(txTimestamp)
-            const event = createGasTaxChangedEvent(fee, newGas, newTimestamp)
-            handleGasTaxChanged(event)
-
-            // 1 million more
-            const nextEvent = createGasTaxChangedEvent(
-                fee,
-                BigInt.fromString("3000000"),
-                BigInt.fromI32(txTimestamp + 300)
-            )
-
-            const newHash = Bytes.fromHexString(
-                "0x0000000000000000000000000000000000000000000000000000000000000002"
-            )
-
-            nextEvent.transaction.hash = newHash
-            handleGasTaxChanged(nextEvent)
-
-            const firstEntry = generateId(event.transaction.hash, fee)
-            const latestEntry = generateId(nextEvent.transaction.hash, fee)
-
-            assert.fieldEquals(ENTITY_NAME, firstEntry, "newValue", "2000000")
-            assert.fieldEquals(ENTITY_NAME, firstEntry, "change", "0")
-            assert.fieldEquals(
-                ENTITY_NAME,
-                firstEntry,
-                "feeType",
-                StakingPoolFeeType.GAS_TAX_COMMISSION
-            )
-
-            assert.fieldEquals(ENTITY_NAME, latestEntry, "newValue", "3000000")
-            assert.fieldEquals(ENTITY_NAME, latestEntry, "change", "1000000")
-            assert.fieldEquals(
-                ENTITY_NAME,
-                latestEntry,
-                "feeType",
-                StakingPoolFeeType.GAS_TAX_COMMISSION
-            )
         })
     })
 })
