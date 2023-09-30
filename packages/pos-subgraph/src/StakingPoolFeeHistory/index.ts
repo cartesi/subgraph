@@ -13,10 +13,8 @@
 import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts"
 import { StakingPoolFee, StakingPoolFeeHistory } from "../../generated/schema"
 import { FlatRateChanged } from "../../generated/templates/FlatRateCommission/FlatRateCommission"
-import { GasTaxChanged } from "../../generated/templates/GasTaxCommission/GasTaxCommission"
 
 export class StakingPoolFeeType {
-    static GAS_TAX_COMMISSION: string = "GAS_TAX_COMMISSION"
     static FLAT_RATE_COMMISSION: string = "FLAT_RATE_COMMISSION"
 }
 
@@ -59,28 +57,6 @@ export class StakingPoolFeeHistoryStore {
         return createEntry(
             generateId(evt.transaction.hash, evt.address),
             StakingPoolFeeType.FLAT_RATE_COMMISSION,
-            current.pool,
-            newValue,
-            evt.block.timestamp,
-            change
-        )
-    }
-
-    static newGasTaxCommission(
-        current: StakingPoolFee,
-        evt: GasTaxChanged
-    ): StakingPoolFeeHistory {
-        let newGas = evt.params.newGas
-        let isGasSet = current.isSet("gas")
-        let newValue = newGas.isI32() ? newGas.toI32() : i32.MAX_VALUE
-        let gas = isGasSet ? current.gas : 0
-        // The way the smart contract are set the gas value in the first StakingPoolFee is null
-        // So no change is really happening in this update it is just the first gas value being set.
-        let change = isGasSet == true ? newValue - gas : 0
-
-        return createEntry(
-            generateId(evt.transaction.hash, evt.address),
-            StakingPoolFeeType.GAS_TAX_COMMISSION,
             current.pool,
             newValue,
             evt.block.timestamp,
