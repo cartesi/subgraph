@@ -43,52 +43,64 @@
   optionalDependencies:
     fsevents "^2.1.3"
 
-"@cartesi/pos@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@cartesi/pos/-/pos-2.0.0.tgz#2868232a4226896eabda45c0fae31f72324c3a88"
-  integrity sha512-gV3A7T0zxkHTqKqqN9chN+NDLqa8Cy5AwwSENYTsyjFTq6cwe6gKJ50+M3+6hkjOiP+47b6uZ8YvtyFg7ImZlg==
+"@cartesi/pos@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@cartesi/pos/-/pos-2.1.0.tgz#26082057291a44ec148a41a2b131bf30c60c80f9"
+  integrity sha512-b2UuXt6I2vTV8fXJqRO0O6pieXfkT2TFpxhHToq1Q8YRzCBQwckPZCzyEYwCmdCrCoD7a7yXdYvA2/+AWz46aQ==
   dependencies:
-    "@cartesi/token" "^1.7.1"
-    "@cartesi/tree" "^1.0.0"
-    "@cartesi/util" "^5.0.1"
+    "@cartesi/token" "^1.9.0"
+    "@cartesi/tree" "^1.1.0"
+    "@cartesi/util" "^5.0.2"
     "@openzeppelin/contracts" "3.2.1-solc-0.7"
     "@openzeppelin/contracts-0.8" "npm:@openzeppelin/contracts@4.1.0"
   optionalDependencies:
     fsevents "^2.3.2"
 
-"@cartesi/rollups@^0.9.1":
-  version "0.9.1"
-  resolved "https://registry.yarnpkg.com/@cartesi/rollups/-/rollups-0.9.1.tgz#f6cd6294553b799016b721463160c65dadc6ff44"
-  integrity sha512-KTkvmRvWGKfecv2Vlnr6PmyNrVAtQBwzoAoqATWnZafOO06Pl/jSqVjyewLHsz+44tEst6lRsV8WDos4FeGlUA==
+"@cartesi/rollups@^1.0.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@cartesi/rollups/-/rollups-1.2.0.tgz#522a5e0c6c4b32a643f00dbcfc06d12b2b2f7a7f"
+  integrity sha512-oLm/JYuRpUD6bg8UKFZjdSJRZ1CWOd5SM6xnjvRKMisGZcJzULYHuuzZMSMONpnFVQhFXrwJF4q0tzcOAK4oDw==
   dependencies:
-    "@cartesi/util" "^5.0.2"
-    "@openzeppelin/contracts" "4.8.0"
+    "@cartesi/util" "6.1.0"
+    "@openzeppelin/contracts" "4.9.2"
 
-"@cartesi/staking-pool@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@cartesi/staking-pool/-/staking-pool-2.0.0.tgz#4d41165692b89bca69dc6e6380cf1d01dfa214c9"
-  integrity sha512-qdPVpVNPW0AMMrLr4DeG46nk7qULwgU691v3Wk0UHLoXANgp/0TGpTR24q7VvIjU0x7u2+n6hejPFTAFq42ALg==
+"@cartesi/staking-pool@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@cartesi/staking-pool/-/staking-pool-2.1.0.tgz#81572b9778606de5aaf2b410aa22b8e10ce92541"
+  integrity sha512-Hjeyl3cwZ6XW3ilhlMdOqix5H1Ob8tMImP6RatZd4XILUzJCGqCSgNQW12S7OU5C/DKIOKJHzV+yABpgt5tUGA==
   dependencies:
-    "@cartesi/pos" "^2.0.0"
+    "@cartesi/pos" "^2.1.0"
     "@chainlink/contracts" "0.2.2"
     "@ensdomains/ens-contracts" "0.0.7"
     "@openzeppelin/contracts" "4.3.2"
     "@openzeppelin/contracts-upgradeable" "4.3.2"
 
-"@cartesi/token@^1.2.5", "@cartesi/token@^1.7.1":
+"@cartesi/token@^1.2.5":
   version "1.8.0"
   resolved "https://registry.yarnpkg.com/@cartesi/token/-/token-1.8.0.tgz#1f19bda1c5bd4e9e784cbd671c096e0333f11fb3"
   integrity sha512-jcr1ItbEjvhfy0A5KjOwLUd8Yqawo+F7o6p+9sxqfi1RYa39jTL1qhbF9xui4dR7slVrTwqWQTRHHwlfSHzq8A==
   dependencies:
     "@openzeppelin/contracts" "^2.5.0"
 
-"@cartesi/tree@^1.0.0":
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/@cartesi/tree/-/tree-1.0.0.tgz#b12e6add199a0a8e8e0171a3b3682b6f4683dde9"
-  integrity sha512-FE7N45higeeZ08L8vB0/R1qqPxSYyC+gdx4fvfcfdqyF6MwLOI1UGQfJtAqyMF9iMq1SDecfiGlm55ruWk8cSA==
+"@cartesi/token@^1.9.0":
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/@cartesi/token/-/token-1.9.0.tgz#fb1f7c5c3ac03392e4a560830ca4c7cc3a561987"
+  integrity sha512-BcGJXHh80kWtSV3ASSo2J8FOF3aqqVpLnCU4sh/RA+UHRDTNtA83aw+awf0w7kQNB4nYfqiZmwnrpi6o4RL+RQ==
+  dependencies:
+    "@openzeppelin/contracts" "^2.5.0"
+
+"@cartesi/tree@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@cartesi/tree/-/tree-1.1.0.tgz#fd3b8d29b7dfa037d06060e9b7197ecf5fd6c466"
+  integrity sha512-oI1NbailA7OeKPgphqEKvhxW9YEqtFXFBfUcVzKNDRCrFnR1H09WzwTiIf6qn6ycCoSEfHbXXnHaRrdKOUvRaQ==
   dependencies:
     "@openzeppelin/contracts" "^4.7.0"
     commander "^9.4.1"
+
+"@cartesi/util@6.1.0":
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/@cartesi/util/-/util-6.1.0.tgz#45f4a55b09b89e8dab506b5c31e6c2424fad0711"
+  integrity sha512-j92nSoMHCyu6h7nZgn+MeXjkp8oa1Cy6qaImyxVXmPN2Rcqzl/TkWm/RkhbODU9rh4U3OuUteYqKRjefI3/XIQ==
 
 "@cartesi/util@^1.0.0":
   version "1.0.1"
@@ -97,7 +109,7 @@
   dependencies:
     "@openzeppelin/contracts" "3.2.1-solc-0.7"
 
-"@cartesi/util@^5.0.0", "@cartesi/util@^5.0.1", "@cartesi/util@^5.0.2":
+"@cartesi/util@^5.0.0", "@cartesi/util@^5.0.2":
   version "5.0.2"
   resolved "https://registry.yarnpkg.com/@cartesi/util/-/util-5.0.2.tgz#dfe0ff88b1998b88eafc4089949c3df71e3246e1"
   integrity sha512-mIaOplU+RKkiW10JRpDBG8IG7lGKyXrkF6w4WHVZ2YKWze5I+mzJBaPALZLtJSuwb6GCqLZbB7NZx3A7iZyWkA==
@@ -1149,10 +1161,10 @@
   resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.3.2.tgz#ff80affd6d352dbe1bbc5b4e1833c41afd6283b6"
   integrity sha512-AybF1cesONZStg5kWf6ao9OlqTZuPqddvprc0ky7lrUVOjXeKpmQ2Y9FK+6ygxasb+4aic4O5pneFBfwVsRRRg==
 
-"@openzeppelin/contracts@4.8.0":
-  version "4.8.0"
-  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.8.0.tgz#6854c37df205dd2c056bdfa1b853f5d732109109"
-  integrity sha512-AGuwhRRL+NaKx73WKRNzeCxOCOCxpaqF+kp8TJ89QzAipSwZy/NoflkWaL9bywXFRhIzXt8j38sfF7KBKCPWLw==
+"@openzeppelin/contracts@4.9.2":
+  version "4.9.2"
+  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.9.2.tgz#1cb2d5e4d3360141a17dbc45094a8cad6aac16c1"
+  integrity sha512-mO+y6JaqXjWeMh9glYVzVu8HYPGknAAnWyxTRhGeckOruyXQMNnlcW6w/Dx9ftLeIQk6N+ZJFuVmTwF7lEIFrg==
 
 "@openzeppelin/contracts@^2.5.0":
   version "2.5.1"
