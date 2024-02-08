@@ -51,6 +51,7 @@ const config: HardhatUserConfig = {
         },
         mainnet: infuraNetwork("mainnet", 1, 6283185),
         goerli: infuraNetwork("goerli", 5, 6283185),
+        sepolia: infuraNetwork("sepolia", 11155111, 6283185),
         matic_testnet: infuraNetwork("polygon-mumbai", 80001),
         bsc_testnet: {
             url: "https://data-seed-prebsc-1-s1.binance.org:8545",
@@ -131,6 +132,15 @@ const config: HardhatUserConfig = {
                 resolveModulePath(
                     "@cartesi/staking-pool",
                     "deployments/goerli"
+                ),
+            ],
+            sepolia: [
+                resolveModulePath("@cartesi/util", "deployments/sepolia"),
+                resolveModulePath("@cartesi/token", "deployments/sepolia"),
+                resolveModulePath("@cartesi/pos", "deployments/sepolia"),
+                resolveModulePath(
+                    "@cartesi/staking-pool",
+                    "deployments/sepolia"
                 ),
             ],
             matic_testnet: [
