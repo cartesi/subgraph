@@ -56,14 +56,6 @@
   optionalDependencies:
     fsevents "^2.3.2"
 
-"@cartesi/rollups@^1.0.0":
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/@cartesi/rollups/-/rollups-1.2.0.tgz#522a5e0c6c4b32a643f00dbcfc06d12b2b2f7a7f"
-  integrity sha512-oLm/JYuRpUD6bg8UKFZjdSJRZ1CWOd5SM6xnjvRKMisGZcJzULYHuuzZMSMONpnFVQhFXrwJF4q0tzcOAK4oDw==
-  dependencies:
-    "@cartesi/util" "6.1.0"
-    "@openzeppelin/contracts" "4.9.2"
-
 "@cartesi/staking-pool@^2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@cartesi/staking-pool/-/staking-pool-2.1.0.tgz#81572b9778606de5aaf2b410aa22b8e10ce92541"
@@ -96,11 +88,6 @@
   dependencies:
     "@openzeppelin/contracts" "^4.7.0"
     commander "^9.4.1"
-
-"@cartesi/util@6.1.0":
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/@cartesi/util/-/util-6.1.0.tgz#45f4a55b09b89e8dab506b5c31e6c2424fad0711"
-  integrity sha512-j92nSoMHCyu6h7nZgn+MeXjkp8oa1Cy6qaImyxVXmPN2Rcqzl/TkWm/RkhbODU9rh4U3OuUteYqKRjefI3/XIQ==
 
 "@cartesi/util@^1.0.0":
   version "1.0.1"
@@ -1069,7 +1056,7 @@
     "@nomicfoundation/solidity-analyzer-win32-ia32-msvc" "0.1.1"
     "@nomicfoundation/solidity-analyzer-win32-x64-msvc" "0.1.1"
 
-"@nomiclabs/hardhat-ethers@^2.0.0", "@nomiclabs/hardhat-ethers@^2.1.1", "@nomiclabs/hardhat-ethers@^2.2.1":
+"@nomiclabs/hardhat-ethers@^2.0.0", "@nomiclabs/hardhat-ethers@^2.2.1":
   version "2.2.3"
   resolved "https://registry.yarnpkg.com/@nomiclabs/hardhat-ethers/-/hardhat-ethers-2.2.3.tgz#b41053e360c31a32c2640c9a45ee981a7e603fe0"
   integrity sha512-YhzPdzb612X591FOe68q+qXVXGG2ANZRvDo0RRUtimev85rCrAlv/TLMEZw5c+kq9AbzocLTVX/h2jVIFPL9Xg==
@@ -1160,11 +1147,6 @@
   version "4.3.2"
   resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.3.2.tgz#ff80affd6d352dbe1bbc5b4e1833c41afd6283b6"
   integrity sha512-AybF1cesONZStg5kWf6ao9OlqTZuPqddvprc0ky7lrUVOjXeKpmQ2Y9FK+6ygxasb+4aic4O5pneFBfwVsRRRg==
-
-"@openzeppelin/contracts@4.9.2":
-  version "4.9.2"
-  resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-4.9.2.tgz#1cb2d5e4d3360141a17dbc45094a8cad6aac16c1"
-  integrity sha512-mO+y6JaqXjWeMh9glYVzVu8HYPGknAAnWyxTRhGeckOruyXQMNnlcW6w/Dx9ftLeIQk6N+ZJFuVmTwF7lEIFrg==
 
 "@openzeppelin/contracts@^2.5.0":
   version "2.5.1"
@@ -11160,7 +11142,7 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==
 
-typescript@^4.8.3, typescript@^4.9.3:
+typescript@^4.9.3:
   version "4.9.5"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.9.5.tgz#095979f9bcc0d09da324d58d03ce8f8374cbe65a"
   integrity sha512-1FXk9E2Hm+QzZQ7z+McJiHL4NW1F2EzMu9Nq9i3zAaGqibafqYwCVU6WyWAuyQRRzOlxou8xZSyXLEN8oKj24g==
