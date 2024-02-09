@@ -13,6 +13,7 @@
         "deploy:chainstack:mainnet": "graph deploy --node https://api.graph-eu.p2pify.com/$CHAINSTACK_POS_MAINNET_PRODUCTION_ID/deploy --ipfs https://api.graph-eu.p2pify.com/$CHAINSTACK_POS_MAINNET_PRODUCTION_ID/ipfs pos-prod subgraph.yaml",
         "deploy:chainstack:mainnet-preview": "graph deploy --node https://api.graph-eu.p2pify.com/$CHAINSTACK_POS_MAINNET_PREVIEW_ID/deploy --ipfs https://api.graph-eu.p2pify.com/$CHAINSTACK_POS_MAINNET_PREVIEW_ID/ipfs pos-preview2 subgraph.yaml",
         "deploy:chainstack:goerli": "graph deploy --node https://api.graph-eu.p2pify.com/$CHAINSTACK_POS_GOERLI_ID/deploy --ipfs https://api.graph-eu.p2pify.com/$CHAINSTACK_POS_GOERLI_ID/ipfs pos-goerli2 subgraph.goerli.yaml",
+        "deploy:chainstack:sepolia": "graph deploy --node https://api.graph-ams.p2pify.com/$CHAINSTACK_POS_SEPOLIA_ID/deploy --ipfs https://api.graph-ams.p2pify.com/$CHAINSTACK_POS_SEPOLIA_ID/ipfs pos-sepolia subgraph.sepolia.yaml",
         "deploy:mainnet-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 cartesi/pos subgraph.yaml",
         "deploy:mainnet-staging": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ cartesi/pos-staging",
         "deploy:goerli": "graph deploy --node https://api.thegraph.com/deploy/ --ipfs https://api.thegraph.com/ipfs/ cartesi/pos-goerli subgraph.goerli.yaml",
