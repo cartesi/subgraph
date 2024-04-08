@@ -16,8 +16,7 @@
         ]
     },
     "scripts": {
-        "prettier": "prettier --check **/*.ts",
-        "eligibility": "yarn workspace eligibility ts-node index.ts"
+        "prettier": "prettier --check **/*.ts"
     },
     "devDependencies": {
         "prettier": "2.7.1"
