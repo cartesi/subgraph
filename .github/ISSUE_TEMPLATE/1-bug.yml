@@ -17,7 +17,6 @@ body:
           multiple: true
           options:
               - block-subgraph
-              - eligibility
               - pos-subgraph
               - rollups-subgraph
               - toolbox
