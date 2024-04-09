@@ -190,15 +190,6 @@ type BlockSelectorContext @entity {
     lastBlockTimestamp: BigInt!
 }
 
-type Eligibility @entity {
-    id: ID!
-    user: User!
-    stake: BigInt!
-    block: BigInt!
-    blockSelector: BlockSelectorContext!
-    eligible: Boolean
-}
-
 type WeeklyPoolPerformance @entity {
     # The pool address - The week
     id: ID!
