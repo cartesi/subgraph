@@ -10,9 +10,9 @@
 // License for the specific language governing permissions and limitations
 // under the License.
 
-import path from "path"
 import { HardhatUserConfig } from "hardhat/config"
 import { HttpNetworkUserConfig } from "hardhat/types"
+import path from "path"
 
 import "@nomiclabs/hardhat-ethers"
 import "hardhat-deploy"
@@ -50,7 +50,6 @@ const config: HardhatUserConfig = {
             accounts: mnemonic ? { mnemonic } : undefined,
         },
         mainnet: infuraNetwork("mainnet", 1, 6283185),
-        goerli: infuraNetwork("goerli", 5, 6283185),
         sepolia: infuraNetwork("sepolia", 11155111, 6283185),
         matic_testnet: infuraNetwork("polygon-mumbai", 80001),
         bsc_testnet: {
@@ -123,15 +122,6 @@ const config: HardhatUserConfig = {
                 resolveModulePath(
                     "@cartesi/staking-pool",
                     "deployments/mainnet"
-                ),
-            ],
-            goerli: [
-                resolveModulePath("@cartesi/util", "deployments/goerli"),
-                resolveModulePath("@cartesi/token", "deployments/goerli"),
-                resolveModulePath("@cartesi/pos", "deployments/goerli"),
-                resolveModulePath(
-                    "@cartesi/staking-pool",
-                    "deployments/goerli"
                 ),
             ],
             sepolia: [
