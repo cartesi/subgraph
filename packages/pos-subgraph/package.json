@@ -11,7 +11,6 @@
         "deploy:localhost": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 cartesi/pos subgraph.localhost.yaml",
         "deploy:satsuma:mainnet": "graph deploy --deploy-key $SATSUMA_DEPLOY_KEY --node https://subgraphs.alchemy.com/api/subgraphs/deploy --ipfs https://ipfs.satsuma.xyz pos subgraph.yaml",
         "deploy:chainstack:mainnet": "graph deploy --node https://api.graph-eu.p2pify.com/$CHAINSTACK_POS_MAINNET_PRODUCTION_ID/deploy --ipfs https://api.graph-eu.p2pify.com/$CHAINSTACK_POS_MAINNET_PRODUCTION_ID/ipfs pos-prod subgraph.yaml",
-        "deploy:chainstack:mainnet-preview": "graph deploy --node https://api.graph-eu.p2pify.com/$CHAINSTACK_POS_MAINNET_PREVIEW_ID/deploy --ipfs https://api.graph-eu.p2pify.com/$CHAINSTACK_POS_MAINNET_PREVIEW_ID/ipfs pos-preview2 subgraph.yaml",
         "deploy:chainstack:sepolia": "graph deploy --node https://api.graph-ams.p2pify.com/$CHAINSTACK_POS_SEPOLIA_ID/deploy --ipfs https://api.graph-ams.p2pify.com/$CHAINSTACK_POS_SEPOLIA_ID/ipfs pos-sepolia subgraph.sepolia.yaml",
         "deploy:mainnet-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 cartesi/pos subgraph.yaml",
         "deploy:sepolia-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 cartesi/pos subgraph.sepolia.yaml",
