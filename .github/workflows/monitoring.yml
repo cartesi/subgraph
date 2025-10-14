@@ -1,0 +1,45 @@
+name: Subgraph Monitoring
+on:
+  workflow_dispatch:
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22"
+          cache: "yarn"
+
+      - run: yarn install --frozen-lockfile
+
+      - name: Run Monitoring
+        env:
+          MONITOR_ALERT_THRESHOLD: ${{vars.MONITOR_ALERT_THRESHOLD}}
+          RPC_URL_11155111: ${{ secrets.RPC_URL_11155111 }}
+          RPC_URL_1: ${{ secrets.RPC_URL_1 }}
+          ALCHEMY_MAINNET_URL: ${{ secrets.ALCHEMY_MAINNET_URL }}
+          CHAINSTACK_MAINNET_URL: ${{ secrets.CHAINSTACK_MAINNET_URL }}
+          CHAINSTACK_SEPOLIA_URL: ${{ secrets.CHAINSTACK_SEPOLIA_URL }}
+        run: yarn run:monitoring
+  alert-on-failure:
+    needs: [monitor]
+    if: ${{ failure() }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.PRIVATE_KEY }}
+      - name: Create Issue and mention team
+        run: |
+          gh issue create --title "Subgraph Indexing unbalanced" --body "${{ vars.TEAM_NAME }}: **Workflow failure** [View workflow run for details](https://github.com/${{ github.repository}}/actions/runs/${{ github.run_id}})"
+        env:
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
