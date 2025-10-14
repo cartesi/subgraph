@@ -16,9 +16,18 @@
         ]
     },
     "scripts": {
-        "prettier": "prettier --check **/*.ts"
+        "prettier": "prettier --check **/*.ts",
+        "run:monitoring": "node --experimental-strip-types scripts/subgraph-monitoring.ts"
     },
     "devDependencies": {
-        "prettier": "2.7.1"
-    }
+        "@types/node": "22.18.10",
+        "graphql": "^16.11.0",
+        "graphql-request": "^7.2.0",
+        "prettier": "2.7.1",
+        "viem": "^2.38.2"
+    },
+    "engines": {
+        "node": "22.x"
+    },
+    "packageManager": "yarn@1.22.19"
 }
