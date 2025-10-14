@@ -103,11 +103,13 @@ async function main() {
         sepoliaChainstackDiff,
     ].some((diff) => absBigInt(diff) > blockDiffLimit)
 
-    if (isAboveThreshold) {
-        process.exit(1)
-    } else {
-        process.exit(0)
-    }
+    // if (isAboveThreshold) {
+    //     process.exit(1)
+    // } else {
+    //     process.exit(0)
+    // }
+
+    process.exit(1)
 }
 
 main()
