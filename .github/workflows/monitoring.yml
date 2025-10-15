@@ -31,14 +31,13 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
-      # - uses: actions/create-github-app-token@v2
-      #   id: app-token
-      #   with:
-      #     app-id: ${{ vars.APP_ID }}
-      #     private-key: ${{ secrets.PRIVATE_KEY }}
+      - uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ vars.APP_ID }}
+          private-key: ${{ secrets.PRIVATE_KEY }}
       - name: Create Issue and mention team
         run: |
           gh issue create --title "[testing] Subgraph Indexing unbalanced" --body "${{ vars.TEAM_NAME }}: **Workflow failure** [View workflow run for details](https://github.com/${{ github.repository}}/actions/runs/${{ github.run_id}})"
         env:
-          # GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
