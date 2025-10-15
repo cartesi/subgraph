@@ -11,5 +11,6 @@
         "paths": {
             "~/*": ["packages/*"]
         }
-    }
+    },
+    "include": ["additional.d.ts"]
 }
